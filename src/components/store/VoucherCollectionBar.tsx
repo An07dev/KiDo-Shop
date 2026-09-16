@@ -21,52 +21,9 @@ interface IVoucherItem {
   isUsedByCustomer?: boolean;
 }
 
-const DEFAULT_SAMPLE_VOUCHERS: IVoucherItem[] = [
-  {
-    _id: 'v1',
-    code: 'GIAM20K',
-    name: 'Giảm 20.000₫ cho đơn từ 200.000₫',
-    discountType: 'fixed',
-    discountValue: 20000,
-    maxDiscountAmount: 20000,
-    minOrderValue: 200000,
-    endDate: '2026-12-31T23:59:59Z',
-  },
-  {
-    _id: 'v2',
-    code: 'FREESHIP',
-    name: 'Freeship 0Đ cho đơn từ 300.000₫',
-    discountType: 'fixed',
-    discountValue: 30000,
-    maxDiscountAmount: 30000,
-    minOrderValue: 300000,
-    endDate: '2026-12-31T23:59:59Z',
-  },
-  {
-    _id: 'v3',
-    code: 'SIEUDEAL10',
-    name: 'Giảm 10% tối đa 50.000₫',
-    discountType: 'percent',
-    discountValue: 10,
-    maxDiscountAmount: 50000,
-    minOrderValue: 400000,
-    endDate: '2026-12-31T23:59:59Z',
-  },
-  {
-    _id: 'v4',
-    code: 'VIP50K',
-    name: 'Giảm 50.000₫ cho đơn từ 500.000₫',
-    discountType: 'fixed',
-    discountValue: 50000,
-    maxDiscountAmount: 50000,
-    minOrderValue: 500000,
-    endDate: '2026-12-31T23:59:59Z',
-  },
-];
-
 export default function VoucherCollectionBar() {
-  const [vouchers, setVouchers] = useState<IVoucherItem[]>(DEFAULT_SAMPLE_VOUCHERS);
-  const [loading, setLoading] = useState(false);
+  const [vouchers, setVouchers] = useState<IVoucherItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const { isSaved, saveVoucher } = useVoucherWallet();
   const carouselRef = useRef<HTMLDivElement>(null);
 
@@ -86,14 +43,17 @@ export default function VoucherCollectionBar() {
             const res = await apiFetch(`/api/vouchers?phone=${encodeURIComponent(phone)}`);
             return await res.json();
           },
-          45000 // 45s TTL
+          30000 // 30s TTL
         );
 
-        if (data?.success && Array.isArray(data?.data) && data.data.length > 0) {
+        if (data?.success && Array.isArray(data?.data)) {
           setVouchers(data.data);
+        } else {
+          setVouchers([]);
         }
       } catch (err) {
         console.error('Error fetching public vouchers:', err);
+        setVouchers([]);
       } finally {
         setLoading(false);
       }

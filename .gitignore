@@ -46,7 +46,8 @@ scripts/test*
 
 # local database
 /data/db/
-data/
+/data/
+!/src/data/
 
 node_modules
 .next

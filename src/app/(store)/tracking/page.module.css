@@ -7,7 +7,7 @@
   color: var(--text-main, #0f172a);
   display: flex;
   flex-direction: column;
-  padding-bottom: 72px; /* clearance for mobile bottomNav */
+  padding-bottom: 24px;
   font-family: inherit;
 }
 
@@ -517,7 +517,7 @@
 
 .orderCodeTitle {
   font-size: 17px;
-  font-weight: 900;
+  font-weight: 800;
   color: var(--text-main, #0f172a);
   letter-spacing: -0.3px;
 }
@@ -1000,7 +1000,7 @@
 
 .totalVal {
   font-size: 16px;
-  font-weight: 900;
+  font-weight: 800;
   color: var(--primary, #ee4d2d);
 }
 

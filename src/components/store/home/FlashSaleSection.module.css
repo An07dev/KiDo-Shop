@@ -1,17 +1,19 @@
 /* ======================================================== */
-/* SHOPEE FLASH SALE SECTION STYLES                         */
+/* SHOPEE FLASH SALE SECTION STYLES (NHẠT & CHUẨN THEME)    */
 /* ======================================================== */
 
 .flashSaleSection {
   background: var(--bg-card, #ffffff);
-  border-radius: 4px;
-  padding: 16px 18px 20px;
-  border: 1px solid var(--border-color, #e5e7eb);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius-md, 10px);
+  padding: 16px 18px 18px;
+  border: 1px solid var(--border-color, #e2e8f0);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
 }
 
 /* 1. Header: Logo + Countdown + See All */
@@ -20,7 +22,7 @@
   flex-direction: column;
   gap: 10px;
   border-bottom: 1px solid var(--border-color, #f1f5f9);
-  padding-bottom: 12px;
+  padding-bottom: 10px;
 }
 
 .flashHeaderTop {
@@ -34,19 +36,18 @@
 .flashTitleGroup {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .flashLogo {
-  font-size: 19px;
-  font-weight: 900;
+  font-size: 16.5px;
+  font-weight: 800;
   color: var(--primary, #ee4d2d);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   text-transform: uppercase;
-  font-style: italic;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
 }
 
 /* Countdown Timer */
@@ -58,26 +59,26 @@
 .countdownTimer {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
 }
 
 .countdownDigit {
-  background: var(--text-main, #000000);
-  color: var(--bg-main, #ffffff);
-  font-size: 12.5px;
+  background: color-mix(in srgb, var(--text-main, #0f172a) 75%, transparent);
+  color: #ffffff;
+  font-size: 12px;
   font-weight: 700;
-  padding: 3px 6px;
+  padding: 2px 5px;
   border-radius: 3px;
-  min-width: 24px;
+  min-width: 22px;
   text-align: center;
   font-family: inherit;
-  line-height: 1;
+  line-height: 1.1;
 }
 
 .countdownColon {
-  color: var(--text-main, #000000);
+  color: var(--text-muted, #64748b);
   font-weight: 800;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 /* See All Button */
@@ -85,30 +86,30 @@
   background: transparent;
   border: none;
   color: var(--primary, #ee4d2d);
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   transition: all 0.2s;
-  padding: 4px 8px;
+  padding: 3px 6px;
   border-radius: 4px;
 }
 
 .seeAllBtn:hover {
-  background: var(--bg-card-hover, rgba(238, 77, 45, 0.08));
+  background: color-mix(in srgb, var(--primary, #ee4d2d) 8%, transparent);
   text-decoration: underline;
 }
 
 /* Campaign Tagline Banner */
 .flashCampaignBanner {
-  background: var(--bg-card-hover, #fff7ed);
+  background: color-mix(in srgb, var(--primary, #ee4d2d) 6%, var(--bg-card, #ffffff));
   border-left: 3px solid var(--primary, #ee4d2d);
-  padding: 7px 14px;
+  padding: 6px 12px;
   border-radius: 0 4px 4px 0;
-  font-size: 13px;
-  color: var(--text-main, #c2410c);
+  font-size: 12.5px;
+  color: var(--text-main, #0f172a);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -121,17 +122,17 @@
 
 .flashCampaignSubtitle {
   font-weight: 500;
-  color: var(--primary, #ea580c);
+  color: var(--primary, #ee4d2d);
 }
 
 /* 2. Slot Selector Tabs */
 .flashSlotTabs {
   display: flex;
   align-items: stretch;
-  gap: 10px;
+  gap: 8px;
   overflow-x: auto;
   scrollbar-width: none;
-  padding: 2px 0 6px;
+  padding: 2px 0 4px;
 }
 
 .flashSlotTabs::-webkit-scrollbar {
@@ -140,10 +141,10 @@
 
 .flashSlotTab {
   flex: 1;
-  min-width: 140px;
-  padding: 10px 14px;
-  border-radius: 4px;
-  background: var(--bg-main, #f8fafc);
+  min-width: 130px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md, 6px);
+  background: var(--bg-card, #ffffff);
   border: 1px solid var(--border-color, #e2e8f0);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -151,40 +152,41 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 2px;
   user-select: none;
 }
 
 .flashSlotTab:hover {
   border-color: var(--primary, #ee4d2d);
-  background: var(--bg-card-hover, #fff7ed);
+  background: color-mix(in srgb, var(--primary, #ee4d2d) 5%, var(--bg-card, #ffffff));
 }
 
+/* Active Slot Tab: Soft & Theme-aligned (Nhạt thanh lịch) */
 .flashSlotTabActive {
-  background: var(--primary, #ee4d2d) !important;
+  background: color-mix(in srgb, var(--primary, #ee4d2d) 10%, var(--bg-card, #ffffff)) !important;
   border-color: var(--primary, #ee4d2d) !important;
-  color: var(--primary-text, #ffffff) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  color: var(--primary, #ee4d2d) !important;
+  box-shadow: none;
 }
 
 .slotTime {
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 800;
-  color: var(--text-main, #1e293b);
+  color: var(--text-main, #0f172a);
 }
 
 .flashSlotTabActive .slotTime {
-  color: var(--primary-text, #ffffff);
+  color: var(--primary, #ee4d2d);
 }
 
 .slotStatus {
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-muted, #64748b);
 }
 
 .flashSlotTabActive .slotStatus {
-  color: var(--primary-text, rgba(255, 255, 255, 0.95));
+  color: var(--primary, #ee4d2d);
 }
 
 /* 3. Product Carousel Grid */
@@ -204,7 +206,7 @@
 .flashCard {
   background: var(--bg-card, #ffffff);
   border: 1px solid var(--border-color, #f1f5f9);
-  border-radius: 4px;
+  border-radius: var(--radius-md, 8px);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -214,9 +216,9 @@
 }
 
 .flashCard:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
-  border-color: var(--primary, #ffd8d0);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--primary, #ee4d2d) 12%, transparent);
+  border-color: var(--primary, #ee4d2d);
 }
 
 /* Image Container */
@@ -241,19 +243,20 @@
   transform: scale(1.05);
 }
 
-/* Discount Badge */
+/* Discount Badge: Soft & Harmonized */
 .shopeeDiscountFlag {
   position: absolute;
   top: 0;
   right: 0;
-  background: #ffd839;
+  background: color-mix(in srgb, var(--primary, #ee4d2d) 12%, var(--bg-card, #ffffff));
   color: var(--primary, #ee4d2d);
   font-size: 11px;
   font-weight: 800;
-  padding: 3px 5px;
-  border-bottom-left-radius: 3px;
+  padding: 2px 6px;
+  border-bottom-left-radius: 4px;
   z-index: 2;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  border-left: 1px solid color-mix(in srgb, var(--primary, #ee4d2d) 20%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--primary, #ee4d2d) 20%, transparent);
 }
 
 /* Card Content Info */
@@ -267,25 +270,25 @@
 }
 
 .flashPrice {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 800;
   color: var(--primary, #ee4d2d);
   line-height: 1.2;
 }
 
 .flashOldPrice {
-  font-size: 11.5px;
-  color: var(--text-muted, #94a3b8);
+  font-size: 11px;
+  color: var(--text-dim, #94a3b8);
   text-decoration: line-through;
   line-height: 1;
 }
 
-/* Fire Progress Bar (Thanh nhiệt Shopee) */
+/* Fire Progress Bar (Thanh nhiệt Shopee: Nhạt & tinh tế) */
 .fireProgressBar {
   width: 100%;
-  height: 18px;
-  background: rgba(238, 77, 45, 0.25);
-  border-radius: 9px;
+  height: 16px;
+  background: color-mix(in srgb, var(--primary, #ee4d2d) 12%, var(--bg-card-hover, #f1f5f9));
+  border-radius: 8px;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -299,19 +302,20 @@
   left: 0;
   top: 0;
   bottom: 0;
-  background: linear-gradient(90deg, var(--accent, #ff5722) 0%, var(--primary, #ee4d2d) 100%);
-  border-radius: 9px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--primary, #ee4d2d) 65%, #ff8a65) 0%, var(--primary, #ee4d2d) 100%);
+  border-radius: 8px;
   transition: width 0.4s ease;
+  opacity: 0.88;
 }
 
 .fireText {
   position: relative;
   z-index: 1;
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 800;
   color: #ffffff;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.2px;
   white-space: nowrap;
   line-height: 1;
 }
@@ -319,47 +323,46 @@
 /* Sắp Mở Bán / Đã Kết Thúc Pill */
 .upcomingPill {
   width: 100%;
-  height: 18px;
-  background: var(--bg-main, #ffedd5);
-  border: 1px solid var(--border-color, #fed7aa);
-  border-radius: 9px;
+  height: 16px;
+  background: color-mix(in srgb, var(--primary, #ee4d2d) 10%, var(--bg-card, #ffffff));
+  border: 1px solid color-mix(in srgb, var(--primary, #ee4d2d) 20%, transparent);
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 4px;
-  font-size: 10px;
-  font-weight: 800;
-  color: var(--primary, #ea580c);
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--primary, #ee4d2d);
   text-transform: uppercase;
-  letter-spacing: 0.3px;
 }
 
 .passedPill {
   width: 100%;
-  height: 18px;
-  background: var(--bg-main, #f1f5f9);
+  height: 16px;
+  background: var(--bg-card-hover, #f1f5f9);
   border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 9px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 4px;
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--text-muted, #64748b);
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--text-dim, #94a3b8);
   text-transform: uppercase;
 }
 
 /* 4. See All Card (Shopee Style at end of list) */
 .flashSeeAllCard {
-  background: var(--bg-main, #f8fafc);
-  border: 1px dashed var(--border-color, #cbd5e1);
-  border-radius: 4px;
+  background: var(--bg-card, #ffffff);
+  border: 1px dashed color-mix(in srgb, var(--primary, #ee4d2d) 30%, var(--border-color, #cbd5e1));
+  border-radius: var(--radius-md, 8px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   padding: 16px 8px;
   cursor: pointer;
   text-decoration: none;
@@ -369,28 +372,29 @@
 
 .flashSeeAllCard:hover {
   border-color: var(--primary, #ee4d2d);
-  background: var(--bg-card-hover, #fff7ed);
+  background: color-mix(in srgb, var(--primary, #ee4d2d) 6%, var(--bg-card, #ffffff));
 }
 
 .flashSeeAllCircle {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: var(--primary, #ee4d2d);
-  color: var(--primary-text, #ffffff);
+  background: color-mix(in srgb, var(--primary, #ee4d2d) 12%, var(--bg-card, #ffffff));
+  color: var(--primary, #ee4d2d);
+  border: 1px solid color-mix(in srgb, var(--primary, #ee4d2d) 25%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: transform 0.2s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: none;
 }
 
 .flashSeeAllCard:hover .flashSeeAllCircle {
-  transform: scale(1.1);
+  transform: scale(1.08);
 }
 
 .flashSeeAllText {
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--primary, #ee4d2d);
 }
@@ -423,7 +427,7 @@
 @media (max-width: 599px) {
   .flashSaleSection {
     padding: 10px 10px 12px;
-    border-radius: 8px;
+    border-radius: var(--radius-md, 8px);
     gap: 8px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   }
@@ -454,12 +458,12 @@
   }
 
   .countdownTimer {
-    gap: 3px;
+    gap: 2px;
   }
 
   .countdownDigit {
     font-size: 11px;
-    padding: 2px 4px;
+    padding: 1px 4px;
     min-width: 18px;
     border-radius: 2px;
   }
@@ -521,25 +525,25 @@
     min-height: unset;
     padding: 12px 8px;
     border-radius: 6px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   }
 
   .flashSeeAllCircle {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
   }
 
   .flashSeeAllText {
-    font-size: 13px;
+    font-size: 12.5px;
   }
 
   .flashSeeAllSubText {
-    font-size: 10.5px;
+    font-size: 10px;
   }
 
   .shopeeDiscountFlag {
     font-size: 9.5px;
-    padding: 2px 4px;
+    padding: 1px 4px;
   }
 
   .flashInfo {
@@ -548,12 +552,12 @@
   }
 
   .flashPrice {
-    font-size: 14px;
+    font-size: 13.5px;
     font-weight: 800;
   }
 
   .flashOldPrice {
-    font-size: 10.5px;
+    font-size: 10px;
   }
 
   .fireProgressBar {

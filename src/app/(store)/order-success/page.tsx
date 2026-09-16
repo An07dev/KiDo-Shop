@@ -16,7 +16,6 @@ import {
   FiSearch,
   FiMessageSquare,
   FiAlertCircle,
-  FiHome,
   FiShield,
   FiArrowRight,
 } from 'react-icons/fi';
@@ -101,6 +100,14 @@ function OrderSuccessContent() {
     }
   };
 
+  const handleBack = () => {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      router.back();
+    } else {
+      router.push('/');
+    }
+  };
+
   const handleSearchOrder = (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchInput.trim()) return;
@@ -116,7 +123,7 @@ function OrderSuccessContent() {
     return (
       <div className={styles.page}>
         <nav className={styles.topNav}>
-          <button className={styles.backBtn} onClick={() => router.push('/')} aria-label="Trang chủ">
+          <button className={styles.backBtn} onClick={handleBack} aria-label="Quay lại">
             <FiChevronLeft size={22} />
           </button>
           <div className={styles.navTitle}>Tra Cứu Đơn Hàng</div>
@@ -162,7 +169,7 @@ function OrderSuccessContent() {
 
   const orderCode = order?.orderCode || code;
   const isPaid = isPaidQuery || order?.paymentStatus === 'paid';
-  const shopName = theme?.pageTitles?.logoText || 'ShopBig Store';
+  const shopName = theme?.pageTitles?.logoText || 'Cửa Hàng';
   const subtotal =
     order?.subtotal ||
     order?.items?.reduce((acc: number, i: any) => acc + (i.price * i.quantity), 0) ||
@@ -179,25 +186,14 @@ function OrderSuccessContent() {
 
   return (
     <div className={styles.page}>
-      {/* Top Header (Visible on Mobile) */}
+      {/* Top Header */}
       <nav className={styles.topNav}>
-        <button className={styles.backBtn} onClick={() => router.push('/')} aria-label="Trang chủ">
+        <button className={styles.backBtn} onClick={handleBack} aria-label="Quay lại">
           <FiChevronLeft size={22} />
         </button>
         <div className={styles.navTitle}>Chi Tiết Đơn Hàng</div>
         <div style={{ width: 32 }} />
       </nav>
-
-      {/* PC Breadcrumb (Visible on PC/Tablet) */}
-      <div className={styles.pcBreadcrumbWrap}>
-        <div className={styles.pcBreadcrumb}>
-          <Link href="/" className={styles.pcBreadcrumbLink}>
-            <FiHome size={14} /> Trang Chủ
-          </Link>
-          <span className={styles.pcBreadcrumbDivider}>/</span>
-          <span className={styles.pcBreadcrumbActive}>Đặt Hàng Thành Công #{orderCode}</span>
-        </div>
-      </div>
 
       {/* Main Container */}
       <div className={styles.mainContainer}>

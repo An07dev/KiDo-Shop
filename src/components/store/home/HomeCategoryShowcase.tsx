@@ -1,9 +1,10 @@
 'use client';
 
-import React, { memo } from 'react';
+import React, { memo, useRef } from 'react';
 import Image from 'next/image';
-import { FiLayers, FiChevronRight } from 'react-icons/fi';
-import styles from '@/app/(store)/page.module.css';
+import { FiChevronRight, FiChevronLeft } from 'react-icons/fi';
+import { BiCategoryAlt } from 'react-icons/bi';
+import styles from './HomeCategoryShowcase.module.css';
 
 interface CategoryItem {
   _id: string;
@@ -38,26 +39,61 @@ const HomeCategoryShowcaseComponent: React.FC<HomeCategoryShowcaseProps> = ({
   onCategorySelect,
   onSeeAll,
 }) => {
+  const trackRef = useRef<HTMLDivElement>(null);
+
   if (!categories || categories.length === 0) return null;
+
+  const handleScroll = (direction: 'left' | 'right') => {
+    if (trackRef.current) {
+      const scrollAmount = direction === 'left' ? -350 : 350;
+      trackRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   return (
     <div className={styles.homeCategorySection}>
       <div className={styles.homeCategoryHeader}>
         <div className={styles.homeCategoryTitleGroup}>
-          <FiLayers className={styles.homeCategoryIcon} />
+          <span className={styles.iconBadge}>
+            <BiCategoryAlt size={18} />
+          </span>
           <h3 className={styles.homeCategoryTitle}>DANH MỤC SẢN PHẨM</h3>
         </div>
-        <button
-          type="button"
-          className={styles.homeCategorySeeAll}
-          onClick={onSeeAll}
-        >
-          <span>Xem tất cả</span>
-          <FiChevronRight size={13} />
-        </button>
+
+        <div className={styles.headerRight}>
+          <button
+            type="button"
+            className={styles.homeCategorySeeAll}
+            onClick={onSeeAll}
+          >
+            <span>Xem tất cả</span>
+            <FiChevronRight size={13} />
+          </button>
+
+          <div className={styles.navControls}>
+            <button
+              type="button"
+              className={styles.navBtn}
+              onClick={() => handleScroll('left')}
+              aria-label="Xem danh mục trước"
+              title="Cuộn sang trái"
+            >
+              <FiChevronLeft size={16} />
+            </button>
+            <button
+              type="button"
+              className={styles.navBtn}
+              onClick={() => handleScroll('right')}
+              aria-label="Xem danh mục tiếp theo"
+              title="Cuộn sang phải"
+            >
+              <FiChevronRight size={16} />
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div className={styles.homeCategoryGrid}>
+      <div className={styles.homeCategoryTrack} ref={trackRef}>
         {categories.map((cat, idx) => {
           const gradient = iconGradients[idx % iconGradients.length];
           const catSlug = (cat.slug || '').toLowerCase().trim();
@@ -75,6 +111,8 @@ const HomeCategoryShowcaseComponent: React.FC<HomeCategoryShowcaseProps> = ({
               key={cat._id || idx}
               className={styles.homeCategoryCard}
               onClick={() => onCategorySelect(cat.slug || cat._id)}
+              role="button"
+              tabIndex={0}
             >
               <div
                 className={styles.homeCategoryImgWrap}
@@ -85,20 +123,19 @@ const HomeCategoryShowcaseComponent: React.FC<HomeCategoryShowcaseProps> = ({
                     src={displayImage}
                     alt={cat.name}
                     fill
-                    sizes="60px"
+                    sizes="52px"
                     className={styles.homeCategoryImg}
                     loading="lazy"
                   />
                 ) : (
                   <span className={styles.homeCategoryFallbackIcon}>
-                    <FiLayers />
+                    <BiCategoryAlt />
                   </span>
                 )}
               </div>
-              <span className={styles.homeCategoryName}>{cat.name}</span>
-              {cat.productCount !== undefined && cat.productCount > 0 && (
-                <span className={styles.homeCategoryCount}>{cat.productCount} sản phẩm</span>
-              )}
+              <span className={styles.homeCategoryName} title={cat.name}>
+                {cat.name}
+              </span>
             </div>
           );
         })}

@@ -1,44 +1,9 @@
 import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongodb';
 import Setting from '@/models/Setting';
+import { DEFAULT_SHIPPING_CONFIG } from '@/lib/shipping/configHelper';
 
-const DEFAULT_SHIPPING_CONFIG = {
-  carriers: {
-    ghn: {
-      enabled: true,
-      token: 'ghn_prod_token_demo_873912',
-      shopId: '184920',
-      environment: 'production',
-    },
-    ghtk: {
-      enabled: true,
-      token: 'ghtk_api_token_demo_982341',
-      partnerId: 'PARTNER_SHOPBIG_01',
-      environment: 'production',
-    },
-    viettelpost: {
-      enabled: true,
-      token: 'vtp_secret_token_demo_109283',
-      username: 'shopbig_vtp',
-      environment: 'production',
-    },
-  },
-  rates: {
-    defaultInnerFee: 22000,
-    defaultOuterFee: 32000,
-    freeShippingThreshold: 500000,
-    autoPushOrder: false,
-  },
-  // Backward compatibility flat fields
-  ghnEnabled: true,
-  ghtkEnabled: true,
-  vtpEnabled: true,
-  defaultInnerFee: 22000,
-  defaultOuterFee: 32000,
-  freeShippingThreshold: 500000,
-};
-
-// GET: Lấy toàn bộ cấu hình 3 hãng vận chuyển & biểu phí
+// GET: Lấy toàn bộ cấu hình 3 hãng vận chuyển, địa chỉ kho & biểu phí
 export async function GET() {
   try {
     await connectToDatabase();
@@ -55,6 +20,10 @@ export async function GET() {
     const mergedData = {
       ...DEFAULT_SHIPPING_CONFIG,
       ...config.value,
+      originAddress: {
+        ...DEFAULT_SHIPPING_CONFIG.originAddress,
+        ...(config.value?.originAddress || {}),
+      },
       carriers: {
         ...DEFAULT_SHIPPING_CONFIG.carriers,
         ...(config.value?.carriers || {}),
@@ -77,7 +46,7 @@ export async function GET() {
   }
 }
 
-// POST: Lưu cập nhật cấu hình 3 hãng vận chuyển & Token API
+// POST: Lưu cập nhật cấu hình 3 hãng vận chuyển, địa chỉ kho & Token API
 export async function POST(request: Request) {
   try {
     await connectToDatabase();
@@ -86,6 +55,10 @@ export async function POST(request: Request) {
     // Đồng bộ cả dạng nested và flat field
     const payload = {
       ...body,
+      originAddress: {
+        ...DEFAULT_SHIPPING_CONFIG.originAddress,
+        ...(body.originAddress || {}),
+      },
       ghnEnabled: body.carriers?.ghn?.enabled ?? body.ghnEnabled ?? true,
       ghtkEnabled: body.carriers?.ghtk?.enabled ?? body.ghtkEnabled ?? true,
       vtpEnabled: body.carriers?.viettelpost?.enabled ?? body.vtpEnabled ?? true,
@@ -102,7 +75,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: 'Đã lưu cấu hình các hãng vận chuyển thành công!',
+      message: 'Đã lưu cấu hình các hãng vận chuyển và địa chỉ kho thành công!',
       data: updated.value,
     });
   } catch (error: any) {

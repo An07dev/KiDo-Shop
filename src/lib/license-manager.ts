@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import { MASTER_CLUSTER_BASE, generateDbName, buildMongoUriForDb, saveTenantConfig, getTenantConfig } from './tenant-config';
+import { masterDbConnection, getMasterDbConnection } from './mongodb';
 
 const MASTER_DB_NAME = 'webstore';
 const COLLECTION_NAME = '_system_licenses';
@@ -13,34 +14,34 @@ export interface LicenseRecord {
   buyerName: string;
   note?: string;
   status: 'available' | 'activated' | 'active' | 'revoked' | string;
-  shopName?: string;
-  assignedDb?: string;
-  machineFingerprint?: string;
+  shopName?: string | null;
+  assignedDb?: string | null;
+  machineFingerprint?: string | null;
   activatedAt?: Date | null;
   createdAt: Date;
   updatedAt?: Date;
 }
 
-let masterConn: mongoose.Connection | null = null;
-
 /**
- * Get or initialize connection to the Master Database for license checks
+ * Get or initialize connection to the Master Database for license checks (with safe 5-second timeout)
  */
 export async function getMasterConnection(): Promise<mongoose.Connection> {
-  if (masterConn && masterConn.readyState === 1) {
-    return masterConn;
+  if (masterDbConnection && masterDbConnection.readyState === 1) {
+    return masterDbConnection;
   }
 
-  const masterUri = buildMongoUriForDb(MASTER_DB_NAME);
   console.log('🔒 [Master License] Đang kết nối tới Master Cluster để kiểm tra bản quyền...');
-
-  const conn = await mongoose.createConnection(masterUri, {
-    serverSelectionTimeoutMS: 8000,
-    bufferCommands: false,
-  }).asPromise();
-
-  masterConn = conn;
-  return conn;
+  try {
+    return await Promise.race([
+      getMasterDbConnection(),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Master License DB connection timeout (5000ms)')), 5000)
+      ),
+    ]);
+  } catch (err: any) {
+    console.warn('⚠️ [Master License] Kết nối Master DB timeout hoặc lỗi:', err.message);
+    throw err;
+  }
 }
 
 /**
@@ -106,7 +107,7 @@ export async function reactivateLicense(key: string): Promise<boolean> {
   const normalizedKey = key.trim().toUpperCase();
   const res = await collection.updateOne(
     { licenseKey: normalizedKey },
-    { $set: { status: 'activated', updatedAt: new Date() } }
+    { $set: { status: 'active', updatedAt: new Date() } }
   );
   delete licenseCache[normalizedKey];
   return res.modifiedCount > 0;
@@ -117,8 +118,8 @@ export interface LicenseCheckResult {
   status: 'available' | 'activated' | 'active' | 'revoked' | 'not_found' | 'offline_ok' | string;
   licenseKey?: string;
   buyerName?: string;
-  shopName?: string;
-  assignedDb?: string;
+  shopName?: string | null;
+  assignedDb?: string | null;
   message?: string;
 }
 
@@ -235,6 +236,64 @@ export async function findLicenseByHostOrKey(host?: string, key?: string): Promi
 }
 
 /**
+ * Auto-resolve the active tenant config from Cloud Master DB
+ * Matches by host/domain or falls back to latest activated license
+ */
+export async function findActiveTenantFromCloud(host?: string, key?: string): Promise<{ shopName: string; dbName: string; mongoUri: string; licenseKey: string; } | null> {
+  try {
+    const conn = await getMasterConnection();
+    const collection = conn.collection<LicenseRecord>(COLLECTION_NAME);
+
+    let rec: LicenseRecord | null = null;
+
+    if (key) {
+      rec = await collection.findOne({
+        licenseKey: key.trim().toUpperCase(),
+        status: { $in: ['activated', 'active'] },
+      });
+    }
+
+    if (!rec && host && host !== 'localhost' && !host.startsWith('localhost:')) {
+      const cleanHost = host.split(':')[0].toLowerCase();
+      rec = await collection.findOne({
+        $or: [
+          { domain: cleanHost },
+          { host: cleanHost },
+          { machineFingerprint: cleanHost },
+        ],
+        status: { $in: ['activated', 'active'] },
+      });
+    }
+
+    // Fallback to latest activated license on Master DB
+    if (!rec) {
+      rec = await (collection as any).findOne(
+        { status: { $in: ['activated', 'active'] }, assignedDb: { $exists: true, $ne: null } },
+        { sort: { updatedAt: -1, createdAt: -1 } }
+      );
+    }
+
+    if (rec && rec.assignedDb) {
+      const dbName = rec.assignedDb;
+      const config = {
+        shopName: rec.shopName || '',
+        dbName,
+        mongoUri: buildMongoUriForDb(dbName),
+        licenseKey: rec.licenseKey,
+      };
+      saveTenantConfig({
+        ...config,
+        createdAt: rec.createdAt ? new Date(rec.createdAt).toISOString() : new Date().toISOString(),
+      });
+      return config;
+    }
+  } catch (e) {
+    console.warn('Error auto-resolving active tenant from cloud:', e);
+  }
+  return null;
+}
+
+/**
  * Validate and atomically consume a 1-time License Key
  */
 export async function validateAndConsumeLicense(
@@ -272,9 +331,9 @@ export async function validateAndConsumeLicense(
       };
     }
 
-    // If key is ALREADY activated, allow seamless re-syncing/restoring for the active shop!
-    if ((existing.status as string) === 'activated' || (existing.status as string) === 'active') {
-      const dbName = existing.assignedDb || generateDbName(shopName);
+    // If key is ALREADY activated with an assigned database, allow seamless re-syncing/restoring for the active shop!
+    if (existing.assignedDb && ((existing.status as string) === 'activated' || (existing.status as string) === 'active')) {
+      const dbName = existing.assignedDb;
       const tenantUri = buildMongoUriForDb(dbName);
       const activeShopName = existing.shopName || shopName;
 
@@ -309,10 +368,17 @@ export async function validateAndConsumeLicense(
 
     // 3. Atomically consume the license key (Atomic CAS update)
     const result = await collection.findOneAndUpdate(
-      { licenseKey: key, status: 'available' },
+      {
+        licenseKey: key,
+        $or: [
+          { status: 'available' },
+          { status: 'active', assignedDb: null },
+          { status: 'activated', assignedDb: null },
+        ],
+      },
       {
         $set: {
-          status: 'activated',
+          status: 'active',
           shopName: shopName.trim(),
           assignedDb: generatedDb,
           host: cleanHost,

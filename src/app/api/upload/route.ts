@@ -1,16 +1,32 @@
 import { NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
+import connectToDatabase from '@/lib/mongodb';
+import Upload from '@/models/Upload';
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, ngrok-skip-browser-warning',
+};
+
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 204,
+    headers: corsHeaders,
+  });
+}
 
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
-    const file = formData.get('file') as File | null;
+    // Support 'file' or 'files'
+    const file = (formData.get('file') || formData.get('files')) as File | null;
 
     if (!file) {
       return NextResponse.json(
         { success: false, message: 'Không tìm thấy file để upload' },
-        { status: 400 }
+        { status: 400, headers: corsHeaders }
       );
     }
 
@@ -34,11 +50,14 @@ export async function POST(request: Request) {
         );
         const imgbbJson = await imgbbRes.json();
         if (imgbbJson?.success && imgbbJson?.data?.url) {
-          return NextResponse.json({
-            success: true,
-            message: 'Upload file lên ImgBB thành công',
-            data: { url: imgbbJson.data.url },
-          });
+          return NextResponse.json(
+            {
+              success: true,
+              message: 'Upload file lên ImgBB thành công',
+              data: { url: imgbbJson.data.url },
+            },
+            { headers: corsHeaders }
+          );
         }
       } catch (cloudErr) {
         console.warn('ImgBB upload failed, falling back...', cloudErr);
@@ -60,51 +79,67 @@ export async function POST(request: Request) {
         );
         const cloudJson = await cloudRes.json();
         if (cloudJson?.secure_url) {
-          return NextResponse.json({
-            success: true,
-            message: 'Upload file lên Cloudinary thành công',
-            data: { url: cloudJson.secure_url },
-          });
+          return NextResponse.json(
+            {
+              success: true,
+              message: 'Upload file lên Cloudinary thành công',
+              data: { url: cloudJson.secure_url },
+            },
+            { headers: corsHeaders }
+          );
         }
       } catch (cloudErr) {
         console.warn('Cloudinary upload failed, falling back...', cloudErr);
       }
     }
 
-    // 3. Tùy chọn 3: Lưu vào ổ đĩa cục bộ (Localhost hoặc VPS Server có quyền ghi)
+    // 3. Lưu vào MongoDB Atlas dùng chung và ổ đĩa cục bộ
+    const rawName = file.name || 'image.png';
+    const safeName = rawName.replace(/[^a-zA-Z0-9.-]/g, '_');
+    const filename = `${Date.now()}-${safeName}`;
+
+    // Lưu vào MongoDB Atlas để mọi thiết bị/máy chủ khác đều xem được
+    try {
+      await connectToDatabase();
+      await Upload.findOneAndUpdate(
+        { filename },
+        {
+          filename,
+          originalName: rawName,
+          mimeType,
+          size: bytes.byteLength,
+          data: base64Data,
+        },
+        { upsert: true, new: true }
+      );
+    } catch (dbUploadErr) {
+      console.error('Lỗi khi lưu ảnh vào MongoDB Uploads:', dbUploadErr);
+    }
+
+    // Ghi thêm vào thư mục public/uploads làm cache cục bộ nếu ổ đĩa có quyền ghi
     try {
       const uploadDir = path.join(process.cwd(), 'public', 'uploads');
       await mkdir(uploadDir, { recursive: true });
-
-      const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
       const filePath = path.join(uploadDir, filename);
-
       await writeFile(filePath, buffer);
+    } catch (fsErr) {
+      // Bỏ qua nếu môi trường chỉ đọc (serverless/Vercel)
+    }
 
-      return NextResponse.json({
+    return NextResponse.json(
+      {
         success: true,
         message: 'Upload file thành công',
         data: {
           url: `/uploads/${filename}`,
         },
-      });
-    } catch (fsErr: any) {
-      // 4. Tùy chọn 4 (Fallback Serverless / Vercel): Khi môi trường chỉ đọc (EROFS read-only filesystem)
-      // Tự động chuyển đổi thành Base64 Data URL an toàn tuyệt đối
-      console.log('Read-only filesystem detected (Serverless/Vercel). Using Base64 Data URL fallback.');
-
-      return NextResponse.json({
-        success: true,
-        message: 'Upload file thành công (Base64 fallback)',
-        data: {
-          url: dataUrl,
-        },
-      });
-    }
+      },
+      { headers: corsHeaders }
+    );
   } catch (error: any) {
     return NextResponse.json(
       { success: false, message: error.message || 'Lỗi upload file' },
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     );
   }
 }

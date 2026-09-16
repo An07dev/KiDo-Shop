@@ -148,17 +148,22 @@ export default function AdminFlashSalePage() {
             startDate: s.startDate || '',
             endDate: s.endDate || '',
             enabled: s.enabled !== undefined ? s.enabled : true,
-            items: (s.items || []).map((it: any) => ({
-              _id: it._id,
-              productId: it.productId?._id || it.productId,
-              product: it.productId || {},
-              originalPrice: it.originalPrice || it.productId?.price || 0,
-              flashPrice: it.flashPrice || Math.round((it.originalPrice || 0) * 0.7),
-              discountPercent: it.discountPercent || 30,
-              flashStock: it.flashStock || 50,
-              soldCount: it.soldCount || 0,
-              isActive: it.isActive !== undefined ? it.isActive : true,
-            })),
+            items: (s.items || [])
+              .filter((it: any) => {
+                const pid = it?.productId?._id || it?.productId;
+                return pid && typeof pid.toString === 'function' && pid.toString().trim().length > 0 && pid.toString() !== 'null' && pid.toString() !== '[object Object]';
+              })
+              .map((it: any) => ({
+                _id: it._id,
+                productId: it.productId?._id || it.productId,
+                product: it.productId || {},
+                originalPrice: it.originalPrice || it.productId?.price || 0,
+                flashPrice: it.flashPrice || Math.round((it.originalPrice || 0) * 0.7),
+                discountPercent: it.discountPercent || 30,
+                flashStock: it.flashStock || 50,
+                soldCount: it.soldCount || 0,
+                isActive: it.isActive !== undefined ? it.isActive : true,
+              })),
           }));
 
           setSlots(loadedSlots);
@@ -356,26 +361,36 @@ export default function AdminFlashSalePage() {
           startDate: s.startDate,
           endDate: s.endDate,
           enabled: s.enabled,
-          items: s.items.map((it) => ({
-            productId: it.productId,
-            originalPrice: it.originalPrice,
-            flashPrice: it.flashPrice,
-            discountPercent: it.discountPercent,
-            flashStock: it.flashStock,
-            soldCount: it.soldCount,
-            isActive: it.isActive,
-          })),
+          items: (s.items || [])
+            .filter((it: any) => {
+              const pid = it?.productId?._id || it?.productId;
+              return pid && typeof pid.toString === 'function' && pid.toString().trim().length > 0 && pid.toString() !== 'null' && pid.toString() !== '[object Object]';
+            })
+            .map((it: any) => ({
+              productId: it.productId?._id || it.productId,
+              originalPrice: Number(it.originalPrice) || 0,
+              flashPrice: Number(it.flashPrice) || 0,
+              discountPercent: Number(it.discountPercent) || 0,
+              flashStock: Math.max(1, Number(it.flashStock) || 50),
+              soldCount: Number(it.soldCount) || 0,
+              isActive: it.isActive !== undefined ? it.isActive : true,
+            })),
         })),
         // Root items as fallback
-        items: currentSlot?.items.map((it) => ({
-          productId: it.productId,
-          originalPrice: it.originalPrice,
-          flashPrice: it.flashPrice,
-          discountPercent: it.discountPercent,
-          flashStock: it.flashStock,
-          soldCount: it.soldCount,
-          isActive: it.isActive,
-        })) || [],
+        items: (currentSlot?.items || [])
+          .filter((it: any) => {
+            const pid = it?.productId?._id || it?.productId;
+            return pid && typeof pid.toString === 'function' && pid.toString().trim().length > 0 && pid.toString() !== 'null' && pid.toString() !== '[object Object]';
+          })
+          .map((it: any) => ({
+            productId: it.productId?._id || it.productId,
+            originalPrice: Number(it.originalPrice) || 0,
+            flashPrice: Number(it.flashPrice) || 0,
+            discountPercent: Number(it.discountPercent) || 0,
+            flashStock: Math.max(1, Number(it.flashStock) || 50),
+            soldCount: Number(it.soldCount) || 0,
+            isActive: it.isActive !== undefined ? it.isActive : true,
+          })),
         fomoSettings,
       };
 
@@ -819,10 +834,19 @@ export default function AdminFlashSalePage() {
 
       {/* 4. FOMO & Social Proof Settings Card */}
       <div className={styles.card}>
-        <div className={styles.cardHeader}>
+        <div className={styles.cardHeader} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
           <div className={styles.cardTitle}>
             <FiBell style={{ color: 'var(--admin-accent, #3b82f6)' }} /> Hiệu Ứng Tâm Lý FOMO & Social Proof
           </div>
+          <button
+            type="button"
+            className={styles.btnSave}
+            style={{ padding: '8px 16px', fontSize: '0.875rem' }}
+            onClick={handleSave}
+            disabled={saving}
+          >
+            <FiSave /> {saving ? 'Đang lưu...' : 'Lưu Cài Đặt FOMO'}
+          </button>
         </div>
 
         <div className={styles.fomoGrid}>

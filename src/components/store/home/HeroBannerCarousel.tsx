@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, memo } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import styles from './HeroBannerCarousel.module.css';
@@ -42,134 +41,179 @@ const HeroBannerCarouselComponent: React.FC<HeroBannerCarouselProps> = ({
   const router = useRouter();
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Auto-slide isolated within this component (4 seconds)
+  // Lọc chỉ giữ các banner có đường dẫn ảnh hợp lệ (ẩn nếu không có ảnh)
+  const validBanners = React.useMemo(() => {
+    return (banners || []).filter(
+      (slide) => Boolean(slide && slide.image && typeof slide.image === 'string' && slide.image.trim().length > 0)
+    );
+  }, [banners]);
+
+  // Lọc chỉ giữ các banner phụ có ảnh hợp lệ (ẩn nếu không có ảnh hoặc rỗng)
+  const validSubBanners = React.useMemo(() => {
+    const list = Array.isArray(subBanners) ? subBanners : [];
+
+    return list.filter(
+      (sub) => Boolean(sub && sub.image && typeof sub.image === 'string' && sub.image.trim().length > 0)
+    );
+  }, [subBanners]);
+
+  // Auto-slide carousel (4 seconds)
   useEffect(() => {
-    if (!banners || banners.length <= 1) return;
+    if (validBanners.length <= 1) return;
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % banners.length);
+      setCurrentSlide((prev) => (prev + 1) % validBanners.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, [banners?.length]);
+  }, [validBanners.length]);
 
-  if (!banners || banners.length === 0) return null;
+  // Đảm bảo slide index hợp lệ khi danh sách ảnh thay đổi
+  useEffect(() => {
+    if (currentSlide >= validBanners.length && validBanners.length > 0) {
+      setCurrentSlide(0);
+    }
+  }, [validBanners.length, currentSlide]);
 
-  const validSubBanners =
-    subBanners && subBanners.length > 0
-      ? subBanners.slice(0, 2)
-      : DEFAULT_SUB_BANNERS;
+  // Nếu cả banner chính và banner phụ đều không có ảnh -> Ẩn toàn bộ component
+  if (validBanners.length === 0 && validSubBanners.length === 0) {
+    return null;
+  }
+
+  // Mobile Touch Swipe Handlers
+  const touchStartX = React.useRef<number | null>(null);
+  const touchEndX = React.useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current === null || touchEndX.current === null) return;
+    const distance = touchStartX.current - touchEndX.current;
+    const minSwipeDistance = 40;
+    if (distance > minSwipeDistance) {
+      setCurrentSlide((prev) => (prev + 1) % validBanners.length);
+    } else if (distance < -minSwipeDistance) {
+      setCurrentSlide((prev) => (prev === 0 ? validBanners.length - 1 : prev - 1));
+    }
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
+
+  const handleBannerClick = (slide: BannerItem) => {
+    if (slide.link) {
+      router.push(slide.link);
+    } else if (onNavigateToProducts) {
+      onNavigateToProducts();
+    } else {
+      router.push('/?tab=products');
+    }
+  };
 
   return (
     <div className={styles.heroBannerSection}>
-      {/* 1. MAIN BANNER CAROUSEL (Full width on Mobile, ~66% on PC) */}
-      <div className={styles.bannerCarousel}>
+      {/* 1. MAIN BANNER CAROUSEL (Ẩn nếu không có ảnh) */}
+      {validBanners.length > 0 && (
         <div
-          className={styles.carouselTrack}
-          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          className={styles.bannerCarousel}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         >
-          {banners.map((slide, idx) => (
-            <div
-              key={idx}
-              className={styles.carouselSlide}
-              onClick={() => {
-                if (slide.link) {
-                  router.push(slide.link);
-                } else if (onNavigateToProducts) {
-                  onNavigateToProducts();
-                } else {
-                  router.push('/?tab=products');
-                }
-              }}
-            >
-              <Image
-                src={slide.image}
-                alt={slide.title || 'Banner'}
-                fill
-                sizes="(max-width: 859px) 100vw, 66vw"
-                className={styles.carouselImg}
-                priority={idx === 0}
-                quality={85}
-              />
-              {(slide.tag || slide.title) && (
-                <div className={styles.carouselOverlay}>
-                  {slide.tag && <span className={styles.carouselTag}>{slide.tag}</span>}
-                  {slide.title && <h2 className={styles.carouselTitle}>{slide.title}</h2>}
-                </div>
-              )}
+          <div
+            className={styles.carouselTrack}
+            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          >
+            {validBanners.map((slide, idx) => (
+              <div
+                key={idx}
+                className={styles.carouselSlide}
+                onClick={() => handleBannerClick(slide)}
+              >
+                <img
+                  src={slide.image}
+                  alt={slide.title || 'Banner'}
+                  className={styles.carouselImg}
+                  loading={idx === 0 ? 'eager' : 'lazy'}
+                />
+                {(slide.tag || slide.title) && (
+                  <div className={styles.carouselOverlay}>
+                    {slide.tag && <span className={styles.carouselTag}>{slide.tag}</span>}
+                    {slide.title && <h2 className={styles.carouselTitle}>{slide.title}</h2>}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {validBanners.length > 1 && (
+            <>
+              <button
+                type="button"
+                className={`${styles.carouselNavBtn} ${styles.carouselPrevBtn}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentSlide((prev) => (prev === 0 ? validBanners.length - 1 : prev - 1));
+                }}
+                aria-label="Ảnh trước"
+              >
+                <FiChevronLeft size={18} />
+              </button>
+              <button
+                type="button"
+                className={`${styles.carouselNavBtn} ${styles.carouselNextBtn}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentSlide((prev) => (prev + 1) % validBanners.length);
+                }}
+                aria-label="Ảnh sau"
+              >
+                <FiChevronRight size={18} />
+              </button>
+            </>
+          )}
+
+          {validBanners.length > 1 && (
+            <div className={styles.carouselDots}>
+              {validBanners.map((_, idx) => (
+                <button
+                  key={idx}
+                  className={`${styles.dot} ${currentSlide === idx ? styles.activeDot : ''}`}
+                  onClick={() => setCurrentSlide(idx)}
+                  aria-label={`Slide ${idx + 1}`}
+                />
+              ))}
             </div>
-          ))}
+          )}
         </div>
+      )}
 
-        {banners.length > 1 && (
-          <>
-            <button
-              type="button"
-              className={`${styles.carouselNavBtn} ${styles.carouselPrevBtn}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                setCurrentSlide((prev) => (prev === 0 ? banners.length - 1 : prev - 1));
-              }}
-              aria-label="Ảnh trước"
-            >
-              <FiChevronLeft size={18} />
-            </button>
-            <button
-              type="button"
-              className={`${styles.carouselNavBtn} ${styles.carouselNextBtn}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                setCurrentSlide((prev) => (prev + 1) % banners.length);
-              }}
-              aria-label="Ảnh sau"
-            >
-              <FiChevronRight size={18} />
-            </button>
-          </>
-        )}
-
-        <div className={styles.carouselDots}>
-          {banners.map((_, idx) => (
-            <button
-              key={idx}
-              className={`${styles.dot} ${currentSlide === idx ? styles.activeDot : ''}`}
-              onClick={() => setCurrentSlide(idx)}
-              aria-label={`Slide ${idx + 1}`}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* 2. 2 SUB-BANNERS STACKED (Shown on PC/Desktop, Hidden on Mobile) */}
+      {/* 2. CÁC ẢNH PHỤ SẮP XẾP THÀNH 1 HÀNG DỌC (Ẩn nếu không có ảnh) */}
       {validSubBanners.length > 0 && (
-        <div className={styles.sideBannersColumn}>
+        <div className={styles.subBannersRow}>
           {validSubBanners.map((sub, idx) => (
             <div
               key={idx}
-              className={styles.sideBannerItem}
-              onClick={() => {
-                if (sub.link) {
-                  router.push(sub.link);
-                } else if (onNavigateToProducts) {
-                  onNavigateToProducts();
-                } else {
-                  router.push('/?tab=products');
-                }
-              }}
+              className={styles.subBannerCard}
+              onClick={() => handleBannerClick(sub)}
             >
-              <Image
-                src={sub.image}
-                alt={sub.title || `Banner phụ ${idx + 1}`}
-                fill
-                sizes="(max-width: 859px) 50vw, 33vw"
-                className={styles.sideBannerImg}
-                loading="lazy"
-                quality={80}
-              />
-              {(sub.tag || sub.title) && (
-                <div className={styles.sideBannerOverlay}>
-                  {sub.tag && <span className={styles.sideBannerTag}>{sub.tag}</span>}
-                  {sub.title && <h3 className={styles.sideBannerTitle}>{sub.title}</h3>}
-                </div>
-              )}
+              <div className={styles.subBannerImgWrap}>
+                <img
+                  src={sub.image}
+                  alt={sub.title || `Banner phụ ${idx + 1}`}
+                  className={styles.subBannerImg}
+                  loading="lazy"
+                />
+                {(sub.tag || sub.title) && (
+                  <div className={styles.subBannerOverlay}>
+                    {sub.tag && <span className={styles.subBannerTag}>{sub.tag}</span>}
+                    {sub.title && <h3 className={styles.subBannerTitle}>{sub.title}</h3>}
+                  </div>
+                )}
+              </div>
             </div>
           ))}
         </div>

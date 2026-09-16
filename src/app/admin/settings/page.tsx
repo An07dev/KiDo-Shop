@@ -454,20 +454,16 @@ export default function AdminSettingsPage() {
           pageTitles: {
             ...theme.pageTitles,
             logoUrl: data.data.url,
-            faviconUrl:
-              !theme.pageTitles?.faviconUrl || theme.pageTitles.faviconUrl === '/favicon.ico'
-                ? data.data.url
-                : theme.pageTitles.faviconUrl,
           },
         };
         setTheme(updated);
         applyCSSVariables(updated);
-        toast.success('Upload Logo thành công!');
+        toast.success('Upload Logo thành công! Hãy bấm "Lưu Cấu Hình" để lưu lại.');
       } else {
-        toast.error(data.message || 'Lỗi upload ảnh');
+        toast.error(data.message || 'Lỗi upload ảnh logo');
       }
     } catch (err) {
-      toast.error('Lỗi khi tải ảnh lên');
+      toast.error('Lỗi khi tải ảnh logo lên');
     } finally {
       setIsUploading(false);
     }
@@ -491,11 +487,14 @@ export default function AdminSettingsPage() {
       if (data.success && data.data?.url) {
         const updated: ThemeConfig = {
           ...theme,
-          pageTitles: { ...theme.pageTitles, faviconUrl: data.data.url },
+          pageTitles: {
+            ...theme.pageTitles,
+            faviconUrl: data.data.url,
+          },
         };
         setTheme(updated);
         applyCSSVariables(updated);
-        toast.success('Upload Favicon thành công!');
+        toast.success('Upload Favicon thành công! Hãy bấm "Lưu Cấu Hình" để lưu lại.');
       } else {
         toast.error(data.message || 'Lỗi upload favicon');
       }
@@ -574,15 +573,43 @@ export default function AdminSettingsPage() {
     }
   };
 
-  // Sub Banner Handlers (2 Side Banners for Desktop PC)
+  // Sub Banner Handlers (Dynamic sub-banners under main banner)
   const handleSubBannerChange = (index: number, field: keyof BannerSlide, value: string) => {
-    const currentSubBanners = theme.subBanners && theme.subBanners.length > 0 ? theme.subBanners : defaultSubBanners;
+    const currentSubBanners = Array.isArray(theme.subBanners) ? theme.subBanners : defaultSubBanners;
     const updated = [...currentSubBanners];
-    while (updated.length < 2) {
-      const fallback = defaultSubBanners[updated.length] || { tag: '', title: '', image: '', link: '/?tab=products' };
-      updated.push({ ...fallback });
+    if (!updated[index]) {
+      updated[index] = { tag: '', title: '', image: '', link: '/?tab=products' };
     }
     updated[index] = { ...updated[index], [field]: value };
+    setTheme({ ...theme, subBanners: updated });
+  };
+
+  const handleAddSubBanner = () => {
+    const currentSubBanners = Array.isArray(theme.subBanners) ? theme.subBanners : defaultSubBanners;
+    const newSubBanner: BannerSlide = {
+      tag: 'Khuyến Mãi',
+      title: 'Khuyến Mãi Đặc Biệt',
+      image: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=600&auto=format&fit=crop&q=80',
+      link: '/?tab=products',
+    };
+    setTheme({ ...theme, subBanners: [...currentSubBanners, newSubBanner] });
+    toast.success('Đã thêm 1 banner phụ mới!');
+  };
+
+  const handleRemoveSubBanner = (index: number) => {
+    const currentSubBanners = Array.isArray(theme.subBanners) ? theme.subBanners : defaultSubBanners;
+    const updated = currentSubBanners.filter((_, idx) => idx !== index);
+    setTheme({ ...theme, subBanners: updated });
+    toast.success('Đã xóa banner phụ!');
+  };
+
+  const handleMoveSubBanner = (index: number, direction: 'up' | 'down') => {
+    const currentSubBanners = Array.isArray(theme.subBanners) ? theme.subBanners : defaultSubBanners;
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= currentSubBanners.length) return;
+    const updated = [...currentSubBanners];
+    const [moved] = updated.splice(index, 1);
+    updated.splice(targetIndex, 0, moved);
     setTheme({ ...theme, subBanners: updated });
   };
 
@@ -726,14 +753,20 @@ export default function AdminSettingsPage() {
                     <input
                       type="text"
                       className={styles.input}
+                      placeholder="Ví dụ: Cửa Hàng Thời Trang & Phụ Kiện Cao Cấp"
                       value={theme.pageTitles?.siteTitle || ''}
-                      onChange={(e) =>
-                        setTheme({
+                      onChange={(e) => {
+                        const updated: ThemeConfig = {
                           ...theme,
                           pageTitles: { ...theme.pageTitles, siteTitle: e.target.value },
-                        })
-                      }
+                        };
+                        setTheme(updated);
+                        applyCSSVariables(updated);
+                      }}
                     />
+                    <span style={{ fontSize: 11, color: 'var(--text-muted, #94a3b8)', marginTop: 4 }}>
+                      Hiển thị trên thanh tiêu đề tab trình duyệt và công cụ tìm kiếm Google
+                    </span>
                   </div>
 
                   <div className={styles.formGroup}>
@@ -741,13 +774,16 @@ export default function AdminSettingsPage() {
                     <input
                       type="text"
                       className={styles.input}
+                      placeholder="Ví dụ: MyStore"
                       value={theme.pageTitles?.logoText || ''}
-                      onChange={(e) =>
-                        setTheme({
+                      onChange={(e) => {
+                        const updated: ThemeConfig = {
                           ...theme,
                           pageTitles: { ...theme.pageTitles, logoText: e.target.value },
-                        })
-                      }
+                        };
+                        setTheme(updated);
+                        applyCSSVariables(updated);
+                      }}
                     />
                   </div>
                 </div>
@@ -760,12 +796,14 @@ export default function AdminSettingsPage() {
                       className={styles.input}
                       placeholder="https://... hoặc /uploads/logo.png"
                       value={theme.pageTitles?.logoUrl || ''}
-                      onChange={(e) =>
-                        setTheme({
+                      onChange={(e) => {
+                        const updated: ThemeConfig = {
                           ...theme,
                           pageTitles: { ...theme.pageTitles, logoUrl: e.target.value },
-                        })
-                      }
+                        };
+                        setTheme(updated);
+                        applyCSSVariables(updated);
+                      }}
                       style={{ flex: 1 }}
                     />
                     <button
@@ -783,6 +821,16 @@ export default function AdminSettingsPage() {
                       onChange={handleLogoUpload}
                     />
                   </div>
+                  {theme.pageTitles?.logoUrl && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 8 }}>
+                      <span style={{ fontSize: 12, color: 'var(--text-muted, #94a3b8)' }}>Logo xem trước:</span>
+                      <img
+                        src={theme.pageTitles.logoUrl}
+                        alt="Logo Preview"
+                        style={{ height: 32, maxWidth: 160, objectFit: 'contain', background: '#090a0f', border: '1px solid var(--border-color, #232838)', padding: '2px 6px', borderRadius: 6 }}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div className={styles.formGroup}>
@@ -791,14 +839,16 @@ export default function AdminSettingsPage() {
                     <input
                       type="text"
                       className={styles.input}
-                      placeholder="/favicon.ico hoặc URL icon"
+                      placeholder="URL favicon icon (PNG, ICO, SVG) hoặc bấm Upload icon"
                       value={theme.pageTitles?.faviconUrl || ''}
-                      onChange={(e) =>
-                        setTheme({
+                      onChange={(e) => {
+                        const updated: ThemeConfig = {
                           ...theme,
                           pageTitles: { ...theme.pageTitles, faviconUrl: e.target.value },
-                        })
-                      }
+                        };
+                        setTheme(updated);
+                        applyCSSVariables(updated);
+                      }}
                       style={{ flex: 1 }}
                     />
                     <button
@@ -812,10 +862,20 @@ export default function AdminSettingsPage() {
                       type="file"
                       ref={faviconInputRef}
                       style={{ display: 'none' }}
-                      accept="image/*"
+                      accept="image/*,.ico"
                       onChange={handleFaviconUpload}
                     />
                   </div>
+                  {theme.pageTitles?.faviconUrl && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 8 }}>
+                      <span style={{ fontSize: 12, color: 'var(--text-muted, #94a3b8)' }}>Icon tab xem trước:</span>
+                      <img
+                        src={theme.pageTitles.faviconUrl}
+                        alt="Favicon Preview"
+                        style={{ width: 28, height: 28, objectFit: 'contain', background: '#1e293b', border: '1px solid var(--border-color, #232838)', padding: 3, borderRadius: 6 }}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div className={styles.formGroup}>
@@ -824,12 +884,14 @@ export default function AdminSettingsPage() {
                     type="text"
                     className={styles.input}
                     value={theme.pageTitles?.bannerNotice || ''}
-                    onChange={(e) =>
-                      setTheme({
+                    onChange={(e) => {
+                      const updated: ThemeConfig = {
                         ...theme,
                         pageTitles: { ...theme.pageTitles, bannerNotice: e.target.value },
-                      })
-                    }
+                      };
+                      setTheme(updated);
+                      applyCSSVariables(updated);
+                    }}
                   />
                 </div>
 
@@ -858,17 +920,17 @@ export default function AdminSettingsPage() {
                 <div className={styles.sectionHeader}>
                   <div>
                     <h3>Quản Lý Banner Quảng Cáo Trang Chủ</h3>
-                    <p>Tùy biến hình ảnh banner trượt Carousel chính và 2 Banner phụ hiển thị trên giao diện PC / Desktop</p>
+                    <p>Tùy biến banner trượt Carousel chính và 2 banner phụ xếp thành 1 hàng nằm bên dưới ảnh chính trên máy tính</p>
                   </div>
                 </div>
 
-                {/* ===== PHẦN 1: BANNER CHÍNH (CAROUSEL SLIDES) ===== */}
+                {/* ===== PHẦN 1: BANNER CHÍNH (CAROUSEL TRƯỢT) ===== */}
                 <div style={{ marginBottom: 12 }}>
                   <h4 style={{ fontSize: '1rem', fontWeight: 700, color: theme.textColors?.textPrimary || '#fff', marginBottom: 4 }}>
                     1. Danh Sách Banner Chính (Carousel Trượt Tự Động)
                   </h4>
                   <p style={{ fontSize: '0.8125rem', color: theme.textColors?.textSecondary || '#94a3b8', margin: 0 }}>
-                    Hiển thị toàn màn hình trên điện thoại (Mobile) và chiếm 2/3 bề ngang bên trái trên máy tính (PC).
+                    Hiển thị trượt tự động với các nút điều hướng, trải rộng 100% phía trên trong khung 70% trên máy tính và trượt gọn gàng trên điện thoại.
                   </p>
                 </div>
 
@@ -1003,177 +1065,195 @@ export default function AdminSettingsPage() {
                   <FiPlus size={18} /> Thêm Banner Chính Mới
                 </button>
 
-                {/* ===== PHẦN 2: 2 BANNER PHỤ BÊN PHẢI (PC DESKTOP DUAL LAYOUT) ===== */}
+                {/* ===== PHẦN 2: BANNER PHỤ XẾP THÀNH 1 HÀNG DƯỚI ẢNH CHÍNH ===== */}
                 <div className={styles.bannerSectionDivider}>
-                  <div style={{ marginBottom: 12 }}>
-                    <h4 style={{ fontSize: '1rem', fontWeight: 700, color: theme.textColors?.textPrimary || '#fff', marginBottom: 4 }}>
-                      2. Cấu Hình 2 Banner Phụ Bên Phải (Hiển Thị Trên Giao Diện PC)
-                    </h4>
-                    <p style={{ fontSize: '0.8125rem', color: theme.textColors?.textSecondary || '#94a3b8', margin: 0 }}>
-                      Tự động xếp chồng 2 banner ở cột bên phải cạnh Banner chính theo bố cục chuẩn Shopee trên máy tính (PC / Laptop). Trên điện thoại (Mobile) hệ thống sẽ ẩn để giữ giao diện gọn gàng.
-                    </p>
+                  <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 10 }}>
+                    <div>
+                      <h4 style={{ fontSize: '1rem', fontWeight: 700, color: theme.textColors?.textPrimary || '#fff', marginBottom: 4 }}>
+                        2. Cấu Hình Banner Phụ (Sắp Xếp Thành 1 Hàng Dọc Nằm Dưới Ảnh Chính)
+                      </h4>
+                      <p style={{ fontSize: '0.8125rem', color: theme.textColors?.textSecondary || '#94a3b8', margin: 0 }}>
+                        Hiển thị theo hàng dọc tuần tự bên dưới Banner chính trên giao diện PC / Desktop. Bạn có thể thêm không giới hạn, hoặc xóa hết nếu không muốn hiển thị banner phụ.
+                      </p>
+                    </div>
                   </div>
 
                   <div className={styles.subBannerAlertBox}>
                     <FiHelpCircle className={styles.subBannerAlertIcon} />
                     <div>
-                      <strong>Mẹo tỷ lệ ảnh:</strong> Nên dùng hình ảnh kích thước khoảng <strong>400 x 180 px</strong> hoặc tỷ lệ ngang <strong>16:7.5</strong> để hiển thị vừa vặn đẹp nhất với banner chính bên cạnh.
+                      <strong>Linh hoạt số lượng:</strong> Hiện tại đang có <strong>{(Array.isArray(theme.subBanners) ? theme.subBanners : defaultSubBanners).length}</strong> banner phụ. Nếu không muốn hiển thị banner phụ nào, bạn chỉ cần bấm nút xóa thùng rác trên từng thẻ.
                     </div>
                   </div>
 
-                  <div className={styles.bannerList}>
-                    {[0, 1].map((subIdx) => {
-                      const currentSubBanners = theme.subBanners && theme.subBanners.length > 0 ? theme.subBanners : defaultSubBanners;
-                      const subBanner = currentSubBanners[subIdx] || defaultSubBanners[subIdx] || { tag: '', title: '', image: '', link: '/?tab=products' };
-                      const labelText = subIdx === 0 ? 'Banner Phụ Phía Trên (Top Sub-Banner)' : 'Banner Phụ Phía Dưới (Bottom Sub-Banner)';
+                  {(() => {
+                    const currentSubBanners = Array.isArray(theme.subBanners) ? theme.subBanners : defaultSubBanners;
 
+                    if (currentSubBanners.length === 0) {
                       return (
-                        <div key={subIdx} className={styles.bannerCard}>
-                          <div className={styles.bannerCardHeader}>
-                            <span className={styles.bannerBadge} style={{ color: '#10b981', background: 'rgba(16, 185, 129, 0.1)' }}>
-                              <FiLayers size={14} /> {labelText}
-                            </span>
-                          </div>
+                        <div style={{
+                          padding: '32px 20px',
+                          textAlign: 'center',
+                          borderRadius: 10,
+                          border: '1px dashed #334155',
+                          background: 'rgba(15, 23, 42, 0.4)',
+                          color: '#94a3b8',
+                          margin: '14px 0',
+                        }}>
+                          <p style={{ margin: '0 0 14px', fontSize: '0.9rem', color: '#cbd5e1' }}>
+                            Hiện không có banner phụ nào (khu vực bên dưới Banner chính sẽ không hiển thị banner phụ).
+                          </p>
+                          <button
+                            type="button"
+                            className={styles.addBannerBtn}
+                            onClick={handleAddSubBanner}
+                            style={{ margin: '0 auto', display: 'inline-flex' }}
+                          >
+                            <FiPlus size={16} /> Thêm Banner Phụ Đầu Tiên
+                          </button>
+                        </div>
+                      );
+                    }
 
-                          <div className={styles.bannerCardGrid}>
-                            <div className={styles.bannerInputs}>
-                              <div className={styles.formGroup}>
-                                <label>Nhãn / Tag nổi bật</label>
-                                <input
-                                  type="text"
-                                  className={styles.input}
-                                  placeholder={subIdx === 0 ? 'Ví dụ: 9.9 Siêu Sale' : 'Ví dụ: Hàng Việt Tôi Yêu'}
-                                  value={subBanner.tag || ''}
-                                  onChange={(e) => handleSubBannerChange(subIdx, 'tag', e.target.value)}
-                                />
+                    return (
+                      <div className={styles.bannerList}>
+                        {currentSubBanners.map((subBanner, subIdx) => (
+                          <div key={subIdx} className={styles.bannerCard}>
+                            <div className={styles.bannerCardHeader}>
+                              <span className={styles.bannerBadge} style={{ color: '#10b981', background: 'rgba(16, 185, 129, 0.1)' }}>
+                                <FiLayers size={14} /> Banner Phụ #{subIdx + 1}
+                              </span>
+                              <div className={styles.bannerCardActions}>
+                                <button
+                                  type="button"
+                                  className={styles.iconActionBtn}
+                                  disabled={subIdx === 0}
+                                  onClick={() => handleMoveSubBanner(subIdx, 'up')}
+                                  title="Di chuyển lên trên"
+                                >
+                                  <FiArrowUp size={14} />
+                                </button>
+                                <button
+                                  type="button"
+                                  className={styles.iconActionBtn}
+                                  disabled={subIdx === currentSubBanners.length - 1}
+                                  onClick={() => handleMoveSubBanner(subIdx, 'down')}
+                                  title="Di chuyển xuống dưới"
+                                >
+                                  <FiArrowDown size={14} />
+                                </button>
+                                <button
+                                  type="button"
+                                  className={styles.deleteIconBtn}
+                                  onClick={() => handleRemoveSubBanner(subIdx)}
+                                  title="Xóa banner phụ này"
+                                >
+                                  <FiTrash2 size={14} />
+                                </button>
                               </div>
+                            </div>
 
-                              <div className={styles.formGroup}>
-                                <label>Tiêu đề Banner phụ</label>
-                                <input
-                                  type="text"
-                                  className={styles.input}
-                                  placeholder={subIdx === 0 ? 'Ăn Sáng Ngon Rẻ - Chỉ từ 10.000đ' : 'Chất Lượng Chính Hãng - Freeship 0Đ'}
-                                  value={subBanner.title || ''}
-                                  onChange={(e) => handleSubBannerChange(subIdx, 'title', e.target.value)}
-                                />
-                              </div>
-
-                              <div className={styles.formGroup}>
-                                <label>Đường dẫn liên kết (Link URL)</label>
-                                <input
-                                  type="text"
-                                  className={styles.input}
-                                  placeholder="/?tab=products"
-                                  value={subBanner.link || ''}
-                                  onChange={(e) => handleSubBannerChange(subIdx, 'link', e.target.value)}
-                                />
-                              </div>
-
-                              <div className={styles.formGroup}>
-                                <label>Hình ảnh Banner phụ (URL hoặc Upload từ máy tính)</label>
-                                <div className={styles.uploadRow}>
+                            <div className={styles.bannerCardGrid}>
+                              <div className={styles.bannerInputs}>
+                                <div className={styles.formGroup}>
+                                  <label>Nhãn / Tag nổi bật</label>
                                   <input
                                     type="text"
                                     className={styles.input}
-                                    placeholder="https://images.unsplash.com/... hoặc /uploads/sub-banner.jpg"
-                                    value={subBanner.image || ''}
-                                    onChange={(e) => handleSubBannerChange(subIdx, 'image', e.target.value)}
-                                    style={{ flex: 1 }}
+                                    placeholder="Ví dụ: 9.9 Siêu Sale, Hàng Việt Tôi Yêu..."
+                                    value={subBanner.tag || ''}
+                                    onChange={(e) => handleSubBannerChange(subIdx, 'tag', e.target.value)}
                                   />
-                                  <button
-                                    type="button"
-                                    className={styles.uploadBtn}
-                                    onClick={() => subBannerInputRefs.current[subIdx]?.click()}
-                                    disabled={uploadingSubBannerIdx === subIdx}
-                                  >
-                                    <FiUploadCloud /> {uploadingSubBannerIdx === subIdx ? 'Đang tải...' : 'Upload ảnh'}
-                                  </button>
+                                </div>
+
+                                <div className={styles.formGroup}>
+                                  <label>Tiêu đề Banner phụ</label>
                                   <input
-                                    type="file"
-                                    ref={(el) => { subBannerInputRefs.current[subIdx] = el; }}
-                                    style={{ display: 'none' }}
-                                    accept="image/*"
-                                    onChange={(e) => handleSubBannerUpload(subIdx, e)}
+                                    type="text"
+                                    className={styles.input}
+                                    placeholder="Ví dụ: Ăn Sáng Ngon Rẻ - Chỉ từ 10.000đ"
+                                    value={subBanner.title || ''}
+                                    onChange={(e) => handleSubBannerChange(subIdx, 'title', e.target.value)}
                                   />
+                                </div>
+
+                                <div className={styles.formGroup}>
+                                  <label>Đường dẫn liên kết (Link URL)</label>
+                                  <input
+                                    type="text"
+                                    className={styles.input}
+                                    placeholder="/?tab=products"
+                                    value={subBanner.link || ''}
+                                    onChange={(e) => handleSubBannerChange(subIdx, 'link', e.target.value)}
+                                  />
+                                </div>
+
+                                <div className={styles.formGroup}>
+                                  <label>Hình ảnh Banner phụ (URL hoặc Upload từ máy tính)</label>
+                                  <div className={styles.uploadRow}>
+                                    <input
+                                      type="text"
+                                      className={styles.input}
+                                      placeholder="https://images.unsplash.com/... hoặc /uploads/sub-banner.jpg"
+                                      value={subBanner.image || ''}
+                                      onChange={(e) => handleSubBannerChange(subIdx, 'image', e.target.value)}
+                                      style={{ flex: 1 }}
+                                    />
+                                    <button
+                                      type="button"
+                                      className={styles.uploadBtn}
+                                      onClick={() => subBannerInputRefs.current[subIdx]?.click()}
+                                      disabled={uploadingSubBannerIdx === subIdx}
+                                    >
+                                      <FiUploadCloud /> {uploadingSubBannerIdx === subIdx ? 'Đang tải...' : 'Upload ảnh'}
+                                    </button>
+                                    <input
+                                      type="file"
+                                      ref={(el) => { subBannerInputRefs.current[subIdx] = el; }}
+                                      style={{ display: 'none' }}
+                                      accept="image/*"
+                                      onChange={(e) => handleSubBannerUpload(subIdx, e)}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className={styles.bannerLivePreviewWrap}>
+                                <span className={styles.previewLabel}>Xem trước hiển thị:</span>
+                                <div className={styles.bannerLivePreview} style={{ aspectRatio: '16 / 7.5' }}>
+                                  <img
+                                    src={subBanner.image || 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&auto=format&fit=crop&q=80'}
+                                    alt={subBanner.title || `Sub-Banner ${subIdx + 1}`}
+                                    className={styles.bannerLiveImg}
+                                  />
+                                  {(subBanner.tag || subBanner.title) && (
+                                    <div className={styles.bannerLiveOverlay}>
+                                      {subBanner.tag && <span className={styles.bannerLiveTag} style={{ background: '#10b981' }}>{subBanner.tag}</span>}
+                                      {subBanner.title && <h4 className={styles.bannerLiveTitle}>{subBanner.title}</h4>}
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             </div>
-
-                            <div className={styles.bannerLivePreviewWrap}>
-                              <span className={styles.previewLabel}>Xem trước hiển thị:</span>
-                              <div className={styles.bannerLivePreview} style={{ aspectRatio: '16 / 7.5' }}>
-                                <img
-                                  src={subBanner.image || defaultSubBanners[subIdx]?.image}
-                                  alt={subBanner.title || `Sub-Banner ${subIdx + 1}`}
-                                  className={styles.bannerLiveImg}
-                                />
-                                {(subBanner.tag || subBanner.title) && (
-                                  <div className={styles.bannerLiveOverlay}>
-                                    {subBanner.tag && <span className={styles.bannerLiveTag} style={{ background: '#10b981' }}>{subBanner.tag}</span>}
-                                    {subBanner.title && <h4 className={styles.bannerLiveTitle}>{subBanner.title}</h4>}
-                                  </div>
-                                )}
-                              </div>
-                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                        ))}
+                      </div>
+                    );
+                  })()}
+
+                  {(Array.isArray(theme.subBanners) ? theme.subBanners : defaultSubBanners).length > 0 && (
+                    <button
+                      type="button"
+                      className={styles.addBannerBtn}
+                      onClick={handleAddSubBanner}
+                      style={{ marginTop: 14 }}
+                    >
+                      <FiPlus size={18} /> Thêm Banner Phụ Mới
+                    </button>
+                  )}
                 </div>
 
                 {/* ===== PHẦN 3: MOCKUP TRỰC QUAN BỐ CỤC PC SHOPEE ===== */}
-                <div className={styles.pcBannerMockupContainer}>
-                  <div className={styles.pcBannerMockupHeader}>
-                    <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#f8fafc', display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <FiEye color="#3b82f6" /> Xem Trước Toàn Bộ Bố Cục Banner Trang Chủ Trên PC (Desktop Mockup)
-                    </span>
-                    <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
-                      Chuẩn tỷ lệ Shopee Web (2/3 Banner Chính + 1/3 Cột Banner Phụ)
-                    </span>
-                  </div>
 
-                  <div className={styles.pcBannerMockupGrid}>
-                    {/* Mockup Main Carousel */}
-                    <div className={styles.mockupMainBanner}>
-                      <img
-                        src={(theme.banners && theme.banners[0]?.image) || defaultBanners[0]?.image}
-                        alt="Main Preview"
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      />
-                      <div className={styles.bannerLiveOverlay}>
-                        <span className={styles.bannerLiveTag}>Banner Chính (Slide)</span>
-                        <h4 className={styles.bannerLiveTitle}>
-                          {(theme.banners && theme.banners[0]?.title) || defaultBanners[0]?.title}
-                        </h4>
-                      </div>
-                    </div>
-
-                    {/* Mockup 2 Sub-Banners */}
-                    <div className={styles.mockupSideColumn}>
-                      {[0, 1].map((idx) => {
-                        const currentSub = (theme.subBanners && theme.subBanners[idx]) || defaultSubBanners[idx];
-                        return (
-                          <div key={idx} className={styles.mockupSideBanner}>
-                            <img
-                              src={currentSub?.image || defaultSubBanners[idx]?.image}
-                              alt={`Sub Preview ${idx + 1}`}
-                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                            />
-                            <div className={styles.bannerLiveOverlay} style={{ padding: '6px 8px' }}>
-                              {currentSub?.title && (
-                                <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#fff', textShadow: '0 1px 3px rgba(0,0,0,0.8)' }}>
-                                  {currentSub.title}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
               </>
             )}
 
@@ -1872,7 +1952,7 @@ export default function AdminSettingsPage() {
                     />
                   ) : (
                     <span>
-                      {theme.pageTitles.logoText || 'ShopBig'}
+                      {theme.pageTitles.logoText || 'Cửa Hàng'}
                       <span style={{ color: theme.buttonColors.primaryBg }}>.vn</span>
                     </span>
                   )}

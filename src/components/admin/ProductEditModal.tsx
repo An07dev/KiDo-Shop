@@ -22,6 +22,7 @@ import {
   IVariantItem,
   generateCartesianVariants,
 } from '@/lib/variant-helper';
+import ProductDescriptionEditor from '@/components/admin/ProductDescriptionEditor';
 import styles from './ProductFormModal.module.css';
 
 interface ProductEditModalProps {
@@ -932,12 +933,11 @@ export default function ProductEditModal({
 
             {/* Row 5: Description */}
             <div className={styles.formGroup}>
-              <label className={styles.label}>Mô tả sản phẩm</label>
-              <textarea
-                className={styles.textarea}
-                placeholder="Nhập mô tả chi tiết sản phẩm..."
+              <label className={styles.label}>Mô tả sản phẩm (Văn bản & hình ảnh xen kẽ)</label>
+              <ProductDescriptionEditor
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                onChange={(val) => setFormData({ ...formData, description: val })}
+                placeholder="Nhập mô tả chi tiết, tải ảnh hoặc dán ảnh xen kẽ giữa các đoạn văn..."
               />
             </div>
 

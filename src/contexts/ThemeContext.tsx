@@ -102,13 +102,13 @@ export const defaultTheme: ThemeConfig = {
   themeName: 'modern-blue',
   mode: 'dark',
   pageTitles: {
-    siteTitle: 'ShopBig - Cửa Hàng Thời Trang & Phụ Kiện Cao Cấp',
-    homeTitle: 'Trang Chủ | ShopBig',
-    adminTitle: 'ShopBig Quản Trị Hệ Thống',
-    logoText: 'ShopBig',
-    logoUrl: '/images/logo.png',
-    faviconUrl: '/favicon.ico',
-    metaDescription: 'Trải nghiệm mua sắm thời trang trực tuyến thời thượng, giao hàng nhanh chóng toàn quốc.',
+    siteTitle: '',
+    homeTitle: '',
+    adminTitle: '',
+    logoText: '',
+    logoUrl: '',
+    faviconUrl: '',
+    metaDescription: '',
     bannerNotice: '🔥 Miễn phí vận chuyển toàn quốc cho đơn hàng từ 500.000đ',
     showBannerNotice: true,
   },
@@ -143,7 +143,7 @@ export const defaultTheme: ThemeConfig = {
   },
 };
 
-const THEME_CACHE_KEY = 'shopbig_cached_theme_config';
+const THEME_CACHE_KEY = 'store_cached_theme_config_v2';
 
 interface ThemeContextType {
   theme: ThemeConfig;
@@ -189,10 +189,68 @@ export function isColorLight(colorStr?: string): boolean {
   return false;
 }
 
+export function updateDocumentFavicon(rawUrl?: string) {
+  if (typeof document === 'undefined') return;
+  const url = rawUrl?.trim();
+  if (!url) return;
+
+  const validUrl = url.startsWith('http') || url.startsWith('/') || url.startsWith('data:') ? url : `/${url}`;
+
+  try {
+    // Determine MIME type
+    let type = 'image/png';
+    const lower = validUrl.toLowerCase();
+    if (lower.endsWith('.ico') || lower.includes('.ico?') || lower.includes('.ico#')) {
+      type = 'image/x-icon';
+    } else if (lower.endsWith('.svg') || lower.includes('.svg?')) {
+      type = 'image/svg+xml';
+    } else if (lower.endsWith('.jpg') || lower.endsWith('.jpeg')) {
+      type = 'image/jpeg';
+    } else if (lower.endsWith('.webp')) {
+      type = 'image/webp';
+    }
+
+    // 1. Update any existing icon link elements without removing them from DOM (prevent React removeChild crash)
+    const existingIcons = document.querySelectorAll<HTMLLinkElement>(
+      "link[rel~='icon'], link[rel='shortcut icon'], link[rel='apple-touch-icon']"
+    );
+
+    if (existingIcons.length > 0) {
+      existingIcons.forEach((link) => {
+        link.href = validUrl;
+        if (link.type) link.type = type;
+      });
+    }
+
+    // 2. Ensure our dedicated dynamic favicon link exists
+    let dynamicFavicon = document.getElementById('store-dynamic-favicon') as HTMLLinkElement | null;
+    if (!dynamicFavicon) {
+      dynamicFavicon = document.createElement('link');
+      dynamicFavicon.id = 'store-dynamic-favicon';
+      dynamicFavicon.rel = 'icon';
+      document.head.appendChild(dynamicFavicon);
+    }
+    dynamicFavicon.type = type;
+    dynamicFavicon.href = validUrl;
+
+    let dynamicShortcut = document.getElementById('store-dynamic-shortcut') as HTMLLinkElement | null;
+    if (!dynamicShortcut) {
+      dynamicShortcut = document.createElement('link');
+      dynamicShortcut.id = 'store-dynamic-shortcut';
+      dynamicShortcut.rel = 'shortcut icon';
+      document.head.appendChild(dynamicShortcut);
+    }
+    dynamicShortcut.type = type;
+    dynamicShortcut.href = validUrl;
+  } catch (err) {
+    console.warn('Error updating document favicon:', err);
+  }
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<ThemeConfig>(defaultTheme);
-  // Non-blocking initialization for instant 0ms First Contentful Paint
-  const [isLoading, setIsLoading] = useState(false);
+  // Loading state: true until API /api/settings/theme completes
+  const [isLoading, setIsLoading] = useState(true);
 
   // Apply CSS variables to :root and html element
   const applyCSSVariables = useCallback((config: ThemeConfig) => {
@@ -299,30 +357,70 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     root.style.setProperty('--admin-text-muted', textMuted);
     root.style.setProperty('--admin-accent', primaryColor);
 
-    // Page Title
-    if (config.pageTitles?.siteTitle) {
-      document.title = config.pageTitles.siteTitle;
+    // 100% Dynamic Page Title from API / Theme Settings
+    const dynamicTitle = config.pageTitles?.siteTitle?.trim() || config.pageTitles?.logoText?.trim() || '';
+    if (dynamicTitle) {
+      document.title = dynamicTitle;
     }
 
-    // Dynamic Favicon & Browser Tab Icon Synchronization
-    const faviconToUse =
-      config.pageTitles?.faviconUrl && config.pageTitles.faviconUrl !== '/favicon.ico'
-        ? config.pageTitles.faviconUrl
-        : config.pageTitles?.logoUrl || config.pageTitles?.faviconUrl || '/images/logo.png';
+    // Dynamic Favicon & Browser Tab Icon Synchronization (Forces browser to repaint tab icon)
+    const rawFavicon = config.pageTitles?.faviconUrl?.trim();
+    const rawLogo = config.pageTitles?.logoUrl?.trim();
+    const faviconToUse = rawFavicon || rawLogo;
 
     if (faviconToUse) {
-      const iconLinks = document.querySelectorAll<HTMLLinkElement>(
-        "link[rel~='icon'], link[rel='shortcut icon'], link[rel='apple-touch-icon']"
-      );
-      if (iconLinks.length > 0) {
-        iconLinks.forEach((link) => {
+      try {
+        const existingIcons = document.querySelectorAll<HTMLLinkElement>(
+          "link[rel~='icon'], link[rel='shortcut icon'], link[rel='apple-touch-icon']"
+        );
+
+        let alreadyMatched = false;
+        if (existingIcons.length > 0) {
+          existingIcons.forEach((el) => {
+            const href = el.getAttribute('href');
+            if (href === faviconToUse) {
+              alreadyMatched = true;
+            }
+          });
+        }
+
+        if (!alreadyMatched) {
+          existingIcons.forEach((el) => el.remove());
+
+          let mimeType = 'image/x-icon';
+          if (faviconToUse.endsWith('.png') || faviconToUse.includes('.png')) {
+            mimeType = 'image/png';
+          } else if (faviconToUse.endsWith('.svg') || faviconToUse.includes('.svg')) {
+            mimeType = 'image/svg+xml';
+          } else if (
+            faviconToUse.endsWith('.jpg') ||
+            faviconToUse.endsWith('.jpeg') ||
+            faviconToUse.includes('.jpg') ||
+            faviconToUse.includes('.jpeg')
+          ) {
+            mimeType = 'image/jpeg';
+          } else if (faviconToUse.endsWith('.webp') || faviconToUse.includes('.webp')) {
+            mimeType = 'image/webp';
+          }
+
+          const link = document.createElement('link');
+          link.rel = 'icon';
+          link.type = mimeType;
           link.href = faviconToUse;
-        });
-      } else {
-        const link = document.createElement('link');
-        link.rel = 'icon';
-        link.href = faviconToUse;
-        document.getElementsByTagName('head')[0]?.appendChild(link);
+          document.head.appendChild(link);
+
+          const shortcutLink = document.createElement('link');
+          shortcutLink.rel = 'shortcut icon';
+          shortcutLink.href = faviconToUse;
+          document.head.appendChild(shortcutLink);
+
+          const appleLink = document.createElement('link');
+          appleLink.rel = 'apple-touch-icon';
+          appleLink.href = faviconToUse;
+          document.head.appendChild(appleLink);
+        }
+      } catch (iconErr) {
+        console.warn('Failed to update browser favicon:', iconErr);
       }
     }
 
@@ -340,6 +438,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   // 1. Mount & Live Synchronization
   useEffect(() => {
+    // Clear any obsolete legacy local storage keys
+    try {
+      localStorage.removeItem('shopbig_cached_theme_config');
+    } catch (e) {}
+
     // A. Apply cached theme first to prevent flash
     try {
       const cached = localStorage.getItem(THEME_CACHE_KEY);
@@ -360,15 +463,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     // B. Immediately fetch fresh theme from API (ensuring new preset from Admin applies instantly)
     async function loadFreshTheme() {
       try {
-        const res = await apiFetch('/api/settings/theme');
+        const res = await apiFetch(`/api/settings/theme?_t=${Date.now()}`, {
+          cache: 'no-store',
+          headers: { 'Cache-Control': 'no-cache' },
+        });
         const data = await res.json();
         if (data?.success && data?.data) {
           const merged: ThemeConfig = {
             ...defaultTheme,
             ...data.data,
             pageTitles: { ...defaultTheme.pageTitles, ...(data.data.pageTitles || {}) },
-            banners: Array.isArray(data.data.banners) && data.data.banners.length > 0 ? data.data.banners : defaultTheme.banners,
-            subBanners: Array.isArray(data.data.subBanners) && data.data.subBanners.length > 0 ? data.data.subBanners : defaultTheme.subBanners,
+            banners: Array.isArray(data.data.banners) ? data.data.banners : defaultTheme.banners,
+            subBanners: Array.isArray(data.data.subBanners) ? data.data.subBanners : [],
             socialLinks: { ...defaultTheme.socialLinks, ...(data.data.socialLinks || {}) },
             buttonColors: { ...defaultTheme.buttonColors, ...(data.data.buttonColors || {}) },
             textColors: { ...defaultTheme.textColors, ...(data.data.textColors || {}) },
@@ -382,6 +488,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         }
       } catch (e) {
         console.warn('Fresh theme refresh failed, keeping current theme.');
+      } finally {
+        setIsLoading(false);
       }
     }
     loadFreshTheme();
@@ -407,10 +515,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     };
 
     window.addEventListener('storage', handleStorage);
-    window.addEventListener('shopbig_theme_updated', handleCustom);
+    window.addEventListener('store_theme_updated', handleCustom);
     return () => {
       window.removeEventListener('storage', handleStorage);
-      window.removeEventListener('shopbig_theme_updated', handleCustom);
+      window.removeEventListener('store_theme_updated', handleCustom);
     };
   }, [applyCSSVariables]);
 
@@ -472,7 +580,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       applyCSSVariables(updated);
       try {
         localStorage.setItem(THEME_CACHE_KEY, JSON.stringify(updated));
-        window.dispatchEvent(new CustomEvent('shopbig_theme_updated', { detail: updated }));
+        window.dispatchEvent(new CustomEvent('store_theme_updated', { detail: updated }));
       } catch (err) {}
       return updated;
     });
@@ -493,7 +601,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         setTheme(data.data);
         try {
           localStorage.setItem(THEME_CACHE_KEY, JSON.stringify(data.data));
-          window.dispatchEvent(new CustomEvent('shopbig_theme_updated', { detail: data.data }));
+          window.dispatchEvent(new CustomEvent('store_theme_updated', { detail: data.data }));
         } catch (err) {}
         toast.success('Đã lưu cấu hình giao diện thành công!');
         return true;

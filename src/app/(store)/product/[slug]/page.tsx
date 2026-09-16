@@ -24,7 +24,6 @@ import {
   FiZap,
   FiChevronDown,
   FiChevronUp,
-  FiHome,
   FiPackage,
   FiRefreshCw,
   FiMaximize2,
@@ -40,6 +39,7 @@ import BannerNotice from '@/components/common/BannerNotice';
 import VoucherCollectionBar from '@/components/store/VoucherCollectionBar';
 import StoreProductCard, { ProductItem } from '@/components/store/home/StoreProductCard';
 import { apiFetch } from '@/lib/api';
+import { compressImage } from '@/lib/image-utils';
 import {
   IProductOption,
   IVariantItem,
@@ -89,10 +89,9 @@ export default function ProductDetailPage() {
   const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
   const [quantity, setQuantity] = useState(1);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [isDescExpanded, setIsDescExpanded] = useState(false);
+  const [isGalleryPaused, setIsGalleryPaused] = useState(false);
 
-  // PC Tab State (Mô tả vs Đánh giá vs Gợi ý)
-  const [pcTab, setPcTab] = useState<'desc' | 'reviews' | 'related'>('desc');
+
 
   // Related products state ("Có thể bạn cũng thích")
   const [relatedProducts, setRelatedProducts] = useState<ProductItem[]>([]);
@@ -112,6 +111,13 @@ export default function ProductDetailPage() {
     averageRating: 5.0,
     totalReviews: 0,
   });
+  const [isReviewsExpanded, setIsReviewsExpanded] = useState(false);
+
+  // Chỉ hiển thị 10 đánh giá mới nhất (ưu tiên số sao cao), bấm Xem thêm để mở rộng
+  const displayedReviews = useMemo(() => {
+    if (isReviewsExpanded) return reviewsPreview;
+    return reviewsPreview.slice(0, 10);
+  }, [isReviewsExpanded, reviewsPreview]);
 
   // Write Review Modal State
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false);
@@ -144,14 +150,20 @@ export default function ProductDetailPage() {
   const loadReviewsPreview = async () => {
     if (!params.slug) return;
     try {
-      const res = await apiFetch(`/api/reviews?slug=${encodeURIComponent(params.slug as string)}&limit=10`);
+      const res = await apiFetch(`/api/reviews?slug=${encodeURIComponent(params.slug as string)}&limit=100`);
       const data = await res.json();
       if (data.success) {
-        setReviewsPreview(data.data || []);
+        // Sắp xếp ưu tiên số sao cao nhất trước (5 -> 1), nếu bằng sao thì ưu tiên mới nhất
+        const sorted = (data.data || []).sort((a: any, b: any) => {
+          const starDiff = (Number(b.rating) || 5) - (Number(a.rating) || 5);
+          if (starDiff !== 0) return starDiff;
+          return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+        });
+        setReviewsPreview(sorted);
         if (data.stats) {
           setReviewsStats({
             averageRating: data.stats.averageRating || 5.0,
-            totalReviews: data.stats.totalReviews || 0,
+            totalReviews: data.stats.totalReviews || sorted.length,
           });
         }
       }
@@ -164,32 +176,71 @@ export default function ProductDetailPage() {
     loadReviewsPreview();
   }, [params.slug]);
 
-  // Handle Photo Upload in Review
+  // Handle Photo Upload in Review (Hỗ trợ nhiều ảnh, nén ảnh nhẹ, fallback tức thì)
   const handleUploadPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-    if (uploadedImages.length >= 5) {
+    const fileList = e.target.files;
+    if (!fileList || fileList.length === 0) return;
+
+    const remainingSlots = 5 - uploadedImages.length;
+    if (remainingSlots <= 0) {
       toast.error('Bạn chỉ có thể tải lên tối đa 5 hình ảnh');
       return;
     }
+
+    const filesToUpload = Array.from(fileList).slice(0, remainingSlots);
     setIsUploading(true);
+
     try {
-      const file = files[0];
-      const formData = new FormData();
-      formData.append('file', file);
-      const res = await apiFetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await res.json();
-      if (data.success && data.data?.url) {
-        setUploadedImages((prev) => [...prev, data.data.url]);
-        toast.success('Đã tải ảnh lên thành công!');
+      const newUrls: string[] = [];
+
+      for (const file of filesToUpload) {
+        let clientDataUrl = '';
+        let uploadBlob: Blob = file;
+
+        try {
+          const compressed = await compressImage(file, 1200, 0.8);
+          clientDataUrl = compressed.dataUrl;
+          uploadBlob = compressed.blob;
+        } catch (compErr) {
+          console.warn('Image compression skipped:', compErr);
+        }
+
+        let uploadedUrl = '';
+
+        try {
+          const formData = new FormData();
+          formData.append('file', uploadBlob, file.name);
+
+          const res = await apiFetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && data.data?.url) {
+              uploadedUrl = data.data.url;
+            }
+          }
+        } catch (netErr) {
+          console.warn('Direct upload fetch failed, fallback to client preview:', netErr);
+        }
+
+        const finalUrl = uploadedUrl || clientDataUrl;
+        if (finalUrl) {
+          newUrls.push(finalUrl);
+        }
+      }
+
+      if (newUrls.length > 0) {
+        setUploadedImages((prev) => [...prev, ...newUrls].slice(0, 5));
+        toast.success(`Đã thêm ${newUrls.length} hình ảnh thành công!`);
       } else {
-        toast.error(data.message || 'Lỗi khi tải ảnh lên');
+        toast.error('Không thể tải ảnh lên. Vui lòng thử lại.');
       }
     } catch (err) {
-      toast.error('Không thể kết nối máy chủ để upload ảnh');
+      console.error('Upload error:', err);
+      toast.error('Có lỗi xảy ra khi tải ảnh lên');
     } finally {
       setIsUploading(false);
       if (reviewFileInputRef.current) reviewFileInputRef.current.value = '';
@@ -218,7 +269,8 @@ export default function ProductDetailPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           productId: product?._id,
-          productSlug: product?.slug,
+          slug: (params.slug as string) || product?.slug,
+          productSlug: product?.slug || (params.slug as string),
           productName: product?.name,
           productImage: product?.images?.[0] || product?.image,
           author: authorInput.trim(),
@@ -328,9 +380,12 @@ export default function ProductDetailPage() {
             setFlashSaleItem(null);
           }
 
-          // Set FOMO settings
-          if (fomoData && fomoData.success && fomoData.data) {
-            setFomoSettings(fomoData.data);
+          // Set FOMO settings accurately from fsData or fomoData
+          const fomo = fsData?.data?.fomoSettings || (fomoData?.success ? fomoData.data : null);
+          if (fomo) {
+            setFomoSettings(fomo);
+          } else {
+            setFomoSettings({ enableViewerCount: false });
           }
         } else {
           setProduct(null);
@@ -377,51 +432,41 @@ export default function ProductDetailPage() {
     return () => clearInterval(timer);
   }, [flashSaleItem]);
 
-  // Fetch related products ("Có thể bạn cũng thích")
+  // Fetch related products ("Có thể bạn cũng thích" - CHỈ HIỂN THỊ SẢN PHẨM CÙNG LOẠI DANH MỤC)
   useEffect(() => {
     if (!product?._id) return;
 
-    let catParam = '';
-    if (typeof product.category === 'string') {
-      catParam = product.category;
-    } else if (product.category?.slug) {
-      catParam = product.category.slug;
-    } else if (product.category?._id) {
-      catParam = String(product.category._id);
-    }
+    const categoryId = product.category?._id ? String(product.category._id) : (typeof product.category === 'string' ? product.category : '');
+    const categorySlug = product.category?.slug || '';
+    const catParam = categoryId || categorySlug;
 
     async function loadRelated() {
+      if (!catParam || catParam === 'all') {
+        setRelatedProducts([]);
+        return;
+      }
+
       const currentIdStr = String(product._id);
-      let list: any[] = [];
-
-      if (catParam && catParam !== 'all') {
-        try {
-          const res = await apiFetch(`/api/products?category=${encodeURIComponent(catParam)}&limit=12&status=active`);
-          const data = await res.json();
-          if (data.success && Array.isArray(data.data)) {
-            list = data.data.filter((p: any) => String(p._id) !== currentIdStr && p.slug !== product.slug);
-          }
-        } catch (e) {}
+      try {
+        const res = await apiFetch(`/api/products?category=${encodeURIComponent(catParam)}&limit=24&status=active`);
+        const data = await res.json();
+        if (data.success && Array.isArray(data.data)) {
+          // Lọc chính xác chỉ lấy các sản phẩm cùng danh mục, trừ sản phẩm hiện tại
+          const sameCategoryProducts = data.data.filter((p: any) => {
+            if (String(p._id) === currentIdStr || p.slug === product.slug) return false;
+            const pCatId = p.category?._id ? String(p.category._id) : (typeof p.category === 'string' ? p.category : '');
+            const pCatSlug = p.category?.slug || '';
+            if (categoryId && pCatId) return pCatId === categoryId;
+            if (categorySlug && pCatSlug) return pCatSlug === categorySlug;
+            return true;
+          });
+          setRelatedProducts(sameCategoryProducts.slice(0, 12));
+          return;
+        }
+      } catch (e) {
+        console.error('Error fetching related products:', e);
       }
-
-      if (list.length < 4) {
-        try {
-          const res = await apiFetch(`/api/products?limit=12&status=active&sort=popular`);
-          const data = await res.json();
-          if (data.success && Array.isArray(data.data)) {
-            const fallbackList = data.data.filter((p: any) => String(p._id) !== currentIdStr && p.slug !== product.slug);
-            const existingIds = new Set(list.map((it) => String(it._id)));
-            fallbackList.forEach((it: any) => {
-              if (!existingIds.has(String(it._id))) {
-                list.push(it);
-                existingIds.add(String(it._id));
-              }
-            });
-          }
-        } catch (e) {}
-      }
-
-      setRelatedProducts(list.slice(0, 10));
+      setRelatedProducts([]);
     }
 
     loadRelated();
@@ -636,9 +681,56 @@ export default function ProductDetailPage() {
     setActiveImageIndex((prev) => (prev + 1) % images.length);
   };
 
+  // Tự động chuyển cuộn ảnh chính sản phẩm sau 3 giây
+  useEffect(() => {
+    if (!images || images.length <= 1 || isGalleryPaused) return;
+
+    const timer = setInterval(() => {
+      setActiveImageIndex((prev) => (prev + 1) % images.length);
+    }, 3000);
+
+    return () => clearInterval(timer);
+  }, [images, isGalleryPaused]);
+
   const handleOpenExpandModal = (tab: 'desc' | 'reviews') => {
     setExpandModalTab(tab);
     setIsExpandModalOpen(true);
+  };
+
+  // Handle click on images inside product description to open Lightbox
+  const handleDescriptionImageClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    if (target && target.tagName === 'IMG') {
+      const src = (target as HTMLImageElement).src;
+      if (src) {
+        e.stopPropagation();
+        setLightboxImage(src);
+      }
+    }
+  };
+
+  // Render product description with HTML & interleaved images support
+  const renderDescriptionContent = (content?: string, extraClass: string = '') => {
+    const raw =
+      content ||
+      'Chất liệu cao cấp, đường may tỉ mỉ, form dáng chuẩn thời trang hiện đại.\nThiết kế trẻ trung năng động, dễ phối đồ phù hợp đi học, đi chơi, đi làm.';
+    const hasHtml = /<\/?(p|div|br|img|h[1-6]|ul|ol|li|strong|b|em|i|s|span|figure|table|hr|blockquote)\b/i.test(raw);
+
+    if (hasHtml) {
+      return (
+        <div
+          className={`${extraClass} ${styles.richDescription}`}
+          onClick={handleDescriptionImageClick}
+          dangerouslySetInnerHTML={{ __html: raw }}
+        />
+      );
+    }
+
+    return (
+      <div className={extraClass} style={{ whiteSpace: 'pre-line' }}>
+        {raw}
+      </div>
+    );
   };
 
   if (loading) {
@@ -705,8 +797,14 @@ export default function ProductDetailPage() {
         <div className={styles.mobileScrollArea}>
           <BannerNotice />
 
-          {/* 1. Mobile Gallery */}
-          <div className={styles.mobileGallery}>
+          {/* 1. Mobile Gallery (Tự động cuộn sau 3s) */}
+          <div
+            className={styles.mobileGallery}
+            onTouchStart={() => setIsGalleryPaused(true)}
+            onTouchEnd={() => {
+              setTimeout(() => setIsGalleryPaused(false), 2500);
+            }}
+          >
             <img
               src={images[activeImageIndex] || images[0]}
               alt={product.name}
@@ -820,7 +918,7 @@ export default function ProductDetailPage() {
             </div>
 
             {/* FOMO Notice */}
-            {fomoSettings?.enableViewerCount !== false && (
+            {fomoSettings && fomoSettings.enableViewerCount === true && (
               <div className={styles.mobileViewerCountNotice}>
                 <FiZap /> 🔥 <strong>18 người</strong> đang cùng xem sản phẩm này
               </div>
@@ -926,7 +1024,7 @@ export default function ProductDetailPage() {
                 {theme?.pageTitles?.logoUrl ? (
                   <img
                     src={theme.pageTitles.logoUrl}
-                    alt={theme?.pageTitles?.logoText || 'ShopBig Store'}
+                    alt={theme?.pageTitles?.logoText || 'Logo'}
                     style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 10 }}
                   />
                 ) : (
@@ -934,7 +1032,7 @@ export default function ProductDetailPage() {
                 )}
               </div>
               <div>
-                <div className={styles.shopName}>{theme?.pageTitles?.logoText || 'ShopBig Store'}</div>
+                <div className={styles.shopName}>{theme?.pageTitles?.logoText || 'Cửa Hàng'}</div>
                 <div className={styles.shopMeta}>⭐ 4.8 | 12.5K đã bán</div>
               </div>
             </div>
@@ -943,46 +1041,15 @@ export default function ProductDetailPage() {
             </Link>
           </div>
 
-          {/* 5. Mobile Description Card */}
+          {/* 5. Mobile Description Card - Hiển thị full 100% nội dung */}
           <div className={styles.mobileDescCard}>
             <h2 className={styles.descTitle}>
               <span>📋 Chi Tiết Sản Phẩm</span>
             </h2>
-            
-            <div
-              className={`${styles.descContentWrapper} ${
-                !isDescExpanded && (product.description?.length || 0) > 300
-                  ? styles.descContentCollapsed
-                  : ''
-              }`}
-            >
-              <div className={styles.descContent}>
-                {product.description ||
-                  'Chất liệu cao cấp, đường may tỉ mỉ, form dáng chuẩn thời trang hiện đại.\nThiết kế trẻ trung năng động, dễ phối đồ phù hợp đi học, đi chơi, đi làm.'}
-              </div>
 
-              {!isDescExpanded && (product.description?.length || 0) > 300 && (
-                <div className={styles.descFadeOverlay} />
-              )}
+            <div className={styles.descContentWrapper}>
+              {renderDescriptionContent(product.description, styles.descContent)}
             </div>
-
-            {(product.description?.length || 0) > 300 && (
-              <button
-                type="button"
-                className={styles.descToggleBtn}
-                onClick={() => setIsDescExpanded(!isDescExpanded)}
-              >
-                {isDescExpanded ? (
-                  <>
-                    Thu gọn mô tả <FiChevronUp size={14} />
-                  </>
-                ) : (
-                  <>
-                    Xem toàn bộ mô tả chi tiết <FiChevronDown size={14} />
-                  </>
-                )}
-              </button>
-            )}
           </div>
 
           {/* 6. Mobile Reviews Card */}
@@ -1013,47 +1080,72 @@ export default function ProductDetailPage() {
             </div>
 
             {reviewsPreview.length > 0 ? (
-              <div className={styles.reviewsPreviewList}>
-                {reviewsPreview.map((rev) => (
-                  <div key={rev._id} className={styles.previewReviewItem}>
-                    <div className={styles.previewReviewHeader}>
-                      <div className={styles.previewAuthor}>
-                        {rev.author ? (rev.author.length <= 2 ? rev.author + '***' : rev.author[0] + '***' + rev.author[rev.author.length - 1]) : 'Khách hàng'}
+              <>
+                <div className={styles.reviewsPreviewList}>
+                  {displayedReviews.map((rev) => (
+                    <div key={rev._id} className={styles.previewReviewItem}>
+                      <div className={styles.previewReviewHeader}>
+                        <div className={styles.previewAuthor}>
+                          {rev.author ? (rev.author.length <= 2 ? rev.author + '***' : rev.author[0] + '***' + rev.author[rev.author.length - 1]) : 'Khách hàng'}
+                        </div>
+                        <div className={styles.previewStars}>
+                          {[1, 2, 3, 4, 5].map((s: number) => (
+                            <FiStar
+                              key={s}
+                              size={11}
+                              style={{
+                                fill: s <= rev.rating ? '#fbbf24' : 'none',
+                                color: '#fbbf24',
+                              }}
+                            />
+                          ))}
+                        </div>
                       </div>
-                      <div className={styles.previewStars}>
-                        {[1, 2, 3, 4, 5].map((s: number) => (
-                          <FiStar
-                            key={s}
-                            size={11}
-                            style={{
-                              fill: s <= rev.rating ? '#fbbf24' : 'none',
-                              color: '#fbbf24',
-                            }}
-                          />
-                        ))}
-                      </div>
+                      {rev.variantTitle && (
+                        <span className={styles.previewVariant}>Phân loại: {rev.variantTitle}</span>
+                      )}
+                      <p className={styles.previewComment}>{rev.comment}</p>
+                      {Array.isArray(rev.images) && rev.images.length > 0 && (
+                        <div className={styles.previewImgs}>
+                          {rev.images.slice(0, 5).map((imgUrl: string, idx: number) => (
+                            <img
+                              key={idx}
+                              src={imgUrl}
+                              alt="Review"
+                              className={styles.previewImg}
+                              onClick={() => setLightboxImage(imgUrl)}
+                              onError={(e) => {
+                                (e.currentTarget as HTMLElement).style.display = 'none';
+                              }}
+                              style={{ cursor: 'pointer' }}
+                            />
+                          ))}
+                        </div>
+                      )}
                     </div>
-                    {rev.variantTitle && (
-                      <span className={styles.previewVariant}>Phân loại: {rev.variantTitle}</span>
-                    )}
-                    <p className={styles.previewComment}>{rev.comment}</p>
-                    {Array.isArray(rev.images) && rev.images.length > 0 && (
-                      <div className={styles.previewImgs}>
-                        {rev.images.slice(0, 3).map((imgUrl: string, idx: number) => (
-                          <img
-                            key={idx}
-                            src={imgUrl}
-                            alt="Review"
-                            className={styles.previewImg}
-                            onClick={() => setLightboxImage(imgUrl)}
-                            style={{ cursor: 'pointer' }}
-                          />
-                        ))}
-                      </div>
-                    )}
+                  ))}
+                </div>
+
+                {reviewsPreview.length > 10 && (
+                  <div className={styles.seeMoreReviewsWrap}>
+                    <button
+                      type="button"
+                      className={styles.seeMoreReviewsBtn}
+                      onClick={() => setIsReviewsExpanded(!isReviewsExpanded)}
+                    >
+                      {isReviewsExpanded ? (
+                        <>
+                          Thu gọn đánh giá <FiChevronUp size={16} />
+                        </>
+                      ) : (
+                        <>
+                          Xem thêm {reviewsPreview.length - 10} đánh giá khác <FiChevronDown size={16} />
+                        </>
+                      )}
+                    </button>
                   </div>
-                ))}
-              </div>
+                )}
+              </>
             ) : (
               <div className={styles.noReviewsYet}>
                 <p>Chưa có đánh giá nào cho sản phẩm này.</p>
@@ -1078,7 +1170,10 @@ export default function ProductDetailPage() {
                   <span className={styles.relatedSparkleIcon}>✨</span>
                   <h3 className={styles.relatedTitle}>CÓ THỂ BẠN CŨNG THÍCH</h3>
                 </div>
-                <Link href="/?tab=products" className={styles.relatedSeeAllBtn}>
+                <Link
+                  href={product.category?.slug ? `/?category=${encodeURIComponent(product.category.slug)}&tab=products` : '/?tab=products'}
+                  className={styles.relatedSeeAllBtn}
+                >
                   <span>Xem thêm</span>
                   <FiChevronRight size={13} />
                 </Link>
@@ -1135,24 +1230,22 @@ export default function ProductDetailPage() {
           2. PC VIEW (>= 1024px) - LUXURY SINGLE-VIEWPORT NO-SCROLL LAYOUT
           ========================================================================= */}
       <div className={styles.pcView}>
-        {/* Top PC Nav / Breadcrumbs */}
+        {/* Top PC Nav - Centered Product Name */}
         <nav className={styles.pcTopNav}>
           <div className={styles.topNavLeft}>
             <button
               className={styles.navBtn}
               onClick={handleBack}
               aria-label="Quay lại"
+              title="Quay lại"
             >
               <FiChevronLeft size={22} />
             </button>
-            <div className={styles.breadcrumbGroup}>
-              <Link href="/" className={styles.breadcrumbLink}>
-                <FiHome size={13} /> Trang Chủ
-              </Link>
-              <span className={styles.breadcrumbDivider}>/</span>
-              <span className={styles.breadcrumbActive}>{product.name}</span>
-            </div>
           </div>
+
+          <h1 className={styles.pcNavTitle} title={product.name}>
+            {product.name}
+          </h1>
 
           <div className={styles.navRight}>
             <button className={styles.navBtn} onClick={handleShare} aria-label="Chia sẻ" title="Chia sẻ sản phẩm">
@@ -1167,9 +1260,13 @@ export default function ProductDetailPage() {
 
         {/* 2-Column Main Showcase Grid */}
         <div className={styles.pcViewportGrid}>
-          {/* Left Column: Media Showcase */}
+          {/* Left Column: Media Showcase (Tự động cuộn sau 3s) */}
           <div className={styles.pcLeftColumn}>
-            <div className={styles.pcGallery}>
+            <div
+              className={styles.pcGallery}
+              onMouseEnter={() => setIsGalleryPaused(true)}
+              onMouseLeave={() => setIsGalleryPaused(false)}
+            >
               <img
                 src={images[activeImageIndex] || images[0]}
                 alt={product.name}
@@ -1266,7 +1363,7 @@ export default function ProductDetailPage() {
                   )}
                 </div>
                 <div>
-                  <div className={styles.shopName}>{theme?.pageTitles?.logoText || 'ShopBig Store'}</div>
+                  <div className={styles.shopName}>{theme?.pageTitles?.logoText || 'Cửa Hàng'}</div>
                   <div className={styles.shopMeta}>⭐ 4.9 • 15.2K đã bán • Phản hồi 99%</div>
                 </div>
               </div>
@@ -1337,7 +1434,7 @@ export default function ProductDetailPage() {
                 )}
               </div>
 
-              {fomoSettings?.enableViewerCount !== false && (
+              {fomoSettings && fomoSettings.enableViewerCount === true && (
                 <div className={styles.viewerCountNotice}>
                   <FiZap size={13} /> 🔥 <strong>18 người</strong> đang cùng xem sản phẩm này
                 </div>
@@ -1471,98 +1568,103 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
-        {/* 2. Full Description & Customer Reviews Card */}
+        {/* 2. PC Section 1: Chi Tiết Mô Tả Sản Phẩm */}
         <div className={styles.pcDetailsCard}>
-          <div className={styles.tabHeader}>
-            <div className={styles.tabButtonsGroup}>
-              <button
-                type="button"
-                className={`${styles.tabBtn} ${pcTab === 'desc' ? styles.activeTabBtn : ''}`}
-                onClick={() => setPcTab('desc')}
-              >
-                <FiPackage size={15} />
-                <span>Chi Tiết Mô Tả Sản Phẩm</span>
-              </button>
-              <button
-                type="button"
-                className={`${styles.tabBtn} ${pcTab === 'reviews' ? styles.activeTabBtn : ''}`}
-                onClick={() => setPcTab('reviews')}
-              >
-                <FiStar size={15} />
-                <span>Đánh Giá Khách Hàng ({reviewsStats.totalReviews})</span>
-              </button>
+          <div className={styles.pcSectionHeader}>
+            <div className={styles.pcSectionTitle}>
+              <FiPackage size={18} className={styles.pcSectionTitleIcon} />
+              <span>Chi Tiết Mô Tả Sản Phẩm</span>
             </div>
           </div>
 
           <div className={styles.pcDetailsBody}>
-            {pcTab === 'desc' ? (
-              <div className={styles.fullDescContent}>
-                <div className={styles.descHighlightsBox}>
-                  <h4>🌟 Đặc điểm nổi bật</h4>
-                  <p>{product.name}</p>
-                </div>
-                <div className={styles.fullDescText}>
-                  {product.description ||
-                    'Chất liệu cao cấp, đường may tỉ mỉ, form dáng chuẩn thời trang hiện đại.\nThiết kế trẻ trung năng động, dễ phối đồ phù hợp đi học, đi chơi, đi làm.'}
-                </div>
+            <div className={styles.fullDescContent}>
+              <div className={styles.descHighlightsBox}>
+                <h4>🌟 Đặc điểm nổi bật</h4>
+                <p>{product.name}</p>
+              </div>
+              {renderDescriptionContent(product.description, styles.fullDescText)}
 
-                <div className={styles.policyGuarantees}>
-                  <div className={styles.policyItem}>
-                    <FiShield size={20} color="var(--primary, #ee4d2d)" />
-                    <div>
-                      <strong>Cam kết chính hãng 100%</strong>
-                      <p>Đảm bảo nguồn gốc xuất xứ rõ ràng, hoàn tiền nếu phát hiện hàng giả.</p>
-                    </div>
+              <div className={styles.policyGuarantees}>
+                <div className={styles.policyItem}>
+                  <FiShield size={20} color="var(--primary, #ee4d2d)" />
+                  <div>
+                    <strong>Cam kết chính hãng 100%</strong>
+                    <p>Đảm bảo nguồn gốc xuất xứ rõ ràng, hoàn tiền nếu phát hiện hàng giả.</p>
                   </div>
-                  <div className={styles.policyItem}>
-                    <FiRefreshCw size={20} color="var(--primary, #ee4d2d)" />
-                    <div>
-                      <strong>Chính sách đổi trả trong 7 ngày</strong>
-                      <p>Hỗ trợ đổi size hoặc hoàn tiền nếu sản phẩm có lỗi từ nhà sản xuất.</p>
-                    </div>
+                </div>
+                <div className={styles.policyItem}>
+                  <FiRefreshCw size={20} color="var(--primary, #ee4d2d)" />
+                  <div>
+                    <strong>Chính sách đổi trả trong 7 ngày</strong>
+                    <p>Hỗ trợ đổi size hoặc hoàn tiền nếu sản phẩm có lỗi từ nhà sản xuất.</p>
                   </div>
-                  <div className={styles.policyItem}>
-                    <FiTruck size={20} color="var(--primary, #ee4d2d)" />
-                    <div>
-                      <strong>Giao hàng toàn quốc siêu tốc</strong>
-                      <p>Kiểm tra hàng thoải mái trước khi thanh toán COD.</p>
-                    </div>
+                </div>
+                <div className={styles.policyItem}>
+                  <FiTruck size={20} color="var(--primary, #ee4d2d)" />
+                  <div>
+                    <strong>Giao hàng toàn quốc siêu tốc</strong>
+                    <p>Kiểm tra hàng thoải mái trước khi thanh toán COD.</p>
                   </div>
                 </div>
               </div>
-            ) : (
-              <div className={styles.fullReviewsContent}>
-                <div className={styles.fullReviewsStatsCard}>
-                  <div className={styles.fullReviewsScoreGroup}>
-                    <span className={styles.fullReviewsScoreNum}>{reviewsStats.averageRating || '5.0'}</span>
-                    <div className={styles.fullReviewsStarsBig}>
-                      {[1, 2, 3, 4, 5].map((i) => (
-                        <FiStar
-                          key={i}
-                          size={16}
-                          style={{
-                            fill: i <= Math.round(reviewsStats.averageRating) ? '#fbbf24' : 'none',
-                            color: '#fbbf24',
-                          }}
-                        />
-                      ))}
-                    </div>
-                    <span className={styles.fullReviewsCount}>Dựa trên {reviewsStats.totalReviews} lượt đánh giá thực tế</span>
-                  </div>
+            </div>
+          </div>
+        </div>
 
-                  <button
-                    type="button"
-                    className={styles.writeReviewCtaBtn}
-                    onClick={() => setIsWriteModalOpen(true)}
-                  >
-                    <FiEdit3 size={15} />
-                    <span>Viết đánh giá cho sản phẩm này</span>
-                  </button>
+        {/* 3. PC Section 2: Đánh Giá Khách Hàng */}
+        <div className={styles.pcDetailsCard}>
+          <div className={styles.pcSectionHeader}>
+            <div className={styles.pcSectionTitle}>
+              <FiStar size={18} className={styles.pcSectionTitleIcon} />
+              <span>Đánh Giá Khách Hàng ({reviewsStats.totalReviews})</span>
+            </div>
+            {reviewsStats.totalReviews > 0 && (
+              <button
+                type="button"
+                className={styles.writeReviewHeaderBtn}
+                onClick={() => setIsWriteModalOpen(true)}
+              >
+                <FiEdit3 size={14} />
+                <span>Viết đánh giá</span>
+              </button>
+            )}
+          </div>
+
+          <div className={styles.pcDetailsBody}>
+            <div className={styles.fullReviewsContent}>
+              <div className={styles.fullReviewsStatsCard}>
+                <div className={styles.fullReviewsScoreGroup}>
+                  <span className={styles.fullReviewsScoreNum}>{reviewsStats.averageRating || '5.0'}</span>
+                  <div className={styles.fullReviewsStarsBig}>
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <FiStar
+                        key={i}
+                        size={16}
+                        style={{
+                          fill: i <= Math.round(reviewsStats.averageRating) ? '#fbbf24' : 'none',
+                          color: '#fbbf24',
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <span className={styles.fullReviewsCount}>Dựa trên {reviewsStats.totalReviews} lượt đánh giá thực tế</span>
                 </div>
 
-                {reviewsPreview.length > 0 ? (
+                <button
+                  type="button"
+                  className={styles.writeReviewCtaBtn}
+                  onClick={() => setIsWriteModalOpen(true)}
+                >
+                  <FiEdit3 size={15} />
+                  <span>Viết đánh giá cho sản phẩm này</span>
+                </button>
+              </div>
+
+              {reviewsPreview.length > 0 ? (
+                <>
                   <div className={styles.reviewsPreviewList}>
-                    {reviewsPreview.map((rev) => (
+                    {displayedReviews.map((rev) => (
                       <div key={rev._id} className={styles.previewReviewItem}>
                         <div className={styles.previewReviewHeader}>
                           <div className={styles.previewAuthor}>
@@ -1585,16 +1687,53 @@ export default function ProductDetailPage() {
                           <span className={styles.previewVariant}>Phân loại: {rev.variantTitle}</span>
                         )}
                         <p className={styles.previewComment}>{rev.comment}</p>
+                        {Array.isArray(rev.images) && rev.images.length > 0 && (
+                          <div className={styles.previewImgs}>
+                            {rev.images.slice(0, 5).map((imgUrl: string, idx: number) => (
+                              <img
+                                key={idx}
+                                src={imgUrl}
+                                alt="Review photo"
+                                className={styles.previewImg}
+                                onClick={() => setLightboxImage(imgUrl)}
+                                onError={(e) => {
+                                  (e.currentTarget as HTMLElement).style.display = 'none';
+                                }}
+                                style={{ cursor: 'pointer' }}
+                              />
+                            ))}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
-                ) : (
-                  <div className={styles.noReviewsYet}>
-                    <p>Chưa có đánh giá nào cho sản phẩm này.</p>
-                  </div>
-                )}
-              </div>
-            )}
+
+                  {reviewsPreview.length > 10 && (
+                    <div className={styles.seeMoreReviewsWrap}>
+                      <button
+                        type="button"
+                        className={styles.seeMoreReviewsBtn}
+                        onClick={() => setIsReviewsExpanded(!isReviewsExpanded)}
+                      >
+                        {isReviewsExpanded ? (
+                          <>
+                            Thu gọn đánh giá <FiChevronUp size={16} />
+                          </>
+                        ) : (
+                          <>
+                            Xem thêm {reviewsPreview.length - 10} đánh giá khác <FiChevronDown size={16} />
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className={styles.noReviewsYet}>
+                  <p>Chưa có đánh giá nào cho sản phẩm này.</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -1606,7 +1745,10 @@ export default function ProductDetailPage() {
                 <span className={styles.relatedSparkleIcon}>✨</span>
                 <h3 className={styles.relatedTitle}>CÓ THỂ BẠN CŨNG THÍCH</h3>
               </div>
-              <Link href="/?tab=products" className={styles.relatedSeeAllBtn}>
+              <Link
+                href={product.category?.slug ? `/?category=${encodeURIComponent(product.category.slug)}&tab=products` : '/?tab=products'}
+                className={styles.relatedSeeAllBtn}
+              >
                 <span>Xem tất cả</span>
                 <FiChevronRight size={14} />
               </Link>
@@ -1668,10 +1810,7 @@ export default function ProductDetailPage() {
                     <h4>🌟 Đặc điểm nổi bật</h4>
                     <p>{product.name}</p>
                   </div>
-                  <div className={styles.fullDescText}>
-                    {product.description ||
-                      'Chất liệu cao cấp, đường may tỉ mỉ, form dáng chuẩn thời trang hiện đại.\nThiết kế trẻ trung năng động, dễ phối đồ phù hợp đi học, đi chơi, đi làm.'}
-                  </div>
+                  {renderDescriptionContent(product.description, styles.fullDescText)}
 
                   <div className={styles.policyGuarantees}>
                     <div className={styles.policyItem}>
@@ -1780,6 +1919,9 @@ export default function ProductDetailPage() {
                                   alt="Review"
                                   className={styles.fullReviewPhotoImg}
                                   onClick={() => setLightboxImage(imgUrl)}
+                                  onError={(e) => {
+                                    (e.currentTarget as HTMLElement).style.display = 'none';
+                                  }}
                                 />
                               ))}
                             </div>
@@ -1944,21 +2086,30 @@ export default function ProductDetailPage() {
                   ))}
 
                   {uploadedImages.length < 5 && (
-                    <button
-                      type="button"
+                    <label
+                      htmlFor="productReviewPhotoInput"
                       className={styles.uploadPhotoBtn}
-                      onClick={() => reviewFileInputRef.current?.click()}
-                      disabled={isUploading}
+                      style={{
+                        cursor: isUploading ? 'not-allowed' : 'pointer',
+                        opacity: isUploading ? 0.7 : 1,
+                      }}
+                      title="Thêm ảnh chụp thực tế (tối đa 5 ảnh)"
                     >
                       <FiCamera size={18} />
                       <span>{isUploading ? 'Đang tải...' : 'Thêm ảnh'}</span>
-                    </button>
+                    </label>
                   )}
                   <input
+                    id="productReviewPhotoInput"
                     type="file"
                     ref={reviewFileInputRef}
                     style={{ display: 'none' }}
                     accept="image/*"
+                    multiple
+                    disabled={isUploading}
+                    onClick={(e) => {
+                      (e.target as HTMLInputElement).value = '';
+                    }}
                     onChange={handleUploadPhoto}
                   />
                 </div>

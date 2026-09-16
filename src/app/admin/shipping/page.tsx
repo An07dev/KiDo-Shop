@@ -15,6 +15,10 @@ import {
   FiEye,
   FiEyeOff,
   FiX,
+  FiHome,
+  FiMapPin,
+  FiPhone,
+  FiUser,
 } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import { formatPrice } from '@/lib/utils';
@@ -53,6 +57,15 @@ export default function ShippingAdminPage() {
 
   // Full Shipping Config State (API 8.3)
   const [config, setConfig] = useState({
+    originAddress: {
+      name: 'ShopBig Store - Kho Tổng',
+      phone: '0364978796',
+      province: 'Hà Nội',
+      district: 'Quận Nam Từ Liêm',
+      ward: 'Phường Mỹ Đình 2',
+      address: 'Số 10 Phạm Hùng, Mỹ Đình',
+      pickNote: 'Lấy hàng trong giờ hành chính, gọi trước khi đến',
+    },
     carriers: {
       ghn: {
         enabled: true,
@@ -92,6 +105,10 @@ export default function ShippingAdminPage() {
   const [calcResults, setCalcResults] = useState<any | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
 
+  // Dynamic Wards State for Origin Warehouse
+  const [warehouseWards, setWarehouseWards] = useState<string[]>([]);
+  const [loadingWarehouseWards, setLoadingWarehouseWards] = useState(false);
+
   // 3rd-Party Webhook Simulator State
   const [webhookSim, setWebhookSim] = useState({
     carrier: 'ghn',
@@ -124,6 +141,48 @@ export default function ShippingAdminPage() {
   useEffect(() => {
     loadConfig();
   }, []);
+
+  // Auto-fetch wards whenever warehouse district or province changes
+  useEffect(() => {
+    const dist = config.originAddress?.district;
+    const prov = config.originAddress?.province;
+    if (!dist) {
+      setWarehouseWards([]);
+      return;
+    }
+
+    let isMounted = true;
+    setLoadingWarehouseWards(true);
+
+    fetch(
+      `/api/locations/wards?district=${encodeURIComponent(dist)}&province=${encodeURIComponent(prov || '')}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (!isMounted) return;
+        if (data.success && Array.isArray(data.wards)) {
+          setWarehouseWards(data.wards);
+          // If current ward not in list and wards exist, auto set first one or keep if already filled
+          if (data.wards.length > 0 && !config.originAddress?.ward) {
+            setConfig((prev) => ({
+              ...prev,
+              originAddress: {
+                ...prev.originAddress,
+                ward: data.wards[0],
+              },
+            }));
+          }
+        }
+      })
+      .catch((e) => console.error('Failed to load warehouse wards:', e))
+      .finally(() => {
+        if (isMounted) setLoadingWarehouseWards(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [config.originAddress?.province, config.originAddress?.district]);
 
   // Save Shipping Config (API 8.3 POST)
   const handleSave = async () => {
@@ -344,10 +403,45 @@ export default function ShippingAdminPage() {
               Công Cụ So Sánh Cước Phí Trực Tiếp (API 8.1)
             </h3>
 
+            {/* Origin Warehouse Info Banner */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: 8,
+                padding: '10px 14px',
+                backgroundColor: 'rgba(59, 130, 246, 0.08)',
+                border: '1px solid rgba(59, 130, 246, 0.2)',
+                borderRadius: 8,
+                marginBottom: 16,
+                fontSize: '0.85rem',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <FiHome style={{ color: 'var(--primary, #3b82f6)', fontSize: 16 }} />
+                <span>
+                  Kho gửi hàng (Origin): <strong>{config.originAddress?.name || 'Kho Tổng'}</strong> — {config.originAddress?.address ? `${config.originAddress.address}, ` : ''}{config.originAddress?.district}, {config.originAddress?.province}
+                </span>
+              </div>
+              <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 600 }}>
+                ● Đã đồng bộ điểm gửi với GHN / GHTK / Viettel Post
+              </span>
+            </div>
+
             {/* Province & District Dropdowns */}
             {(() => {
               const selectedProvinceObj =
                 vietnamProvinces.find((p) => p.name === calcData.province) || vietnamProvinces[0];
+
+              // Calculate lowest fee among active carriers
+              const activeFees: number[] = [];
+              if (calcResults?.ghn?.fee) activeFees.push(calcResults.ghn.fee);
+              if (calcResults?.ghtk?.fee) activeFees.push(calcResults.ghtk.fee);
+              if (calcResults?.viettelpost?.fee) activeFees.push(calcResults.viettelpost.fee);
+              const minFee = activeFees.length > 0 ? Math.min(...activeFees) : 0;
+
               return (
                 <form onSubmit={handleCalculateFee}>
                   <div className={styles.calcGrid}>
@@ -398,6 +492,18 @@ export default function ShippingAdminPage() {
                       />
                     </div>
 
+                    <div className={styles.inputGroup}>
+                      <label>Giá trị hàng (VNĐ)</label>
+                      <input
+                        type="number"
+                        min="0"
+                        step="10000"
+                        className={styles.input}
+                        value={calcData.orderValue}
+                        onChange={(e) => setCalcData({ ...calcData, orderValue: parseInt(e.target.value) || 0 })}
+                      />
+                    </div>
+
                     <button
                       type="submit"
                       className={styles.saveBtn}
@@ -412,37 +518,292 @@ export default function ShippingAdminPage() {
             })()}
 
             {/* Results Grid */}
-            {calcResults && (
-              <div className={styles.resultCards} style={{ marginTop: 16 }}>
-                {/* GHN */}
-                <div className={`${styles.resultCard} ${styles.bestChoice}`}>
-                  <div className={styles.bestBadge}>Giao Nhanh</div>
-                  <div className={styles.providerName}>⚡ Giao Hàng Nhanh (GHN)</div>
-                  <div className={styles.providerFee}>{formatPrice(calcResults.ghn?.fee || 22000)}</div>
-                  <div className={styles.providerTime}>
-                    Thời gian: <strong>{calcResults.ghn?.estimatedTime || '1 ngày'}</strong>
-                  </div>
-                </div>
+            {calcResults && (() => {
+              const activeFees: number[] = [];
+              if (calcResults?.ghn?.fee) activeFees.push(calcResults.ghn.fee);
+              if (calcResults?.ghtk?.fee) activeFees.push(calcResults.ghtk.fee);
+              if (calcResults?.viettelpost?.fee) activeFees.push(calcResults.viettelpost.fee);
+              const minFee = activeFees.length > 0 ? Math.min(...activeFees) : 0;
 
-                {/* GHTK */}
-                <div className={styles.resultCard}>
-                  <div className={styles.providerName}>📦 Giao Hàng Tiết Kiệm (GHTK)</div>
-                  <div className={styles.providerFee}>{formatPrice(calcResults.ghtk?.fee || 20000)}</div>
-                  <div className={styles.providerTime}>
-                    Thời gian: <strong>{calcResults.ghtk?.estimatedTime || '1-2 ngày'}</strong>
+              return (
+                <div className={styles.resultCards} style={{ marginTop: 16 }}>
+                  {/* GHN */}
+                  <div className={`${styles.resultCard} ${calcResults.ghn && calcResults.ghn.fee === minFee ? styles.bestChoice : ''}`}>
+                    {calcResults.ghn && calcResults.ghn.fee === minFee && (
+                      <div className={styles.bestBadge}>Tiết Kiệm Nhất</div>
+                    )}
+                    <div className={styles.providerName}>⚡ Giao Hàng Nhanh (GHN)</div>
+                    {calcResults.ghn ? (
+                      <>
+                        <div className={styles.providerFee}>{formatPrice(calcResults.ghn.fee)}</div>
+                        <div className={styles.providerTime}>
+                          Thời gian: <strong>{calcResults.ghn.estimatedTime || '1-2 ngày'}</strong>
+                        </div>
+                      </>
+                    ) : (
+                      <div style={{ fontSize: 13, color: 'var(--text-muted, #94a3b8)', marginTop: 8 }}>
+                        Chưa kích hoạt đơn vị này
+                      </div>
+                    )}
                   </div>
-                </div>
 
-                {/* Viettel Post */}
-                <div className={styles.resultCard}>
-                  <div className={styles.providerName}>🚚 Viettel Post Tiêu Chuẩn</div>
-                  <div className={styles.providerFee}>{formatPrice(calcResults.viettelpost?.fee || 21000)}</div>
-                  <div className={styles.providerTime}>
-                    Thời gian: <strong>{calcResults.viettelpost?.estimatedTime || '1-2 ngày'}</strong>
+                  {/* GHTK */}
+                  <div className={`${styles.resultCard} ${calcResults.ghtk && calcResults.ghtk.fee === minFee ? styles.bestChoice : ''}`}>
+                    {calcResults.ghtk && calcResults.ghtk.fee === minFee && (
+                      <div className={styles.bestBadge}>Tiết Kiệm Nhất</div>
+                    )}
+                    <div className={styles.providerName}>📦 Giao Hàng Tiết Kiệm (GHTK)</div>
+                    {calcResults.ghtk ? (
+                      <>
+                        <div className={styles.providerFee}>{formatPrice(calcResults.ghtk.fee)}</div>
+                        <div className={styles.providerTime}>
+                          Thời gian: <strong>{calcResults.ghtk.estimatedTime || '1-2 ngày'}</strong>
+                        </div>
+                      </>
+                    ) : (
+                      <div style={{ fontSize: 13, color: 'var(--text-muted, #94a3b8)', marginTop: 8 }}>
+                        Chưa kích hoạt đơn vị này
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Viettel Post */}
+                  <div className={`${styles.resultCard} ${calcResults.viettelpost && calcResults.viettelpost.fee === minFee ? styles.bestChoice : ''}`}>
+                    {calcResults.viettelpost && calcResults.viettelpost.fee === minFee && (
+                      <div className={styles.bestBadge}>Tiết Kiệm Nhất</div>
+                    )}
+                    <div className={styles.providerName}>🚚 Viettel Post Tiêu Chuẩn</div>
+                    {calcResults.viettelpost ? (
+                      <>
+                        <div className={styles.providerFee}>{formatPrice(calcResults.viettelpost.fee)}</div>
+                        <div className={styles.providerTime}>
+                          Thời gian: <strong>{calcResults.viettelpost.estimatedTime || '1-2 ngày'}</strong>
+                        </div>
+                      </>
+                    ) : (
+                      <div style={{ fontSize: 13, color: 'var(--text-muted, #94a3b8)', marginTop: 8 }}>
+                        Chưa kích hoạt đơn vị này
+                      </div>
+                    )}
                   </div>
                 </div>
+              );
+            })()}
+          </div>
+
+          {/* Section: Cấu Hình Địa Chỉ Kho Hàng Của Shop (Điểm Lấy Hàng) */}
+          <div className={styles.card}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18, flexWrap: 'wrap', gap: 12 }}>
+              <div>
+                <h3 className={styles.cardTitle} style={{ margin: 0 }}>
+                  <FiHome style={{ color: 'var(--primary, #3b82f6)' }} />
+                  Cấu Hình Địa Chỉ Kho Hàng (Điểm Lấy Hàng Của Shop)
+                </h3>
+                <p style={{ margin: '4px 0 0 0', fontSize: '0.85rem', color: 'var(--text-muted, #94a3b8)' }}>
+                  Địa chỉ này được dùng làm điểm gửi hàng khi Shipper bên thứ 3 (GHN, GHTK, Viettel Post) đến lấy hàng
+                </p>
               </div>
-            )}
+              <button
+                type="button"
+                className={styles.saveBtn}
+                onClick={handleSave}
+                disabled={saving}
+                style={{ height: 40, padding: '0 20px' }}
+              >
+                <FiSave /> {saving ? 'Đang lưu...' : 'Lưu Địa Chỉ Kho'}
+              </button>
+            </div>
+
+            {(() => {
+              const warehouseProvObj =
+                vietnamProvinces.find((p) => p.name === config.originAddress?.province) || vietnamProvinces[0];
+
+              return (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
+                  {/* Tên kho / Người đại diện */}
+                  <div className={styles.inputGroup}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <FiUser style={{ color: 'var(--primary, #3b82f6)' }} /> Tên kho hàng / Người gửi
+                    </label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      placeholder="VD: ShopBig Store - Kho Tổng"
+                      value={config.originAddress?.name || ''}
+                      onChange={(e) =>
+                        setConfig({
+                          ...config,
+                          originAddress: {
+                            ...config.originAddress,
+                            name: e.target.value,
+                          },
+                        })
+                      }
+                    />
+                  </div>
+
+                  {/* SĐT kho */}
+                  <div className={styles.inputGroup}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <FiPhone style={{ color: 'var(--primary, #3b82f6)' }} /> Số điện thoại liên hệ kho
+                    </label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      placeholder="VD: 0364978796"
+                      value={config.originAddress?.phone || ''}
+                      onChange={(e) =>
+                        setConfig({
+                          ...config,
+                          originAddress: {
+                            ...config.originAddress,
+                            phone: e.target.value,
+                          },
+                        })
+                      }
+                    />
+                  </div>
+
+                  {/* Tỉnh / Thành phố kho */}
+                  <div className={styles.inputGroup}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <FiMapPin style={{ color: 'var(--primary, #3b82f6)' }} /> Tỉnh / Thành phố kho
+                    </label>
+                    <select
+                      className={styles.select}
+                      value={config.originAddress?.province || 'Hà Nội'}
+                      onChange={(e) => {
+                        const newProv = e.target.value;
+                        const pData = vietnamProvinces.find((p) => p.name === newProv);
+                        const firstDist = pData?.districts?.[0]?.name || '';
+                        setConfig({
+                          ...config,
+                          originAddress: {
+                            ...config.originAddress,
+                            province: newProv,
+                            district: firstDist,
+                            ward: '',
+                          },
+                        });
+                      }}
+                    >
+                      {vietnamProvinces.map((p) => (
+                        <option key={p.name} value={p.name}>
+                          {p.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Quận / Huyện kho */}
+                  <div className={styles.inputGroup}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <FiMapPin style={{ color: 'var(--primary, #3b82f6)' }} /> Quận / Huyện kho
+                    </label>
+                    <select
+                      className={styles.select}
+                      value={config.originAddress?.district || ''}
+                      onChange={(e) =>
+                        setConfig({
+                          ...config,
+                          originAddress: {
+                            ...config.originAddress,
+                            district: e.target.value,
+                            ward: '',
+                          },
+                        })
+                      }
+                    >
+                      {warehouseProvObj?.districts?.map((d) => (
+                        <option key={d.name} value={d.name}>
+                          {d.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Phường / Xã kho */}
+                  <div className={styles.inputGroup}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <FiMapPin style={{ color: 'var(--primary, #3b82f6)' }} /> Phường / Xã kho
+                    </label>
+                    <select
+                      className={styles.select}
+                      value={config.originAddress?.ward || ''}
+                      disabled={loadingWarehouseWards}
+                      onChange={(e) =>
+                        setConfig({
+                          ...config,
+                          originAddress: {
+                            ...config.originAddress,
+                            ward: e.target.value,
+                          },
+                        })
+                      }
+                    >
+                      {loadingWarehouseWards ? (
+                        <option value="">Đang tải danh sách phường/xã...</option>
+                      ) : warehouseWards.length > 0 ? (
+                        <>
+                          <option value="">-- Chọn Phường / Xã --</option>
+                          {warehouseWards.map((w) => (
+                            <option key={w} value={w}>
+                              {w}
+                            </option>
+                          ))}
+                        </>
+                      ) : (
+                        <option value={config.originAddress?.ward || ''}>
+                          {config.originAddress?.ward || 'Chọn hoặc nhập phường/xã'}
+                        </option>
+                      )}
+                    </select>
+                  </div>
+
+                  {/* Địa chỉ chi tiết */}
+                  <div className={styles.inputGroup}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <FiMapPin style={{ color: 'var(--primary, #3b82f6)' }} /> Địa chỉ cụ thể (Số nhà, đường)
+                    </label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      placeholder="VD: Số 10 Phạm Hùng"
+                      value={config.originAddress?.address || ''}
+                      onChange={(e) =>
+                        setConfig({
+                          ...config,
+                          originAddress: {
+                            ...config.originAddress,
+                            address: e.target.value,
+                          },
+                        })
+                      }
+                    />
+                  </div>
+
+                  {/* Ghi chú lấy hàng */}
+                  <div className={styles.inputGroup} style={{ gridColumn: '1 / -1' }}>
+                    <label>Ghi chú lấy hàng cho Shipper (Tùy chọn)</label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      placeholder="VD: Hàng hóa linh kiện điện tử, lấy hàng giờ hành chính, gọi trước khi đến"
+                      value={config.originAddress?.pickNote || ''}
+                      onChange={(e) =>
+                        setConfig({
+                          ...config,
+                          originAddress: {
+                            ...config.originAddress,
+                            pickNote: e.target.value,
+                          },
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+              );
+            })()}
           </div>
 
           {/* Section 2: Cấu Hình Chi Tiết 3 Đơn Vị Vận Chuyển (API 8.3) */}

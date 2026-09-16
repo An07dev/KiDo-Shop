@@ -1,18 +1,19 @@
 /* ======================================================== */
-/* SHOPEE VOUCHER COLLECTION BAR STYLES                     */
+/* VOUCHER COLLECTION BAR - SOFT THEME HARMONIZED STYLING    */
 /* ======================================================== */
 
 .wrapper {
   width: 100%;
   background: var(--bg-card, #ffffff);
-  border-radius: 4px;
-  padding: 14px 16px 16px;
-  border: 1px solid var(--border-color, #e5e7eb);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius-md, 10px);
+  padding: 16px 20px 18px;
+  border: 1px solid var(--border-color, #e2e8f0);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
   box-sizing: border-box;
+  font-family: inherit;
 }
 
 .sectionHeader {
@@ -20,44 +21,88 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 8px;
-  padding-bottom: 8px;
+  gap: 12px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--border-color, #f1f5f9);
 }
 
 .titleGroup {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
 .iconBadge {
-  font-size: 18px;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md, 8px);
+  background: color-mix(in srgb, var(--primary, #ee4d2d) 10%, var(--bg-card, #ffffff));
   color: var(--primary, #ee4d2d);
+  border: 1px solid color-mix(in srgb, var(--primary, #ee4d2d) 20%, transparent);
   display: flex;
   align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  flex-shrink: 0;
+}
+
+.titleInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .title {
-  font-size: 14.5px;
+  font-size: 16.5px;
   font-weight: 800;
-  color: var(--text-main, #1e293b);
+  color: var(--text-main, #0f172a);
   text-transform: uppercase;
   letter-spacing: 0.3px;
+  margin: 0;
 }
 
-.subtitle {
-  font-size: 12px;
-  color: var(--text-muted, #64748b);
-  font-weight: 500;
+.navControls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.navBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border-color, #cbd5e1);
+  color: var(--text-main, #334155);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.navBtn:hover {
+  background: color-mix(in srgb, var(--primary, #ee4d2d) 10%, var(--bg-card, #ffffff));
+  border-color: var(--primary, #ee4d2d);
+  color: var(--primary, #ee4d2d);
+  transform: scale(1.06);
 }
 
 /* Horizontal Scroll List */
 .carousel {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   overflow-x: auto;
-  padding-bottom: 4px;
+  padding-bottom: 6px;
+  padding-top: 2px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   width: 100%;
@@ -67,31 +112,33 @@
   display: none;
 }
 
-/* Shopee Ticket Voucher Card */
+/* Ticket Voucher Card (To, rõ ràng & nhạt thanh lịch) */
 .voucherCard {
   flex-shrink: 0;
-  width: 250px;
+  width: 340px;
+  min-height: 118px;
   display: flex;
   background: var(--bg-card, #ffffff);
-  border: 1px solid var(--border-color, #fed7aa);
-  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--primary, #ee4d2d) 22%, var(--border-color, #e2e8f0));
+  border-radius: var(--radius-md, 8px);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-sizing: border-box;
 }
 
 .voucherCard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--primary, #ee4d2d) 14%, transparent);
   border-color: var(--primary, #ee4d2d);
 }
 
-/* Left side: Discount badge */
+/* Left side: Soft Theme Discount Badge (Nhạt & rõ nét) */
 .leftBadge {
-  width: 76px;
-  background: linear-gradient(135deg, var(--primary, #ee4d2d) 0%, var(--accent, #ff5722) 100%);
-  color: var(--primary-text, #ffffff);
+  width: 106px;
+  background: color-mix(in srgb, var(--primary, #ee4d2d) 9%, var(--bg-card, #ffffff));
+  color: var(--primary, #ee4d2d);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -103,75 +150,117 @@
 }
 
 .badgeValue {
-  font-size: 14px;
-  font-weight: 900;
+  font-size: 22px;
+  font-weight: 800;
   line-height: 1.1;
-  color: var(--primary-text, #ffffff);
+  color: var(--primary, #ee4d2d);
+  letter-spacing: -0.5px;
 }
 
 .badgeLabel {
-  font-size: 9px;
+  font-size: 9.5px;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
-  color: rgba(255, 255, 255, 0.92);
-  margin-top: 3px;
+  letter-spacing: 0.5px;
+  color: var(--text-muted, #64748b);
+  margin-top: 4px;
+}
+
+.badgeSub {
+  font-size: 9.5px;
+  color: var(--primary, #ee4d2d);
+  background: color-mix(in srgb, var(--primary, #ee4d2d) 12%, transparent);
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-top: 4px;
+  font-weight: 600;
+  line-height: 1.2;
 }
 
 /* Dashed divider between left and right with ticket punch holes */
 .dashedDivider {
   position: relative;
   width: 1px;
-  border-left: 1px dashed var(--border-color, #fdba74);
+  border-left: 1.5px dashed color-mix(in srgb, var(--primary, #ee4d2d) 30%, var(--border-color, #e2e8f0));
+  flex-shrink: 0;
 }
 
 .dashedDivider::before,
 .dashedDivider::after {
   content: '';
   position: absolute;
-  left: -5px;
-  width: 10px;
-  height: 10px;
+  left: -7px;
+  width: 14px;
+  height: 14px;
   background: var(--bg-card, #ffffff);
-  border: 1px solid var(--border-color, #fed7aa);
+  border: 1px solid color-mix(in srgb, var(--primary, #ee4d2d) 22%, var(--border-color, #e2e8f0));
   border-radius: 50%;
   z-index: 2;
+  box-sizing: border-box;
 }
 
 .dashedDivider::before {
-  top: -6px;
+  top: -8px;
 }
 
 .dashedDivider::after {
-  bottom: -6px;
+  bottom: -8px;
 }
 
 /* Right side: Voucher details & action */
 .rightContent {
   flex: 1;
-  padding: 8px 10px 8px 12px;
+  padding: 10px 14px 10px 14px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   min-width: 0;
-  background: var(--bg-card-hover, #fffaf5);
+  background: var(--bg-card, #ffffff);
+  box-sizing: border-box;
+}
+
+.topInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.badgeCodeRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.codeTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: color-mix(in srgb, var(--primary, #ee4d2d) 8%, var(--bg-card, #ffffff));
+  color: var(--primary, #ee4d2d);
+  border: 1px dashed color-mix(in srgb, var(--primary, #ee4d2d) 32%, transparent);
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
 }
 
 .codeName {
-  font-size: 12.5px;
+  font-size: 13.5px;
   font-weight: 700;
-  color: var(--text-main, #1e293b);
-  white-space: nowrap;
+  color: var(--text-main, #0f172a);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.2;
 }
 
 .minSpend {
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 500;
   color: var(--text-muted, #64748b);
   margin-top: 2px;
-  line-height: 1.2;
 }
 
 .bottomRow {
@@ -180,176 +269,213 @@
   justify-content: space-between;
   margin-top: 6px;
   gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .expiry {
-  font-size: 10px;
+  font-size: 11.5px;
   color: var(--text-dim, #94a3b8);
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
   white-space: nowrap;
+  font-weight: 500;
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .saveBtn {
   background: var(--primary, #ee4d2d);
   color: var(--primary-text, #ffffff);
   border: none;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 3px;
+  padding: 6px 14px;
+  border-radius: var(--radius-md, 5px);
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.15s ease;
-  text-transform: uppercase;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--primary, #ee4d2d) 25%, transparent);
 }
 
 .saveBtn:hover {
   background: var(--primary-hover, #d73211);
-  transform: scale(1.03);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--primary, #ee4d2d) 35%, transparent);
+}
+
+.saveBtn:active {
+  transform: scale(0.98);
 }
 
 .savedBtn {
-  background: rgba(16, 185, 129, 0.12);
-  color: #10b981;
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  font-size: 10.5px;
+  background: color-mix(in srgb, var(--accent, #10b981) 12%, var(--bg-card, #ffffff));
+  color: var(--accent, #10b981);
+  border: 1px solid color-mix(in srgb, var(--accent, #10b981) 35%, transparent);
+  font-size: 11.5px;
   font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 3px;
+  padding: 5px 12px;
+  border-radius: var(--radius-md, 5px);
   cursor: default;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 3px;
+  justify-content: center;
+  gap: 4px;
   white-space: nowrap;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .usedBtn {
-  background: var(--bg-main, #f1f5f9);
+  background: var(--bg-card-hover, #f1f5f9);
   color: var(--text-dim, #94a3b8);
   border: 1px solid var(--border-color, #e2e8f0);
-  font-size: 10.5px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 3px;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: var(--radius-md, 5px);
   cursor: not-allowed;
   white-space: nowrap;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+/* ======================================================== */
+/* RESPONSIVE BREAKPOINTS (MOBILE & TABLET)                 */
+/* ======================================================== */
+
+@media (max-width: 767px) {
+  .navControls {
+    display: none;
+  }
 }
 
 @media (max-width: 599px) {
   .wrapper {
-    padding: 10px 10px 10px;
-    border-radius: 8px;
-    gap: 8px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    padding: 12px 10px 14px;
+    border-radius: var(--radius-md, 8px);
+    gap: 10px;
   }
 
   .sectionHeader {
-    padding-bottom: 6px;
-    gap: 4px;
-  }
-
-  .titleGroup {
+    padding-bottom: 8px;
     gap: 6px;
   }
 
   .iconBadge {
-    font-size: 15px;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    border-radius: var(--radius-md, 6px);
   }
 
   .title {
-    font-size: 13px;
-    letter-spacing: 0.2px;
-  }
-
-  .subtitle {
-    display: none;
+    font-size: 14.5px;
   }
 
   .carousel {
-    gap: 8px;
-    padding-bottom: 2px;
+    gap: 10px;
   }
 
   .voucherCard {
-    width: 195px;
-    border-radius: 5px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    width: 295px;
+    min-height: 106px;
+    box-sizing: border-box;
   }
 
   .leftBadge {
-    width: 58px;
-    padding: 6px 4px;
+    width: 82px;
+    padding: 8px 4px;
+    box-sizing: border-box;
   }
 
   .badgeValue {
-    font-size: 13px;
-    font-weight: 800;
+    font-size: 18px;
   }
 
   .badgeLabel {
-    font-size: 8px;
-    margin-top: 1px;
+    font-size: 8.5px;
   }
 
   .rightContent {
-    padding: 5px 8px;
+    padding: 8px 10px;
+    box-sizing: border-box;
+  }
+
+  .codeTag {
+    font-size: 10px;
+    padding: 1px 5px;
   }
 
   .codeName {
-    font-size: 11.5px;
+    font-size: 12.5px;
+    line-height: 1.3;
   }
 
   .minSpend {
-    font-size: 10px;
-    margin-top: 1px;
+    font-size: 11px;
   }
 
   .bottomRow {
-    margin-top: 3px;
-    gap: 4px;
+    margin-top: 4px;
+    gap: 6px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .expiry {
-    font-size: 9px;
+    font-size: 10.5px;
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .saveBtn {
-    font-size: 10px;
-    padding: 2px 7px;
-    border-radius: 2px;
-    height: 20px;
-    line-height: 16px;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    white-space: nowrap;
   }
 
   .savedBtn {
-    font-size: 9.5px;
-    padding: 2px 5px;
-    border-radius: 2px;
-    height: 20px;
-    line-height: 16px;
+    font-size: 10.5px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
   }
 
   .usedBtn {
-    font-size: 9.5px;
-    padding: 2px 5px;
-    border-radius: 2px;
-    height: 20px;
+    font-size: 10.5px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    white-space: nowrap;
   }
 
   .dashedDivider::before,
   .dashedDivider::after {
-    width: 8px;
-    height: 8px;
-    left: -4px;
+    width: 10px;
+    height: 10px;
+    left: -5px;
   }
 
   .dashedDivider::before {
-    top: -5px;
+    top: -6px;
   }
 
   .dashedDivider::after {
-    bottom: -5px;
+    bottom: -6px;
   }
 }

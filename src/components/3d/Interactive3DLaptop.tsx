@@ -336,10 +336,10 @@ export default function Interactive3DLaptop() {
       url: "/admin/products",
     },
     {
-      id: "landing",
-      label: "Landing Page",
-      icon: <Monitor size={14} />,
-      url: "/landing",
+      id: "flashsale",
+      label: "Flash Sale Deal",
+      icon: <Sparkles size={14} />,
+      url: "/?tab=products&filter=flash-sale",
     },
   ];
 

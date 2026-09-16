@@ -3,6 +3,9 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
+import { useTheme } from '@/contexts/ThemeContext';
+import StoreLoading from '@/components/store/StoreLoading';
+import ScrollToTopButton from '@/components/store/ScrollToTopButton';
 import BottomNav from '@/components/store/BottomNav';
 import MarketingPixelTracker from '@/components/store/MarketingPixelTracker';
 import styles from './layout.module.css';
@@ -29,10 +32,15 @@ const FomoLiveNotification = dynamic(
 );
 
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
+  const { isLoading } = useTheme();
   const pathname = usePathname();
   const isChatPage = pathname === '/chat' || pathname?.startsWith('/chat/');
   const isProductPage = pathname?.startsWith('/product');
   const isCartPage = pathname === '/cart' || pathname?.startsWith('/cart');
+
+  if (isLoading) {
+    return <StoreLoading fullScreen text="Đang tải giao diện..." />;
+  }
 
   return (
     <div className={styles.outerViewport}>
@@ -41,6 +49,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
         <div className={styles.phoneScreen}>
           {children}
         </div>
+        <ScrollToTopButton />
         {!isChatPage && !isProductPage && !isCartPage && <ChatFloatingWidget />}
         {!isChatPage && !isProductPage && !isCartPage && <BottomNav />}
       </div>

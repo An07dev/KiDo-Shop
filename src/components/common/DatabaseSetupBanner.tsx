@@ -36,6 +36,15 @@ interface DbStatus {
   isLocked?: boolean;
   isRevoked?: boolean;
   licenseStatus?: string;
+  licenseCheck?: {
+    valid: boolean;
+    status: string;
+    licenseKey?: string;
+    buyerName?: string;
+    shopName?: string;
+    assignedDb?: string;
+    message?: string;
+  };
   errorMessage: string | null;
   stats: {
     users: number;
@@ -51,7 +60,7 @@ export default function DatabaseSetupBanner() {
   const [loading, setLoading] = useState(true);
 
   // Form & License States
-  const [shopName, setShopName] = useState('Shop Của Tôi');
+  const [shopName, setShopName] = useState('');
   const [licenseKey, setLicenseKey] = useState('');
   const [seeding, setSeeding] = useState(false);
   const [progressPercent, setProgressPercent] = useState(0);
@@ -69,11 +78,14 @@ export default function DatabaseSetupBanner() {
   const [copiedKey, setCopiedKey] = useState(false);
   const [isModalClosed, setIsModalClosed] = useState(false);
 
-  // Do not show modal when on /setup page
+  // Do not show modal when on /landing, /setup, or /master pages
+  const isLandingPage = pathname === '/landing';
   const isSetupPage = pathname === '/setup';
   const isAdminPage = pathname?.startsWith('/admin');
+  const isMasterPage = pathname?.startsWith('/master');
 
   const checkDb = async (forceFresh = false) => {
+    if (isLandingPage || isSetupPage || isMasterPage) return;
     try {
       let localKeyParam = '';
       if (typeof window !== 'undefined') {
@@ -85,7 +97,7 @@ export default function DatabaseSetupBanner() {
               localKeyParam = `&key=${encodeURIComponent(parsed.licenseKey)}`;
             }
           }
-        } catch (e) {}
+        } catch (e) { }
       }
 
       const res = await apiFetch(`/api/system/db-status?${forceFresh ? 'fresh=1' : ''}${localKeyParam}`);
@@ -95,7 +107,7 @@ export default function DatabaseSetupBanner() {
         if (data.data.tenant?.licenseKey && typeof window !== 'undefined') {
           try {
             localStorage.setItem('shop_tenant_config', JSON.stringify(data.data.tenant));
-          } catch (e) {}
+          } catch (e) { }
         }
       }
     } catch (err) {
@@ -114,9 +126,12 @@ export default function DatabaseSetupBanner() {
   };
 
   useEffect(() => {
-    if (isSetupPage) return;
+    if (isLandingPage || isSetupPage || isMasterPage) {
+      setLoading(false);
+      return;
+    }
     checkDb();
-  }, [pathname, isSetupPage]);
+  }, [pathname, isLandingPage, isSetupPage, isMasterPage]);
 
   // Handle License Validation & 1-Click Provisioning
   const handleActivateAndProvision = async (e?: React.FormEvent) => {
@@ -179,7 +194,7 @@ export default function DatabaseSetupBanner() {
               licenseKey: key,
             })
           );
-        } catch (e) {}
+        } catch (e) { }
       }
 
       // Refresh database status
@@ -250,6 +265,11 @@ export default function DatabaseSetupBanner() {
     router.refresh();
   };
 
+  // Landing page, Master page and Setup page never show this modal
+  if (isLandingPage || isMasterPage || isSetupPage) {
+    return null;
+  }
+
   // 1. CRITICAL: If the store's license is REVOKED or LOCKED, block 100% access everywhere!
   if (status?.isRevoked || status?.isLocked || status?.licenseStatus === 'revoked') {
     return (
@@ -283,7 +303,7 @@ export default function DatabaseSetupBanner() {
               <span className={styles.credLabel}>
                 <FiShoppingBag size={15} /> Tên Cửa Hàng:
               </span>
-              <strong className={styles.credVal}>{status.tenant?.shopName || 'Shop Của Tôi'}</strong>
+              <strong className={styles.credVal}>{status.tenant?.shopName || ''}</strong>
             </div>
             <div className={styles.credRow}>
               <span className={styles.credLabel}>
@@ -356,12 +376,12 @@ export default function DatabaseSetupBanner() {
   }
 
   // 2. Normal Setup Checks
-  if (isSetupPage || isAdminPage || loading || !status || isModalClosed) {
+  if (isLandingPage || isMasterPage || isSetupPage || isAdminPage || loading || !status || isModalClosed) {
     return null;
   }
 
-  // If connected and seeded, no modal needed
-  if (status.isConnected && status.isSeeded && !setupDone) {
+  // If connected and seeded or already has a valid active license, no modal needed
+  if (status.isConnected && (status.isSeeded || Boolean(status.tenant?.licenseKey) || status.licenseCheck?.valid) && !setupDone) {
     return null;
   }
 

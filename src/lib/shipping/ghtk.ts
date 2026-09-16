@@ -1,4 +1,5 @@
 import { getDBShippingConfig } from './configHelper';
+import { resolveShippingAddress } from './addressHelper';
 
 // GHTK (Giao Hàng Tiết Kiệm) Integration
 const GHTK_API_URL = process.env.GHTK_API_URL || 'https://services.giaohangtietkiem.vn/services';
@@ -6,21 +7,31 @@ const GHTK_API_URL = process.env.GHTK_API_URL || 'https://services.giaohangtietk
 export async function calculateGHTKFee(province: string, district: string, weight = 500) {
   const dbConfig = await getDBShippingConfig();
   const token = dbConfig.carriers.ghtk.token || process.env.GHTK_TOKEN || '';
+  const isSandbox = dbConfig.carriers.ghtk.environment === 'sandbox';
+  const apiUrl = isSandbox
+    ? 'https://services-dev.giaohangtietkiem.vn/services'
+    : GHTK_API_URL;
+
+  // Origin address (Kho lấy hàng của Shop từ cấu hình DB)
+  const pickProvince = dbConfig.originAddress?.province || 'Hà Nội';
+  const pickDistrict = dbConfig.originAddress?.district || 'Quận Nam Từ Liêm';
 
   if (token && dbConfig.carriers.ghtk.enabled) {
     try {
-      const url = `${GHTK_API_URL}/shipment/fee?province=${encodeURIComponent(province)}&district=${encodeURIComponent(district)}&weight=${weight}`;
+      const url = `${apiUrl}/shipment/fee?pick_province=${encodeURIComponent(pickProvince)}&pick_district=${encodeURIComponent(pickDistrict)}&province=${encodeURIComponent(province)}&district=${encodeURIComponent(district)}&weight=${weight}`;
       const res = await fetch(url, {
         headers: {
           Token: token,
         },
       });
       const data = await res.json();
-      if (data.success && data.fee?.fee) {
+      if (data.success && data.fee) {
+        const fee = data.fee.ship_fee_only || data.fee.fee;
+        const isLocal = data.fee.delivery_type?.toLowerCase().includes('noitinh') || data.fee.dt === 'local';
         return {
-          fee: data.fee.fee,
+          fee,
           serviceName: 'Giao Hàng Tiết Kiệm (GHTK)',
-          estimatedTime: '1-2 ngày',
+          estimatedTime: isLocal ? '1-2 ngày' : '2-4 ngày',
         };
       }
     } catch (e) {
@@ -28,12 +39,33 @@ export async function calculateGHTKFee(province: string, district: string, weigh
     }
   }
 
-  const isInner = province.toLowerCase().includes('hà nội') || province.toLowerCase().includes('hồ chí minh');
-  const fee = isInner ? dbConfig.rates.defaultInnerFee : dbConfig.rates.defaultOuterFee;
+  // Tiered fallback if token is inactive or offline
+  const pNorm = (province || '').toLowerCase();
+  const dNorm = (district || '').toLowerCase();
+  const isHanoi = pNorm.includes('hà nội');
+  const isHCM = pNorm.includes('hồ chí minh');
+
+  let fee = dbConfig.rates.defaultOuterFee;
+  let estimatedTime = '2-3 ngày';
+
+  if (isHanoi) {
+    fee = dNorm.includes('huyện') ? 30000 : dbConfig.rates.defaultInnerFee;
+    estimatedTime = '1-2 ngày';
+  } else if (isHCM) {
+    fee = dNorm.includes('huyện') ? 45000 : 40000;
+    estimatedTime = '2-3 ngày';
+  } else if (pNorm.includes('đà nẵng') || pNorm.includes('hải phòng') || pNorm.includes('cần thơ')) {
+    fee = 38000;
+    estimatedTime = '2-3 ngày';
+  } else {
+    fee = 32000;
+    estimatedTime = '2-4 ngày';
+  }
+
   return {
     fee,
     serviceName: 'Giao Hàng Tiết Kiệm (GHTK)',
-    estimatedTime: isInner ? '1-2 ngày' : '2-4 ngày',
+    estimatedTime,
   };
 }
 
@@ -44,6 +76,17 @@ export async function createGHTKOrder(orderData: any) {
   const apiUrl = isSandbox
     ? 'https://services-dev.giaohangtietkiem.vn/services'
     : GHTK_API_URL;
+
+  // Smart resolution ensures to_ward_name belongs to the exact province and district
+  const addr = resolveShippingAddress(orderData.customer || orderData);
+  const origin = dbConfig.originAddress || {
+    name: 'ShopBig Store',
+    phone: '0364978796',
+    address: 'Số 10 Phạm Hùng, Mỹ Đình',
+    province: 'Hà Nội',
+    district: 'Quận Nam Từ Liêm',
+    ward: 'Phường Mỹ Đình 2',
+  };
 
   if (token) {
     try {
@@ -63,22 +106,22 @@ export async function createGHTKOrder(orderData: any) {
         })),
         order: {
           id: orderData.orderCode || `ST_${Date.now()}`,
-          pick_name: 'ShopBig Store',
+          pick_name: origin.name || 'ShopBig Store',
           pick_money: orderData.paymentMethod === 'cod' ? (orderData.totalAmount || 0) : 0,
-          pick_address: 'Số 10 đường Phạm Hùng',
-          pick_province: 'Hà Nội',
-          pick_district: 'Quận Nam Từ Liêm',
-          pick_ward: 'Phường Mỹ Đình 1',
-          pick_tel: '0364978796',
+          pick_address: origin.address || 'Số 10 đường Phạm Hùng',
+          pick_province: origin.province || 'Hà Nội',
+          pick_district: origin.district || 'Quận Nam Từ Liêm',
+          pick_ward: origin.ward || 'Phường Mỹ Đình 2',
+          pick_tel: origin.phone || '0364978796',
           pick_hamlet: 'Khác',
-          name: orderData.customer?.name || orderData.to_name || 'Khách hàng',
-          address: orderData.customer?.address || orderData.to_address || 'Địa chỉ nhận',
-          province: orderData.customer?.province || orderData.to_province || 'Hà Nội',
-          district: orderData.customer?.district || orderData.to_district || 'Quận Ba Đình',
-          ward: orderData.customer?.ward || orderData.to_ward || 'Phường Điện Biên',
+          name: addr.name,
+          address: addr.streetAddress || addr.fullAddress,
+          province: addr.province,
+          district: addr.district,
+          ward: addr.ward,
           hamlet: 'Khác',
-          tel: orderData.customer?.phone || orderData.to_phone || '0336625074',
-          email: orderData.customer?.email || '',
+          tel: addr.phone,
+          email: addr.email,
           is_freeship: '0',
           value: rawValue || 100000,
           transport: 'road',

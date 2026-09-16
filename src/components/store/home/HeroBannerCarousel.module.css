@@ -1,22 +1,23 @@
 .heroBannerSection {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
   width: 100%;
   margin-top: 2px;
+  font-family: inherit;
 }
 
 /* ======================================================== */
-/* 1. MAIN BANNER CAROUSEL (Left ~66%)                      */
+/* 1. MAIN BANNER CAROUSEL (Chiều cao lớn +50%: 900px)     */
 /* ======================================================== */
 
 .bannerCarousel {
   position: relative;
   width: 100%;
-  height: 240px;
-  border-radius: 4px;
+  height: 900px;
+  border-radius: 6px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
   background: var(--bg-card, #f1f5f9);
 }
 
@@ -25,6 +26,7 @@
   width: 100%;
   height: 100%;
   transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  align-items: stretch;
 }
 
 .carouselSlide {
@@ -35,13 +37,15 @@
   cursor: pointer;
   overflow: hidden;
   user-select: none;
+  display: flex;
 }
 
 .carouselImg {
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
+  object-fit: cover;
+  object-position: center;
 }
 
 .carouselOverlay {
@@ -49,12 +53,12 @@
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 32px 16px 14px;
+  padding: 44px 28px 22px;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.25) 60%, transparent 100%);
   color: #ffffff;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
   pointer-events: none;
   z-index: 2;
 }
@@ -62,17 +66,17 @@
 .carouselTag {
   background: var(--primary, #ee4d2d);
   color: var(--primary-text, #ffffff);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 2px;
+  padding: 4px 12px;
+  border-radius: 4px;
   width: fit-content;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .carouselTitle {
-  font-size: 16px;
+  font-size: 21px;
   font-weight: 700;
   color: #ffffff;
   margin: 0;
@@ -86,9 +90,9 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 32px;
-  height: 48px;
-  background: rgba(0, 0, 0, 0.25);
+  width: 44px;
+  height: 68px;
+  background: rgba(0, 0, 0, 0.35);
   border: none;
   color: #ffffff;
   display: flex;
@@ -97,12 +101,12 @@
   cursor: pointer;
   transition: background 0.2s;
   z-index: 3;
-  border-radius: 2px;
-  opacity: 0.8;
+  border-radius: 4px;
+  opacity: 0.85;
 }
 
 .carouselNavBtn:hover {
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.7);
   opacity: 1;
 }
 
@@ -120,17 +124,17 @@
 
 .carouselDots {
   position: absolute;
-  bottom: 8px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 6px;
+  gap: 10px;
   z-index: 3;
 }
 
 .dot {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   border: none;
   background: rgba(255, 255, 255, 0.5);
@@ -141,73 +145,79 @@
 
 .activeDot {
   background: var(--primary, #ee4d2d);
-  width: 18px;
-  border-radius: 4px;
+  width: 24px;
+  border-radius: 5px;
 }
 
 /* ======================================================== */
-/* 2. 2 SUB-BANNERS STACKED (Right ~33%)                    */
+/* 2. SUB-BANNERS: SẮP XẾP 1 HÀNG DỌC (Chiều cao +50%: 630px)*/
 /* ======================================================== */
 
-.sideBannersColumn {
+.subBannersRow {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  height: 240px;
+  gap: 18px;
   width: 100%;
 }
 
-.sideBannerItem {
-  flex: 1;
-  height: calc(50% - 5px);
-  position: relative;
-  border-radius: 4px;
+.subBannerCard {
+  width: 100%;
+  border-radius: 6px;
   overflow: hidden;
   cursor: pointer;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   background: var(--bg-card, #f1f5f9);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.sideBannerItem:hover .sideBannerImg {
-  transform: scale(1.03);
+.subBannerCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
-.sideBannerImg {
+.subBannerImgWrap {
+  width: 100%;
+  height: 630px;
+  position: relative;
+  overflow: hidden;
+}
+
+.subBannerImg {
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
-  transition: transform 0.3s ease;
+  object-fit: cover;
+  object-position: center;
 }
 
-.sideBannerOverlay {
+.subBannerOverlay {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 20px 12px 8px;
+  padding: 34px 24px 18px;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.2) 60%, transparent 100%);
   color: #ffffff;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 6px;
   pointer-events: none;
   z-index: 2;
 }
 
-.sideBannerTag {
+.subBannerTag {
   background: var(--warning, #f59e0b);
   color: #ffffff;
-  font-size: 9.5px;
+  font-size: 11.5px;
   font-weight: 700;
-  padding: 1px 6px;
+  padding: 2.5px 9px;
   border-radius: 2px;
   width: fit-content;
   text-transform: uppercase;
 }
 
-.sideBannerTitle {
-  font-size: 12.5px;
+.subBannerTitle {
+  font-size: 17px;
   font-weight: 600;
   color: #ffffff;
   margin: 0;
@@ -221,30 +231,24 @@
 /* 3. RESPONSIVE BREAKPOINTS                                */
 /* ======================================================== */
 
-@media (max-width: 859px) and (min-width: 600px) {
-  .heroBannerSection {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-
+@media (max-width: 899px) {
   .bannerCarousel {
-    height: 200px;
+    height: 480px;
   }
-
-  .sideBannersColumn {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    height: 110px;
-    gap: 8px;
+  .subBannerImgWrap {
+    height: 320px;
   }
+}
 
-  .sideBannerItem {
-    height: 110px;
+@media (max-width: 768px) {
+  .subBannersRow {
+    display: none !important;
   }
 }
 
 @media (max-width: 599px) {
   .heroBannerSection {
-    display: none;
+    display: none !important;
   }
 }
+

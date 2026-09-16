@@ -1,5 +1,6 @@
 .bannerWrapper {
-  width: 100%;
+  width: 100% !important;
+  max-width: 100% !important;
   overflow: hidden;
   background: linear-gradient(135deg, var(--primary, #f97316) 0%, #26C6DA 100%);
   color: var(--primary-text, #ffffff);
@@ -8,8 +9,8 @@
   align-items: center;
   position: relative;
   flex-shrink: 0;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
-  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  border-radius: 0 !important;
   z-index: 15;
 }
 

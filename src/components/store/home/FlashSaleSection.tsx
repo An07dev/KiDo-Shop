@@ -3,7 +3,8 @@
 import React, { useState, useEffect, memo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { FiChevronRight, FiArrowRight, FiZap } from 'react-icons/fi';
+import { FiChevronRight, FiArrowRight } from 'react-icons/fi';
+import { RiFlashlightFill } from 'react-icons/ri';
 import styles from './FlashSaleSection.module.css';
 
 function formatPrice(price: number) {
@@ -185,7 +186,7 @@ const FlashSaleSectionComponent: React.FC<FlashSaleSectionProps> = ({
         <div className={styles.flashHeaderTop}>
           <div className={styles.flashTitleGroup}>
             <span className={styles.flashLogo}>
-              <FiZap size={20} color="var(--primary, #ee4d2d)" /> FLASH SALE
+              <RiFlashlightFill size={21} color="var(--primary, #ee4d2d)" /> FLASH SALE
             </span>
             <FlashSaleCountdown
               slots={flashSaleConfig.slots}

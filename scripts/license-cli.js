@@ -122,7 +122,7 @@ Cách sử dụng:
       } else {
         list.forEach((item, index) => {
           let statusBadge = '\x1b[33m[CHƯA DÙNG]\x1b[0m';
-          if (item.status === 'activated') {
+          if (item.status === 'active' || item.status === 'activated') {
             statusBadge = '\x1b[32m[ĐÃ KÍCH HOẠT]\x1b[0m';
           } else if (item.status === 'revoked') {
             statusBadge = '\x1b[31m[BỊ KHÓA]\x1b[0m';
@@ -131,7 +131,7 @@ Cách sử dụng:
           console.log(
             `${index + 1}. \x1b[1m${item.licenseKey}\x1b[0m | ${statusBadge} | Khách: \x1b[36m${item.buyerName}\x1b[0m`
           );
-          if (item.status === 'activated') {
+          if (item.status === 'active' || item.status === 'activated') {
             console.log(
               `   └─ Shop: "${item.shopName || 'N/A'}" | DB: ${item.assignedDb || 'N/A'} | Lúc: ${item.activatedAt ? new Date(item.activatedAt).toLocaleString('vi-VN') : 'N/A'}`
             );
@@ -167,7 +167,7 @@ Cách sử dụng:
       if (!existing) {
         console.log(`❌ Không tìm thấy mã Key: ${keyToReactivate}`);
       } else {
-        const nextStatus = (existing.assignedDb || existing.shopName) ? 'activated' : 'available';
+        const nextStatus = (existing.assignedDb || existing.shopName) ? 'active' : 'available';
         await collection.updateOne(
           { licenseKey: keyToReactivate },
           { $set: { status: nextStatus, updatedAt: new Date() } }

@@ -7,6 +7,7 @@ import { FiArrowLeft, FiUploadCloud, FiTrash2, FiPlus } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import AdminLoading from '@/components/admin/AdminLoading';
 import { apiFetch } from '@/lib/api';
+import ProductDescriptionEditor from '@/components/admin/ProductDescriptionEditor';
 import styles from '../../new/page.module.css';
 
 export default function EditProductPage() {
@@ -203,13 +204,12 @@ export default function EditProductPage() {
               />
             </div>
             <div className={styles.formGroup}>
-              <label>Mô tả chi tiết</label>
-              <textarea
-                className={styles.textarea}
-                rows={6}
+              <label>Mô tả chi tiết (Văn bản & hình ảnh xen kẽ)</label>
+              <ProductDescriptionEditor
                 value={form.description}
-                onChange={(e) => setForm({ ...form, description: e.target.value })}
-              ></textarea>
+                onChange={(val) => setForm({ ...form, description: val })}
+                placeholder="Mô tả chi tiết, chèn hình ảnh xen kẽ giữa các đoạn văn..."
+              />
             </div>
           </div>
 

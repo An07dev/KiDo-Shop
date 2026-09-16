@@ -12,7 +12,6 @@ import {
   FiShield,
   FiAlertCircle,
   FiZap,
-  FiHome,
   FiCheckCircle,
 } from 'react-icons/fi';
 import toast from 'react-hot-toast';
@@ -182,6 +181,14 @@ export default function PaymentPage() {
     }
   };
 
+  const handleBack = () => {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      router.back();
+    } else {
+      router.push('/');
+    }
+  };
+
   if (loading) {
     return <StoreLoading text="Đang tải thông tin thanh toán VietQR..." />;
   }
@@ -198,37 +205,29 @@ export default function PaymentPage() {
 
   return (
     <div className={styles.page}>
-      {/* Top Bar / Breadcrumbs */}
+      {/* Top Bar with Back Button, Centered Title, and Countdown Timer */}
       <nav className={styles.topNav}>
-        <button className={styles.backBtn} onClick={() => router.push('/')} aria-label="Trang chủ">
-          <FiChevronLeft size={22} />
-        </button>
-        <div className={styles.navTitle}>Thanh Toán VietQR</div>
-        <div className={styles.secureBadge}>
-          <FiShield size={14} />
-          <span>Bảo mật 256-bit</span>
+        <div className={styles.navLeft}>
+          <button className={styles.backBtn} onClick={handleBack} aria-label="Quay lại">
+            <FiChevronLeft size={22} />
+          </button>
+        </div>
+
+        <h1 className={styles.navCenterTitle}>
+          <span>Thanh Toán Đơn Hàng</span>
+          {(code || order?.orderCode) && (
+            <span className={styles.navOrderCode}> #{code || order?.orderCode}</span>
+          )}
+        </h1>
+
+        <div className={styles.headerTimerPill}>
+          <FiClock size={13} className={styles.headerTimerIcon} />
+          <span className={styles.headerTimerText}>Tự động hủy sau:</span>
+          <span className={styles.countdown}>{formatTimer(timeLeft)}</span>
         </div>
       </nav>
 
-      {/* PC Breadcrumb */}
-      <div className={styles.pcBreadcrumbWrap}>
-        <div className={styles.pcBreadcrumb}>
-          <Link href="/" className={styles.pcBreadcrumbLink}>
-            <FiHome size={14} /> Trang Chủ
-          </Link>
-          <span className={styles.pcBreadcrumbDivider}>/</span>
-          <span className={styles.pcBreadcrumbActive}>Thanh Toán Đơn Hàng #{code || order?.orderCode}</span>
-        </div>
-      </div>
-
       <div className={styles.content}>
-        {/* Timer Banner */}
-        <div className={styles.timerBanner}>
-          <FiClock size={16} className={styles.clockIcon} />
-          <span>Đơn hàng sẽ tự động hủy sau:</span>
-          <span className={styles.countdown}>{formatTimer(timeLeft)}</span>
-        </div>
-
         {/* Responsive Grid: 1 Column on Mobile, 2 Columns on PC */}
         <div className={styles.paymentGrid}>
           {/* Left / Top: QR Code Container */}

@@ -3,6 +3,25 @@ import connectToDatabase from '@/lib/mongodb';
 import FlashSale from '@/models/FlashSale';
 import Product from '@/models/Product';
 
+// Helper to sanitize items and filter out missing/null productIds
+function sanitizeItems(items: any[]): any[] {
+  if (!Array.isArray(items)) return [];
+  return items
+    .filter((it: any) => {
+      const pid = it?.productId?._id || it?.productId;
+      return pid && typeof pid.toString === 'function' && pid.toString().trim().length > 0 && pid.toString() !== 'null';
+    })
+    .map((it: any) => ({
+      productId: it.productId?._id || it.productId,
+      originalPrice: Number(it.originalPrice) || 0,
+      flashPrice: Number(it.flashPrice) || 0,
+      discountPercent: Number(it.discountPercent) || 0,
+      flashStock: Math.max(1, Number(it.flashStock) || 50),
+      soldCount: Number(it.soldCount) || 0,
+      isActive: it.isActive !== undefined ? it.isActive : true,
+    }));
+}
+
 // GET /api/admin/flash-sale - Lấy cấu hình Flash Sale hiện tại
 export async function GET() {
   try {
@@ -18,7 +37,7 @@ export async function GET() {
         select: 'name slug price salePrice images stock soldCount category variants',
       });
 
-    // Nếu chưa có, tự động tạo cấu hình mẫu ban đầu
+    // 1. Nếu chưa có, tự động tạo cấu hình mẫu ban đầu với sản phẩm active hiện có
     if (!flashSale) {
       const sampleProducts = await Product.find({ status: 'active' }).limit(6);
 
@@ -98,6 +117,65 @@ export async function GET() {
           path: 'slots.items.productId',
           select: 'name slug price salePrice images stock soldCount category variants',
         });
+    } else {
+      // 2. Tự phục hồi & dọn dẹp nếu có sản phẩm cũ đã bị xóa khỏi database (productId === null)
+      const hasNullInSlots = flashSale.slots.some((s: any) =>
+        s.items.some((it: any) => !it.productId)
+      );
+      const hasNullInItems = flashSale.items.some((it: any) => !it.productId);
+
+      if (hasNullInSlots || hasNullInItems) {
+        const activeProducts = await Product.find({ status: 'active' }).limit(6);
+
+        const defaultItems = activeProducts.map((p) => {
+          const origPrice = p.price || 300000;
+          const discountPct = 35;
+          const fPrice = Math.round((origPrice * (100 - discountPct)) / 100000) * 1000;
+          return {
+            productId: p._id,
+            originalPrice: origPrice,
+            flashPrice: fPrice > 0 ? fPrice : Math.round(origPrice * 0.65),
+            discountPercent: discountPct,
+            flashStock: Math.max(20, Math.min(100, p.stock || 50)),
+            soldCount: Math.floor(Math.random() * 15) + 8,
+            isActive: true,
+          };
+        });
+
+        flashSale.slots.forEach((s: any, idx: number) => {
+          const validExisting = (s.items || []).filter((it: any) => it && it.productId);
+          if (validExisting.length > 0) {
+            s.items = validExisting.map((it: any) => ({
+              ...it.toObject(),
+              productId: it.productId._id || it.productId,
+            }));
+          } else if (defaultItems.length > 0) {
+            s.items = defaultItems.slice(0, Math.min(defaultItems.length, idx === 0 ? 3 : 6));
+          } else {
+            s.items = [];
+          }
+        });
+
+        const validRoot = (flashSale.items || []).filter((it: any) => it && it.productId);
+        flashSale.items = validRoot.length > 0
+          ? validRoot.map((it: any) => ({
+              ...it.toObject(),
+              productId: it.productId._id || it.productId,
+            }))
+          : defaultItems;
+
+        await flashSale.save();
+
+        flashSale = await FlashSale.findById(flashSale._id)
+          .populate({
+            path: 'items.productId',
+            select: 'name slug price salePrice images stock soldCount category variants',
+          })
+          .populate({
+            path: 'slots.items.productId',
+            select: 'name slug price salePrice images stock soldCount category variants',
+          });
+      }
     }
 
     return NextResponse.json({
@@ -121,12 +199,28 @@ export async function PUT(req: Request) {
 
     let flashSale = await FlashSale.findOne();
 
+    // Lọc sạch sản phẩm không có productId hợp lệ trước khi lưu Mongoose
+    const cleanSlots = (body.slots || []).map((s: any) => ({
+      id: s.id || `slot_${Date.now()}`,
+      name: s.name || 'Khung Giờ Flash Sale',
+      startTime: s.startTime || '12:00',
+      endTime: s.endTime || '18:00',
+      dateType: s.dateType || 'all_days',
+      specificDate: s.specificDate || '',
+      startDate: s.startDate || '',
+      endDate: s.endDate || '',
+      enabled: s.enabled !== undefined ? s.enabled : true,
+      items: sanitizeItems(s.items),
+    }));
+
+    const cleanItems = sanitizeItems(body.items);
+
     const updateData: any = {
       title: body.title || '⚡ SIÊU SALE GIỜ VÀNG - GIẢM TỚI 50%',
       subtitle: body.subtitle || '',
       isActive: body.isActive !== undefined ? body.isActive : true,
-      slots: body.slots || [],
-      items: body.items || [],
+      slots: cleanSlots,
+      items: cleanItems,
       fomoSettings: body.fomoSettings || {
         enableLivePurchasePopup: true,
         popupIntervalSeconds: 25,

@@ -1,0 +1,150 @@
+.sectionContainer {
+  background: var(--bg-card, #ffffff);
+  border-radius: 6px;
+  padding: 16px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color, #f1f5f9);
+}
+
+.headerTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.iconWrap {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(238, 77, 45, 0.1);
+  color: var(--primary, #ee4d2d);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sectionTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main, #1e293b);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.badgeHighlight {
+  font-size: 10px;
+  font-weight: 700;
+  color: #ffffff;
+  background: var(--primary, #ee4d2d);
+  padding: 2px 7px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navButtonsGroup {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.navBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  background: var(--bg-card-hover, #f8fafc);
+  border: 1px solid var(--border-color, #e2e8f0);
+  color: var(--text-muted, #64748b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.navBtn:hover {
+  background: var(--primary, #ee4d2d);
+  color: #ffffff;
+  border-color: var(--primary, #ee4d2d);
+}
+
+.seeAllBtn {
+  background: transparent;
+  border: none;
+  color: var(--primary, #ee4d2d);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: opacity 0.2s ease;
+}
+
+.seeAllBtn:hover {
+  opacity: 0.8;
+}
+
+/* HORIZONTAL SCROLL TRACK */
+.scrollTrack {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 2px 2px 8px 2px;
+}
+
+.scrollTrack::-webkit-scrollbar {
+  display: none;
+}
+
+.cardItemWrap {
+  min-width: 175px;
+  max-width: 185px;
+  width: 180px;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+}
+
+@media (max-width: 599px) {
+  .sectionContainer {
+    padding: 12px 10px;
+    border-radius: 4px;
+  }
+  .sectionTitle {
+    font-size: 13.5px;
+  }
+  .badgeHighlight {
+    display: none;
+  }
+  .navButtonsGroup {
+    display: none;
+  }
+  .cardItemWrap {
+    min-width: 145px;
+    max-width: 155px;
+    width: 150px;
+  }
+}

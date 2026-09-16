@@ -1,7 +1,18 @@
 import connectToDatabase from '@/lib/mongodb';
 import Setting from '@/models/Setting';
 
+export interface IWarehouseOriginAddress {
+  name: string;
+  phone: string;
+  province: string;
+  district: string;
+  ward: string;
+  address: string;
+  pickNote?: string;
+}
+
 export interface IDBCarrierConfig {
+  originAddress: IWarehouseOriginAddress;
   carriers: {
     ghn: {
       enabled: boolean;
@@ -32,6 +43,15 @@ export interface IDBCarrierConfig {
 }
 
 export const DEFAULT_SHIPPING_CONFIG: IDBCarrierConfig = {
+  originAddress: {
+    name: 'ShopBig Store - Kho Tổng',
+    phone: '0364978796',
+    province: 'Hà Nội',
+    district: 'Quận Nam Từ Liêm',
+    ward: 'Phường Mỹ Đình 2',
+    address: 'Số 10 Phạm Hùng, Mỹ Đình',
+    pickNote: 'Lấy hàng trong giờ hành chính, gọi trước khi đến',
+  },
   carriers: {
     ghn: {
       enabled: true,
@@ -69,6 +89,10 @@ export async function getDBShippingConfig(): Promise<IDBCarrierConfig> {
       return {
         ...DEFAULT_SHIPPING_CONFIG,
         ...setting.value,
+        originAddress: {
+          ...DEFAULT_SHIPPING_CONFIG.originAddress,
+          ...(setting.value.originAddress || {}),
+        },
         carriers: {
           ghn: {
             ...DEFAULT_SHIPPING_CONFIG.carriers.ghn,

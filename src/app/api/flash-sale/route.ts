@@ -25,7 +25,7 @@ export async function GET() {
   try {
     await connectToDatabase();
 
-    const flashSale = await FlashSale.findOne({ isActive: true })
+    const flashSale = await FlashSale.findOne()
       .populate({
         path: 'items.productId',
         select: 'name slug price salePrice images stock soldCount category status',
@@ -40,6 +40,33 @@ export async function GET() {
         success: true,
         data: null,
       });
+    }
+
+    // Nếu Flash Sale bị tắt, vẫn trả về fomoSettings chính xác để các module FOMO hoạt động theo cấu hình độc lập
+    if (!flashSale.isActive) {
+      return NextResponse.json(
+        {
+          success: true,
+          data: {
+            _id: flashSale._id,
+            title: flashSale.title,
+            subtitle: flashSale.subtitle,
+            isActive: false,
+            isLive: false,
+            activeSlot: null,
+            nextSlot: null,
+            slots: [],
+            timeRemainingSeconds: 0,
+            items: [],
+            fomoSettings: flashSale.fomoSettings,
+          },
+        },
+        {
+          headers: {
+            'Cache-Control': 'no-store, no-cache, must-revalidate',
+          },
+        }
+      );
     }
 
     const now = new Date();
@@ -215,7 +242,7 @@ export async function GET() {
       },
       {
         headers: {
-          'Cache-Control': 'public, s-maxage=15, stale-while-revalidate=45',
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
         },
       }
     );

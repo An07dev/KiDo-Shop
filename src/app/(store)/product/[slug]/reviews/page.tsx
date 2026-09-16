@@ -16,6 +16,7 @@ import {
 } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import { apiFetch } from '@/lib/api';
+import { compressImage } from '@/lib/image-utils';
 import styles from './page.module.css';
 
 interface ReviewItem {
@@ -170,36 +171,71 @@ export default function ProductReviewsPage() {
     loadReviews();
   }, [slug, activeFilterStar]);
 
-  // Handle Photo Upload
+  // Handle Photo Upload (Hỗ trợ nhiều ảnh, nén ảnh nhẹ, fallback tức thì)
   const handleUploadPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+    const fileList = e.target.files;
+    if (!fileList || fileList.length === 0) return;
 
-    if (uploadedImages.length >= 5) {
+    const remainingSlots = 5 - uploadedImages.length;
+    if (remainingSlots <= 0) {
       toast.error('Bạn chỉ có thể tải lên tối đa 5 hình ảnh');
       return;
     }
 
+    const filesToUpload = Array.from(fileList).slice(0, remainingSlots);
     setIsUploading(true);
+
     try {
-      const file = files[0];
-      const formData = new FormData();
-      formData.append('file', file);
+      const newUrls: string[] = [];
 
-      const res = await apiFetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await res.json();
+      for (const file of filesToUpload) {
+        let clientDataUrl = '';
+        let uploadBlob: Blob = file;
 
-      if (data.success && data.data?.url) {
-        setUploadedImages((prev) => [...prev, data.data.url]);
-        toast.success('Đã tải ảnh lên thành công!');
+        try {
+          const compressed = await compressImage(file, 1200, 0.8);
+          clientDataUrl = compressed.dataUrl;
+          uploadBlob = compressed.blob;
+        } catch (compErr) {
+          console.warn('Image compression skipped:', compErr);
+        }
+
+        let uploadedUrl = '';
+
+        try {
+          const formData = new FormData();
+          formData.append('file', uploadBlob, file.name);
+
+          const res = await apiFetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && data.data?.url) {
+              uploadedUrl = data.data.url;
+            }
+          }
+        } catch (netErr) {
+          console.warn('Direct upload fetch failed, fallback to client preview:', netErr);
+        }
+
+        const finalUrl = uploadedUrl || clientDataUrl;
+        if (finalUrl) {
+          newUrls.push(finalUrl);
+        }
+      }
+
+      if (newUrls.length > 0) {
+        setUploadedImages((prev) => [...prev, ...newUrls].slice(0, 5));
+        toast.success(`Đã thêm ${newUrls.length} hình ảnh thành công!`);
       } else {
-        toast.error(data.message || 'Lỗi khi tải ảnh lên');
+        toast.error('Không thể tải ảnh lên. Vui lòng thử lại.');
       }
     } catch (err) {
-      toast.error('Không thể kết nối máy chủ để upload ảnh');
+      console.error('Upload error:', err);
+      toast.error('Có lỗi xảy ra khi tải ảnh lên');
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -509,6 +545,9 @@ export default function ProductReviewsPage() {
                       alt={`Ảnh đánh giá ${imgIdx + 1}`}
                       className={styles.reviewImgThumb}
                       onClick={() => setLightboxImage(imgUrl)}
+                      onError={(e) => {
+                        (e.currentTarget as HTMLElement).style.display = 'none';
+                      }}
                     />
                   ))}
                 </div>
@@ -666,21 +705,30 @@ export default function ProductReviewsPage() {
                   ))}
 
                   {uploadedImages.length < 5 && (
-                    <button
-                      type="button"
+                    <label
+                      htmlFor="allReviewsPhotoInput"
                       className={styles.uploadPhotoBtn}
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={isUploading}
+                      style={{
+                        cursor: isUploading ? 'not-allowed' : 'pointer',
+                        opacity: isUploading ? 0.7 : 1,
+                      }}
+                      title="Thêm ảnh chụp thực tế (tối đa 5 ảnh)"
                     >
                       <FiCamera size={18} />
                       <span>{isUploading ? 'Đang tải...' : 'Thêm ảnh'}</span>
-                    </button>
+                    </label>
                   )}
                   <input
+                    id="allReviewsPhotoInput"
                     type="file"
                     ref={fileInputRef}
                     style={{ display: 'none' }}
                     accept="image/*"
+                    multiple
+                    disabled={isUploading}
+                    onClick={(e) => {
+                      (e.target as HTMLInputElement).value = '';
+                    }}
                     onChange={handleUploadPhoto}
                   />
                 </div>

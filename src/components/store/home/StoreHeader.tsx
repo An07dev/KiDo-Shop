@@ -9,7 +9,8 @@ import {
   FiClock,
   FiX,
 } from 'react-icons/fi';
-import styles from '@/app/(store)/page.module.css';
+import styles from '@/app/(store)/demo/page.module.css';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface StoreHeaderProps {
   logoUrl?: string;
@@ -21,12 +22,7 @@ interface StoreHeaderProps {
 }
 
 const DEFAULT_KEYWORDS = [
-  'Áo Polo Nam',
-  'Sơ Mi Oxford',
-  'Quần Tây Slimfit',
-  'Áo Khoác Gió',
-  'Quần Kaki 4 Chiều',
-  'Polo Pima Chống Nhăn',
+  ""
 ];
 
 const SEARCH_HISTORY_KEY = 'shopee_search_history';
@@ -40,6 +36,11 @@ const StoreHeaderComponent: React.FC<StoreHeaderProps> = ({
   onClearSearch,
 }) => {
   const router = useRouter();
+  const { theme } = useTheme();
+  const primaryBg = theme?.buttonColors?.primaryBg || 'var(--primary, #ee4d2d)';
+  const primaryHover = theme?.buttonColors?.primaryHover || 'var(--primary-hover, #d73211)';
+  const buttonRadius = theme?.buttonColors?.borderRadius || '4px';
+
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -106,7 +107,7 @@ const StoreHeaderComponent: React.FC<StoreHeaderProps> = ({
     setSearchHistory([]);
     try {
       localStorage.removeItem(SEARCH_HISTORY_KEY);
-    } catch (e) {}
+    } catch (e) { }
   };
 
   const handleDeleteHistoryItem = (e: React.MouseEvent, item: string) => {
@@ -115,7 +116,7 @@ const StoreHeaderComponent: React.FC<StoreHeaderProps> = ({
     setSearchHistory(updated);
     try {
       localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(updated));
-    } catch (e) {}
+    } catch (e) { }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -148,7 +149,7 @@ const StoreHeaderComponent: React.FC<StoreHeaderProps> = ({
   }, [searchHistory]);
 
   return (
-    <div className={styles.shopeeHeaderWrapper}>
+    <div className={styles.shopeeHeaderWrapper} style={{ background: primaryBg }}>
       {/* SHOPEE MAIN SEARCH & LOGO ROW */}
       <div className={styles.shopeeMainHeader}>
         <div className={styles.shopeeMainHeaderInner}>
@@ -173,7 +174,11 @@ const StoreHeaderComponent: React.FC<StoreHeaderProps> = ({
 
           {/* Shopee Center Search Bar */}
           <div ref={searchContainerRef} className={styles.shopeeSearchContainer}>
-            <form className={styles.shopeeSearchForm} onSubmit={handleSubmit}>
+            <form
+              className={styles.shopeeSearchForm}
+              onSubmit={handleSubmit}
+              style={{ borderRadius: buttonRadius }}
+            >
               <input
                 type="text"
                 className={styles.shopeeSearchInput}
@@ -191,7 +196,12 @@ const StoreHeaderComponent: React.FC<StoreHeaderProps> = ({
                 <span style={{ fontSize: 10, marginLeft: 3 }}>▼</span>
               </div>
 
-              <button type="submit" className={styles.shopeeSearchBtn} aria-label="Tìm kiếm">
+              <button
+                type="submit"
+                className={styles.shopeeSearchBtn}
+                aria-label="Tìm kiếm"
+                style={{ background: primaryBg, borderRadius: buttonRadius }}
+              >
                 <FiSearch size={16} className={styles.shopeeSearchBtnIcon} />
               </button>
 
@@ -206,6 +216,7 @@ const StoreHeaderComponent: React.FC<StoreHeaderProps> = ({
                           type="button"
                           className={styles.clearHistoryBtn}
                           onClick={handleClearAllHistory}
+                          style={{ color: primaryBg }}
                         >
                           Xóa tất cả
                         </button>
@@ -247,7 +258,7 @@ const StoreHeaderComponent: React.FC<StoreHeaderProps> = ({
                         onClick={() => handleKeywordClick(kw)}
                       >
                         <div className={styles.historyItemText}>
-                          <FiSearch size={13} color="var(--primary, #ee4d2d)" />
+                          <FiSearch size={13} color={primaryBg} />
                           <span>{kw}</span>
                         </div>
                       </div>
@@ -276,7 +287,14 @@ const StoreHeaderComponent: React.FC<StoreHeaderProps> = ({
           <div className={styles.shopeeCartWrap}>
             <Link href="/cart" className={styles.shopeeCartBtn} aria-label="Giỏ hàng">
               <FiShoppingCart className={styles.shopeeCartIconSvg} />
-              {cartCount > 0 && <span className={styles.shopeeCartBadge}>{cartCount}</span>}
+              {cartCount > 0 && (
+                <span
+                  className={styles.shopeeCartBadge}
+                  style={{ color: primaryBg, borderColor: primaryBg }}
+                >
+                  {cartCount}
+                </span>
+              )}
             </Link>
           </div>
         </div>

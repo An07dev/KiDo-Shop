@@ -35,10 +35,10 @@ export async function GET(request: Request) {
       );
     }
 
-    // Build filter
+    // Build filter - Chấp nhận cả status: 'approved' và các đánh giá chưa gắn status (chỉ loại trừ 'hidden')
     const query: any = {
       product: new mongoose.Types.ObjectId(targetProductId),
-      status: 'approved',
+      status: { $ne: 'hidden' },
     };
 
     if (star && ['1', '2', '3', '4', '5'].includes(star)) {
@@ -52,7 +52,7 @@ export async function GET(request: Request) {
     // Fetch all reviews for calculating real-time statistics
     const allReviews = await Review.find({
       product: new mongoose.Types.ObjectId(targetProductId),
-      status: 'approved',
+      status: { $ne: 'hidden' },
     }).select('rating images');
 
     const totalReviews = allReviews.length;
@@ -71,10 +71,20 @@ export async function GET(request: Request) {
 
     const averageRating = totalReviews > 0 ? Number((sumRating / totalReviews).toFixed(1)) : 5.0;
 
-    // Fetch paginated filtered reviews
+    const sortBy = searchParams.get('sortBy');
+    let sortOptions: any = { rating: -1, createdAt: -1 };
+    if (sortBy === 'newest') {
+      sortOptions = { createdAt: -1 };
+    } else if (sortBy === 'oldest') {
+      sortOptions = { createdAt: 1 };
+    } else if (sortBy === 'rating_asc') {
+      sortOptions = { rating: 1, createdAt: -1 };
+    }
+
+    // Fetch paginated filtered reviews (Ưu tiên số sao cao nhất trước, rồi đến mới nhất)
     const totalFiltered = await Review.countDocuments(query);
     const reviews = await Review.find(query)
-      .sort({ createdAt: -1 })
+      .sort(sortOptions)
       .skip((page - 1) * limit)
       .limit(limit);
 
@@ -109,18 +119,21 @@ export async function POST(request: Request) {
     await connectToDatabase();
     const body = await request.json();
 
-    const { productId, slug, author, rating, variantTitle, comment, images, avatar, orderId } = body;
+    const { productId, slug, productSlug, author, rating, variantTitle, comment, images, avatar, orderId } = body;
 
     let targetProductId = productId;
     let productDoc: any = null;
+    const lookupSlug = slug || productSlug;
 
-    if (!targetProductId && slug) {
-      productDoc = await Product.findOne({ slug });
+    if (targetProductId && mongoose.Types.ObjectId.isValid(targetProductId)) {
+      productDoc = await Product.findById(targetProductId);
+    }
+
+    if (!productDoc && lookupSlug) {
+      productDoc = await Product.findOne({ slug: lookupSlug });
       if (productDoc) {
         targetProductId = productDoc._id.toString();
       }
-    } else if (targetProductId && mongoose.Types.ObjectId.isValid(targetProductId)) {
-      productDoc = await Product.findById(targetProductId);
     }
 
     if (!targetProductId || !productDoc) {

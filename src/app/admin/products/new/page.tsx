@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { FiArrowLeft, FiUploadCloud, FiTrash2, FiPlus } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import { apiFetch } from '@/lib/api';
+import ProductDescriptionEditor from '@/components/admin/ProductDescriptionEditor';
 import styles from './page.module.css';
 
 export default function NewProductPage() {
@@ -178,14 +179,12 @@ export default function NewProductPage() {
               />
             </div>
             <div className={styles.formGroup}>
-              <label>Mô tả chi tiết</label>
-              <textarea
-                className={styles.textarea}
-                rows={6}
-                placeholder="Mô tả chất liệu, kiểu dáng, điểm nổi bật..."
+              <label>Mô tả chi tiết (Văn bản & hình ảnh xen kẽ)</label>
+              <ProductDescriptionEditor
                 value={form.description}
-                onChange={(e) => setForm({ ...form, description: e.target.value })}
-              ></textarea>
+                onChange={(val) => setForm({ ...form, description: val })}
+                placeholder="Mô tả chất liệu, kiểu dáng, chèn hình ảnh xen kẽ giữa các đoạn văn..."
+              />
             </div>
           </div>
 

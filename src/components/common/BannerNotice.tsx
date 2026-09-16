@@ -15,13 +15,19 @@ export default function BannerNotice({ customText, forceShow }: BannerNoticeProp
   const isVisible = forceShow || (theme?.pageTitles?.showBannerNotice !== false);
   if (!isVisible) return null;
 
-  const message =
-    customText ||
-    theme?.pageTitles?.bannerNotice ||
-    '🔥 Ưu đãi hot khi giảm giá sâu cho các đơn hàng 🔥';
+  const rawMessage = customText || theme?.pageTitles?.bannerNotice;
+  const message = typeof rawMessage === 'string' ? rawMessage.trim() : '';
+  if (!message) return null;
+
+  const primaryBg = theme?.buttonColors?.primaryBg || 'var(--primary, #ee4d2d)';
 
   return (
-    <div className={styles.bannerWrapper}>
+    <div
+      className={styles.bannerWrapper}
+      style={{
+        background: `linear-gradient(90deg, ${primaryBg} 0%, #26C6DA 100%)`,
+      }}
+    >
       <div className={styles.marqueeTrack}>
         <span className={styles.marqueeItem}>{message}</span>
         <span className={styles.marqueeItem}>{message}</span>

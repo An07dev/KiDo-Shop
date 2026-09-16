@@ -1,0 +1,423 @@
+/* ===== PWA INSTALL BANNER & MODAL STYLES ===== */
+
+/* --- Floating Install Banner --- */
+.bannerContainer {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9980;
+  width: calc(100% - 32px);
+  max-width: 380px;
+  background: rgba(19, 22, 31, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(238, 77, 45, 0.2);
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.bannerAppIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.bannerAppImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.bannerInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.bannerHeaderRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.bannerTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+.bannerBadge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #ee4d2d 0%, #ff6b4a 100%);
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.bannerDesc {
+  font-size: 11px;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bannerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.installBtn {
+  background: linear-gradient(135deg, #ee4d2d 0%, #f05d3b 100%);
+  color: #ffffff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(238, 77, 45, 0.35);
+  transition: all 0.2s ease;
+}
+
+.installBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(238, 77, 45, 0.5);
+  filter: brightness(1.08);
+}
+
+.installBtn:active {
+  transform: translateY(0);
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.closeBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 600px) {
+  .bannerContainer {
+    bottom: 74px; /* Float above mobile BottomNav */
+    left: 12px;
+    right: 12px;
+    width: auto;
+    max-width: none;
+    padding: 10px 12px;
+    border-radius: 14px;
+  }
+
+  .bannerAppIcon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .bannerTitle {
+    font-size: 13px;
+  }
+
+  .bannerDesc {
+    font-size: 10px;
+  }
+
+  .installBtn {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+}
+
+/* --- iOS Installation Modal --- */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modalSheet {
+  background: #181b26;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 24px 24px 0 0;
+  width: 100%;
+  max-width: 480px;
+  padding: 24px 20px;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
+  color: #f8fafc;
+  animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+@media (min-width: 600px) {
+  .modalBackdrop {
+    align-items: center;
+  }
+  .modalSheet {
+    border-radius: 20px;
+    padding: 28px 24px;
+  }
+}
+
+@keyframes slideUpModal {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.modalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.modalAppInfo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.modalAppIcon {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modalAppImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.modalTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+}
+
+.modalSubtitle {
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.modalCloseBtn {
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: #94a3b8;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modalCloseBtn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+}
+
+.stepList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 20px 0;
+}
+
+.stepItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.stepNumber {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ee4d2d 0%, #ff6b4a 100%);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stepText {
+  flex: 1;
+  font-size: 13px;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+
+.stepText strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.stepIcon {
+  color: #38bdf8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.modalBottomBar {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.modalOkBtn {
+  width: 100%;
+  background: linear-gradient(135deg, #ee4d2d 0%, #f05d3b 100%);
+  color: #ffffff;
+  border: none;
+  padding: 12px 0;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(238, 77, 45, 0.35);
+  transition: all 0.2s ease;
+}
+
+.modalOkBtn:hover {
+  filter: brightness(1.08);
+}
+
+.iosPointerNotice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #f59e0b;
+  animation: bounceSlow 1.5s infinite ease-in-out;
+}
+
+@keyframes bounceSlow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+/* --- Header Install Icon Button (Identical style & color to Cart Icon) --- */
+.headerPwaIconBtn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #ffffff;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  line-height: 1;
+}
+
+.headerPwaIconBtn:hover {
+  opacity: 0.85;
+  transform: scale(1.08);
+}
+
+.headerPwaIconBtn:active {
+  transform: scale(0.96);
+}
+
+.headerPwaIconSvg {
+  width: 26px;
+  height: 26px;
+  color: #ffffff;
+  display: block;
+}
+
+@media (max-width: 767px) {
+  .headerPwaIconSvg {
+    width: 22px !important;
+    height: 22px !important;
+  }
+}

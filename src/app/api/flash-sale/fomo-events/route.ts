@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongodb';
 import Order from '@/models/Order';
 import Product from '@/models/Product';
+import FlashSale from '@/models/FlashSale';
 
 export const dynamic = 'force-dynamic';
 
@@ -41,6 +42,15 @@ const BUYER_NAMES = [
 export async function GET() {
   try {
     await connectToDatabase();
+
+    // 0. Kiểm tra nếu popup mua hàng đã bị tắt trong cấu hình FOMO
+    const flashSale = await FlashSale.findOne().select('fomoSettings');
+    if (flashSale?.fomoSettings && flashSale.fomoSettings.enableLivePurchasePopup === false) {
+      return NextResponse.json(
+        { success: true, data: [] },
+        { headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate' } }
+      );
+    }
 
     // 1. Check if there are real recent orders in DB (only COD or paid bank transfers)
     const recentOrders = await Order.find({

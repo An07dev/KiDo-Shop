@@ -273,9 +273,22 @@ export default function ProductDetailModal({ productId, onClose }: ProductDetail
               {/* Description Section */}
               <div className={styles.section}>
                 <h3 className={styles.sectionTitle}>Mô Tả Sản Phẩm</h3>
-                <div className={styles.descriptionBox}>
-                  {product.description || 'Chưa có mô tả chi tiết cho sản phẩm này.'}
-                </div>
+                {product.description?.trim() ? (
+                  /<\/?(p|div|br|img|h[1-6]|ul|ol|li|span|table|hr|s|blockquote|strong|b|em|i)\b/i.test(product.description) ? (
+                    <div
+                      className={styles.descriptionBox}
+                      dangerouslySetInnerHTML={{ __html: product.description }}
+                    />
+                  ) : (
+                    <div className={styles.descriptionBox} style={{ whiteSpace: 'pre-line' }}>
+                      {product.description}
+                    </div>
+                  )
+                ) : (
+                  <div className={styles.descriptionBox} style={{ fontStyle: 'italic', color: 'var(--text-muted)' }}>
+                    Chưa có mô tả chi tiết cho sản phẩm này.
+                  </div>
+                )}
               </div>
             </>
           ) : null}

@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { FiGift, FiClock, FiCheck } from 'react-icons/fi';
+import React, { useState, useEffect, useRef } from 'react';
+import { FiClock, FiCheck, FiChevronLeft, FiChevronRight, FiTag } from 'react-icons/fi';
+import { RiCoupon3Line } from 'react-icons/ri';
 import { apiFetch } from '@/lib/api';
 import { clientCache } from '@/lib/clientCache';
 import { useVoucherWallet } from '@/hooks/useVoucherWallet';
@@ -24,7 +25,7 @@ const DEFAULT_SAMPLE_VOUCHERS: IVoucherItem[] = [
   {
     _id: 'v1',
     code: 'GIAM20K',
-    name: 'Giảm 20k cho đơn từ 200k',
+    name: 'Giảm 20.000₫ cho đơn từ 200.000₫',
     discountType: 'fixed',
     discountValue: 20000,
     maxDiscountAmount: 20000,
@@ -34,7 +35,7 @@ const DEFAULT_SAMPLE_VOUCHERS: IVoucherItem[] = [
   {
     _id: 'v2',
     code: 'FREESHIP',
-    name: 'Freeship 0Đ cho đơn từ 300k',
+    name: 'Freeship 0Đ cho đơn từ 300.000₫',
     discountType: 'fixed',
     discountValue: 30000,
     maxDiscountAmount: 30000,
@@ -44,7 +45,7 @@ const DEFAULT_SAMPLE_VOUCHERS: IVoucherItem[] = [
   {
     _id: 'v3',
     code: 'SIEUDEAL10',
-    name: 'Giảm 10% tối đa 50k',
+    name: 'Giảm 10% tối đa 50.000₫',
     discountType: 'percent',
     discountValue: 10,
     maxDiscountAmount: 50000,
@@ -54,7 +55,7 @@ const DEFAULT_SAMPLE_VOUCHERS: IVoucherItem[] = [
   {
     _id: 'v4',
     code: 'VIP50K',
-    name: 'Giảm 50k cho đơn từ 500k',
+    name: 'Giảm 50.000₫ cho đơn từ 500.000₫',
     discountType: 'fixed',
     discountValue: 50000,
     maxDiscountAmount: 50000,
@@ -67,6 +68,7 @@ export default function VoucherCollectionBar() {
   const [vouchers, setVouchers] = useState<IVoucherItem[]>(DEFAULT_SAMPLE_VOUCHERS);
   const [loading, setLoading] = useState(false);
   const { isSaved, saveVoucher } = useVoucherWallet();
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function loadVouchers() {
@@ -75,7 +77,7 @@ export default function VoucherCollectionBar() {
         try {
           const profile = JSON.parse(localStorage.getItem('shopbig_profile') || '{}');
           if (profile?.phone) phone = profile.phone;
-        } catch (e) {}
+        } catch (e) { }
 
         const cacheKey = `public_vouchers_${phone}`;
         const data = await clientCache.fetchWithCache(
@@ -99,6 +101,13 @@ export default function VoucherCollectionBar() {
     loadVouchers();
   }, []);
 
+  const scroll = (direction: 'left' | 'right') => {
+    if (carouselRef.current) {
+      const scrollAmount = direction === 'left' ? -360 : 360;
+      carouselRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
   const formatCurrency = (amount: number) => {
     if (amount >= 1000) {
       return `${Math.round(amount / 1000)}k`;
@@ -107,60 +116,100 @@ export default function VoucherCollectionBar() {
   };
 
   const formatMinSpend = (amount: number) => {
-    if (!amount || amount === 0) return 'Đơn Tối Thiểu 0đ';
-    return `Đơn Tối Thiểu ₫${formatCurrency(amount)}`;
+    if (!amount || amount === 0) return 'Đơn tối thiểu 0₫';
+    return `Đơn tối thiểu ${new Intl.NumberFormat('vi-VN').format(amount)}₫`;
   };
 
   const formatExpiry = (dateStr: string) => {
     if (!dateStr) return '';
     const d = new Date(dateStr);
-    return `HSD: ${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`;
+    return `HSD: ${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
   };
+
+  if (!vouchers || vouchers.length === 0) return null;
 
   return (
     <div className={styles.wrapper}>
+      {/* HEADER SECTION */}
       <div className={styles.sectionHeader}>
         <div className={styles.titleGroup}>
           <span className={styles.iconBadge}>
-            <FiGift />
+            <RiCoupon3Line size={20} />
           </span>
-          <span className={styles.title}>Mã Giảm Giá Của Shop</span>
+          <div className={styles.titleInfo}>
+            <div className={styles.titleRow}>
+              <h3 className={styles.title}>Mã Giảm Giá Của Shop</h3>
+            </div>
+          </div>
         </div>
-        <span className={styles.subtitle}>Lưu mã ngay để áp dụng giảm giá khi thanh toán</span>
+
+        {/* Desktop Carousel Navigation Arrows */}
+        <div className={styles.navControls}>
+          <button
+            type="button"
+            className={styles.navBtn}
+            onClick={() => scroll('left')}
+            aria-label="Cuộn sang trái"
+            title="Xem mã trước"
+          >
+            <FiChevronLeft size={20} />
+          </button>
+          <button
+            type="button"
+            className={styles.navBtn}
+            onClick={() => scroll('right')}
+            aria-label="Cuộn sang phải"
+            title="Xem mã tiếp theo"
+          >
+            <FiChevronRight size={20} />
+          </button>
+        </div>
       </div>
 
-      <div className={styles.carousel}>
+      {/* HORIZONTAL CAROUSEL */}
+      <div className={styles.carousel} ref={carouselRef}>
         {vouchers.map((item) => {
           const saved = isSaved(item.code);
           const isUsed = item.isUsedByCustomer;
           const badgeText =
             item.discountType === 'percent'
               ? `-${item.discountValue}%`
-              : `-${formatCurrency(item.discountValue)}`;
+              : `-${formatCurrency(item.discountValue).toUpperCase()}`;
 
           return (
             <div key={item._id || item.code} className={styles.voucherCard}>
-              {/* Left Ticket Badge */}
+              {/* Left Ticket Badge (To, rõ, màu sắc ấn tượng) */}
               <div className={styles.leftBadge}>
                 <span className={styles.badgeValue}>{badgeText}</span>
                 <span className={styles.badgeLabel}>GIẢM GIÁ</span>
+                {item.discountType === 'percent' && item.maxDiscountAmount > 0 && (
+                  <span className={styles.badgeSub}>Tối đa {formatCurrency(item.maxDiscountAmount)}</span>
+                )}
               </div>
 
-              {/* Dashed Divider */}
+              {/* Dashed Divider with punch holes */}
               <div className={styles.dashedDivider} />
 
-              {/* Right Content */}
+              {/* Right Content (To, rõ ràng chi tiết) */}
               <div className={styles.rightContent}>
-                <div className={styles.codeName} title={item.name}>
-                  {item.name || item.code}
+                <div className={styles.topInfo}>
+                  <div className={styles.badgeCodeRow}>
+                    <span className={styles.codeTag}>
+                      <FiTag size={11} /> {item.code}
+                    </span>
+                  </div>
+                  <div className={styles.codeName} title={item.name || item.code}>
+                    {item.name || item.code}
+                  </div>
                 </div>
+
                 <div className={styles.minSpend}>
                   {formatMinSpend(item.minOrderValue)}
                 </div>
 
                 <div className={styles.bottomRow}>
-                  <span className={styles.expiry}>
-                    <FiClock size={10} /> {formatExpiry(item.endDate)}
+                  <span className={styles.expiry} title={`Hạn sử dụng: ${formatExpiry(item.endDate)}`}>
+                    <FiClock size={13} /> {formatExpiry(item.endDate)}
                   </span>
 
                   {isUsed ? (
@@ -169,7 +218,7 @@ export default function VoucherCollectionBar() {
                     </button>
                   ) : saved ? (
                     <button type="button" className={styles.savedBtn} disabled>
-                      <FiCheck size={11} /> Đã Lưu
+                      <FiCheck size={13} /> Đã Lưu
                     </button>
                   ) : (
                     <button

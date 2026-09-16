@@ -20,6 +20,7 @@ import {
   IVariantItem,
   generateCartesianVariants,
 } from '@/lib/variant-helper';
+import ProductDescriptionEditor from '@/components/admin/ProductDescriptionEditor';
 import styles from './ProductFormModal.module.css';
 
 interface ProductFormModalProps {
@@ -72,10 +73,11 @@ export default function ProductFormModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const prevIsOpenRef = useRef(false);
 
-  // Auto reset form state when modal opens
+  // Auto reset form state ONLY when modal transitions from closed to open
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !prevIsOpenRef.current) {
       setFormData({
         name: '',
         price: '',
@@ -97,6 +99,7 @@ export default function ProductFormModal({
       setIsSubmitting(false);
       setIsUploading(false);
     }
+    prevIsOpenRef.current = isOpen;
   }, [isOpen, categories]);
 
   // Helper to format number with thousand dots separator (VD: 100.000)
@@ -841,12 +844,11 @@ export default function ProductFormModal({
 
           {/* Row 5: Description */}
           <div className={styles.formGroup}>
-            <label className={styles.label}>Mô tả sản phẩm</label>
-            <textarea
-              className={styles.textarea}
-              placeholder="VD: Chất liệu cao cấp, bảo hành chính hãng, thiết kế sang trọng..."
+            <label className={styles.label}>Mô tả sản phẩm (Văn bản & hình ảnh xen kẽ)</label>
+            <ProductDescriptionEditor
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              onChange={(val) => setFormData({ ...formData, description: val })}
+              placeholder="Nhập mô tả chi tiết, tải ảnh hoặc dán ảnh xen kẽ giữa các đoạn văn..."
             />
           </div>
 

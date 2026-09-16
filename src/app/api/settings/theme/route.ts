@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import connectToDatabase from '@/lib/mongodb';
 import Setting from '@/models/Setting';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export interface IBannerSlide {
   tag: string;
@@ -87,13 +91,13 @@ export const defaultThemeConfig: IThemeConfig = {
   themeName: 'modern-blue',
   mode: 'dark',
   pageTitles: {
-    siteTitle: 'ShopBig - Cửa Hàng Thời Trang & Phụ Kiện Cao Cấp',
-    homeTitle: 'Trang Chủ | ShopBig',
-    adminTitle: 'ShopBig Quản Trị Hệ Thống',
-    logoText: 'ShopBig',
-    logoUrl: '/images/logo.png',
-    faviconUrl: '/favicon.ico',
-    metaDescription: 'Trải nghiệm mua sắm thời trang trực tuyến thời thượng, giao hàng nhanh chóng toàn quốc.',
+    siteTitle: '',
+    homeTitle: '',
+    adminTitle: '',
+    logoText: '',
+    logoUrl: '',
+    faviconUrl: '',
+    metaDescription: '',
     bannerNotice: '🔥 Miễn phí vận chuyển toàn quốc cho đơn hàng từ 500.000đ',
     showBannerNotice: true,
   },
@@ -170,8 +174,8 @@ export async function GET() {
       ...defaultThemeConfig,
       ...setting.value,
       pageTitles: { ...defaultThemeConfig.pageTitles, ...(setting.value.pageTitles || {}) },
-      banners: Array.isArray(setting.value.banners) && setting.value.banners.length > 0 ? setting.value.banners : defaultThemeConfig.banners,
-      subBanners: Array.isArray(setting.value.subBanners) && setting.value.subBanners.length > 0 ? setting.value.subBanners : defaultThemeConfig.subBanners,
+      banners: Array.isArray(setting.value.banners) ? setting.value.banners : defaultThemeConfig.banners,
+      subBanners: Array.isArray(setting.value.subBanners) ? setting.value.subBanners : [],
       socialLinks: { ...defaultThemeConfig.socialLinks, ...(setting.value.socialLinks || {}) },
       buttonColors: { ...defaultThemeConfig.buttonColors, ...(setting.value.buttonColors || {}) },
       textColors: { ...defaultThemeConfig.textColors, ...(setting.value.textColors || {}) },
@@ -185,7 +189,9 @@ export async function GET() {
       },
       {
         headers: {
-          'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=120',
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+          'Pragma': 'no-cache',
+          'Expires': '0',
         },
       }
     );
@@ -214,7 +220,7 @@ export async function POST(request: Request) {
         ...(body.pageTitles || {}),
       },
       banners: Array.isArray(body.banners) ? body.banners : (currentVal.banners || defaultThemeConfig.banners),
-      subBanners: Array.isArray(body.subBanners) ? body.subBanners : (currentVal.subBanners || defaultThemeConfig.subBanners),
+      subBanners: Array.isArray(body.subBanners) ? body.subBanners : (currentVal.subBanners || []),
       socialLinks: {
         ...currentVal.socialLinks,
         ...(body.socialLinks || {}),
@@ -238,6 +244,13 @@ export async function POST(request: Request) {
       { value: updatedConfig },
       { upsert: true, new: true }
     );
+
+    // Revalidate Next.js Server-Side Layouts & Metadata cache immediately
+    try {
+      revalidatePath('/', 'layout');
+    } catch (revalErr) {
+      console.warn('Revalidate layout path failed:', revalErr);
+    }
 
     return NextResponse.json({
       success: true,

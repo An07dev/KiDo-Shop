@@ -14,9 +14,9 @@ export async function POST(req: Request) {
     let body: any = {};
     try {
       body = await req.json();
-    } catch (e) {}
+    } catch (e) { }
 
-    const shopName = body.shopName?.trim() || 'Shop Của Tôi';
+    const shopName = body.shopName?.trim();
     const rawLicenseKey = body.licenseKey?.trim() || '';
     const adminEmail = body.adminEmail?.trim() || 'admin@shopbig.vn';
     const adminPassword = body.adminPassword?.trim() || 'admin123';

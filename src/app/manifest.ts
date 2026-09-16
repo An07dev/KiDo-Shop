@@ -1,0 +1,69 @@
+import type { MetadataRoute } from 'next';
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: 'ShopBig - Mua Sắm Vô Hạn',
+    short_name: 'ShopBig',
+    description: 'Trải nghiệm mua sắm trực tuyến cao cấp, giao hàng nhanh chóng toàn quốc.',
+    start_url: '/',
+    id: '/',
+    scope: '/',
+    display: 'standalone',
+    orientation: 'portrait-primary',
+    background_color: '#090a0f',
+    theme_color: '#ee4d2d',
+    prefer_related_applications: false,
+    related_applications: [
+      {
+        platform: 'webapp',
+        url: '/manifest.json',
+      },
+    ],
+    launch_handler: {
+      client_mode: ['focus-existing', 'navigate-new'],
+    } as any,
+    protocol_handlers: [
+      {
+        protocol: 'web+shopbig',
+        url: '/admin?source=pwa',
+      },
+    ] as any,
+    categories: ['shopping', 'lifestyle'],
+    shortcuts: [
+      {
+        name: 'Quản Trị Hệ Thống',
+        short_name: 'Quản Trị',
+        description: 'Bảng điều khiển quản trị ShopBig',
+        url: '/admin',
+        icons: [{ src: '/icon-192.png', sizes: '192x192' }],
+      },
+      {
+        name: 'Cửa Hàng',
+        short_name: 'Cửa Hàng',
+        description: 'Xem giao diện cửa hàng ShopBig',
+        url: '/',
+        icons: [{ src: '/icon-192.png', sizes: '192x192' }],
+      },
+    ],
+    icons: [
+      {
+        src: '/icon-192.png',
+        sizes: '192x192',
+        type: 'image/png',
+        purpose: 'any',
+      },
+      {
+        src: '/icon-512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'any',
+      },
+      {
+        src: '/icon-maskable.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'maskable',
+      },
+    ],
+  };
+}

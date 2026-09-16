@@ -228,6 +228,28 @@
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
+.pinAppBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.pinAppBtn:hover {
+  background: #10b981;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+}
+
 .iconButton {
   background: none;
   border: none;
@@ -387,6 +409,14 @@
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(2px);
     z-index: 90;
+  }
+
+  .pinAppBtn span {
+    display: none;
+  }
+
+  .pinAppBtn {
+    padding: 6px 8px;
   }
 }
 

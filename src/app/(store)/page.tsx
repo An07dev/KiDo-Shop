@@ -4,7 +4,8 @@ import React, { useState, useEffect, useRef, Suspense, useMemo, useCallback } fr
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { FiGrid, FiList, FiChevronRight, FiChevronLeft, FiChevronDown, FiMessageSquare, FiLayers } from 'react-icons/fi';
+import { FiGrid, FiList, FiChevronRight, FiChevronLeft, FiChevronDown, FiLayers } from 'react-icons/fi';
+import { RiHeart3Fill } from 'react-icons/ri';
 import { useCart } from '@/contexts/CartContext';
 import { useTheme, defaultBanners, defaultSubBanners } from '@/contexts/ThemeContext';
 import StoreLoading from '@/components/store/StoreLoading';
@@ -15,10 +16,12 @@ import { clientCache } from '@/lib/clientCache';
 import StoreHeader from '@/components/store/home/StoreHeader';
 import HeroBannerCarousel from '@/components/store/home/HeroBannerCarousel';
 import FlashSaleSection from '@/components/store/home/FlashSaleSection';
+import TopBestSellersSection from '@/components/store/home/TopBestSellersSection';
 import HomeCategoryShowcase from '@/components/store/home/HomeCategoryShowcase';
 import TrustCommitmentBar from '@/components/store/home/TrustCommitmentBar';
 import ShopProfileCard from '@/components/store/home/ShopProfileCard';
 import StoreProductCard, { ProductItem } from '@/components/store/home/StoreProductCard';
+import RecommendedProductScroller from '@/components/store/home/RecommendedProductScroller';
 import styles from './page.module.css';
 
 // Lazy load bottom sheet product detail modal
@@ -50,7 +53,7 @@ const FILTER_PILLS = ['Tất cả', 'Flash Sale 🔥', 'Bán chạy', 'Hàng m�
 
 function HomePageContent() {
   const { cartCount } = useCart();
-  const { theme } = useTheme();
+  const { theme, isLoading: isThemeLoading } = useTheme();
   const router = useRouter();
   const searchParams = useSearchParams();
   const tabParam = searchParams.get('tab');
@@ -59,6 +62,7 @@ function HomePageContent() {
 
   const [activeNavTab, setActiveNavTab] = useState<'home' | 'products' | string>('home');
   const [products, setProducts] = useState<ProductItem[]>([]);
+  const [recommendedSaleProducts, setRecommendedSaleProducts] = useState<ProductItem[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState(0);
@@ -78,6 +82,15 @@ function HomePageContent() {
   const recommendedSectionRef = useRef<HTMLElement>(null);
   const productsTabRef = useRef<HTMLDivElement>(null);
 
+  // Top 3 Best-Selling Products for Home Section Podium
+  const topBestSellers = useMemo(() => {
+    const source = recommendedSaleProducts.length > 0 ? recommendedSaleProducts : products;
+    if (!source || source.length === 0) return [];
+    return [...source]
+      .sort((a, b) => ((b.soldCount ?? b.sold ?? 0) - (a.soldCount ?? a.sold ?? 0)))
+      .slice(0, 3);
+  }, [recommendedSaleProducts, products]);
+
   const displayedProducts = useMemo(() => {
     return products.slice(0, displayCount);
   }, [products, displayCount]);
@@ -96,21 +109,25 @@ function HomePageContent() {
         return;
       }
 
+      const isMobile = window.innerWidth < 600;
+      if (isMobile) {
+        // Mobile priority: Keep 1 category tab visible directly, put all other categories into "Xem thêm" dropdown
+        setVisibleCatCount(categories.length <= 1 ? categories.length : 1);
+        return;
+      }
+
       const navWidth = navBarRef.current.clientWidth;
       if (navWidth <= 0) return;
 
-      const isMobile = window.innerWidth < 600;
       // Base width: Home + All Products + padding
-      let currentWidth = isMobile ? 150 : 224;
-      const seeMoreBtnWidth = isMobile ? 65 : 90;
+      let currentWidth = 224;
+      const seeMoreBtnWidth = 90;
       let count = 0;
 
       // Check if ALL categories can fit directly without the "Thêm" button
       let totalAllWidth = currentWidth;
       for (const cat of categories) {
-        const tabWidth = isMobile
-          ? Math.max(50, (cat.name?.length || 5) * 7.5 + 20)
-          : Math.max(65, (cat.name?.length || 5) * 8.5 + 36);
+        const tabWidth = Math.max(65, (cat.name?.length || 5) * 8.5 + 36);
         totalAllWidth += tabWidth;
       }
 
@@ -123,9 +140,7 @@ function HomePageContent() {
       // Otherwise, calculate how many fit while reserving space for "Thêm ▾"
       for (let i = 0; i < categories.length; i++) {
         const cat = categories[i];
-        const tabWidth = isMobile
-          ? Math.max(50, (cat.name?.length || 5) * 7.5 + 20)
-          : Math.max(65, (cat.name?.length || 5) * 8.5 + 36);
+        const tabWidth = Math.max(65, (cat.name?.length || 5) * 8.5 + 36);
 
         if (currentWidth + tabWidth + seeMoreBtnWidth <= navWidth - 10) {
           currentWidth += tabWidth;
@@ -142,6 +157,26 @@ function HomePageContent() {
     window.addEventListener('resize', updateVisibleTabs);
     return () => window.removeEventListener('resize', updateVisibleTabs);
   }, [categories]);
+
+  // Smoothly auto-scroll active tab into center of navBarRef on mobile & desktop
+  useEffect(() => {
+    if (navBarRef.current) {
+      const activeEl = navBarRef.current.querySelector(
+        `.${styles.shopeeNavTabActive}`
+      ) as HTMLElement | null;
+      if (activeEl) {
+        const nav = navBarRef.current;
+        const navRect = nav.getBoundingClientRect();
+        const elRect = activeEl.getBoundingClientRect();
+        const offsetLeft = elRect.left - navRect.left + nav.scrollLeft;
+        const targetScroll = offsetLeft - navRect.width / 2 + elRect.width / 2;
+        nav.scrollTo({
+          left: Math.max(0, targetScroll),
+          behavior: 'smooth',
+        });
+      }
+    }
+  }, [activeNavTab, selectedCategory]);
 
   // Close dropdown on outside click or touch
   useEffect(() => {
@@ -164,10 +199,15 @@ function HomePageContent() {
   const [flashSaleConfig, setFlashSaleConfig] = useState<any>(null);
   const flashSaleRef = useRef<HTMLDivElement>(null);
 
-  const shopDisplayName = theme?.pageTitles?.logoText || 'Shop Của Tôi';
+  const shopDisplayName = theme?.pageTitles?.logoText;
   const avatarInitials = shopDisplayName ? shopDisplayName.substring(0, 2).toUpperCase() : 'ST';
   const heroBanners = theme?.banners && theme.banners.length > 0 ? theme.banners : defaultBanners;
-  const subBanners = theme?.subBanners && theme.subBanners.length > 0 ? theme.subBanners : defaultSubBanners;
+  const subBanners = Array.isArray(theme?.subBanners) ? theme.subBanners : [];
+  const validSubBanners = useMemo(() => {
+    return (Array.isArray(subBanners) ? subBanners : []).filter(
+      (b) => Boolean(b && b.image && typeof b.image === 'string' && b.image.trim().length > 0)
+    );
+  }, [subBanners]);
 
   // 1. Fetch Flash Sale
   useEffect(() => {
@@ -213,6 +253,28 @@ function HomePageContent() {
     loadCategories();
   }, []);
 
+  // 2b. Fetch Recommended Sale Products (luôn giữ danh sách sale độc lập, không bị lọc bởi filter pills)
+  useEffect(() => {
+    async function loadRecommendedSaleProducts() {
+      try {
+        const data = await clientCache.fetchWithCache(
+          'public_recommended_sale_products_full',
+          async () => {
+            const res = await apiFetch('/api/products?limit=120&status=active');
+            return await res.json();
+          },
+          60000
+        );
+        if (data?.success && Array.isArray(data?.data)) {
+          setRecommendedSaleProducts(data.data);
+        }
+      } catch (err) {
+        console.error('Error loading recommended sale products:', err);
+      }
+    }
+    loadRecommendedSaleProducts();
+  }, []);
+
   // 3. Fetch Products
   const fetchProductsByParams = useCallback(
     async (
@@ -245,7 +307,26 @@ function HomePageContent() {
         const data = await res.json();
         if (data.success && Array.isArray(data.data)) {
           let list = data.data;
-          if (filterIndex === 4) {
+          if (filterIndex === 1) {
+            // Flash Sale filter
+            list = list.filter(
+              (p: any) =>
+                (p.flashPrice && p.flashPrice > 0) ||
+                (p.salePrice && p.salePrice > 0 && p.salePrice < p.price)
+            );
+          } else if (filterIndex === 2) {
+            // Bán Chạy: sắp xếp theo số lượng bán nhiều nhất
+            list = [...list].sort(
+              (a: any, b: any) =>
+                (b.soldCount ?? b.sold ?? 0) - (a.soldCount ?? a.sold ?? 0)
+            );
+          } else if (filterIndex === 3) {
+            // Hàng Mới: sắp xếp theo thời gian mới nhất
+            list = [...list].sort(
+              (a: any, b: any) =>
+                new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+            );
+          } else if (filterIndex === 4) {
             list = [...list].sort((a: any, b: any) => {
               const pA = a.salePrice && a.salePrice > 0 ? a.salePrice : a.price;
               const pB = b.salePrice && b.salePrice > 0 ? b.salePrice : b.price;
@@ -254,6 +335,7 @@ function HomePageContent() {
           }
           clientCache.set(queryKey, list, 45000);
           setProducts(list);
+          setRecommendedSaleProducts((prev) => (prev.length === 0 ? list : prev));
         }
       } catch (err) {
         console.error('Error calling /api/products:', err);
@@ -343,8 +425,12 @@ function HomePageContent() {
       } else if (catSlug === 'all') {
         setActiveNavTab('products');
         setSelectedCategory('all');
+        setActiveFilter(0);
         router.push('/?tab=products');
-        fetchProductsByParams(activeFilter, priceSortAsc, searchQuery, 'all');
+        fetchProductsByParams(0, false, searchQuery, 'all');
+        setTimeout(() => {
+          productsTabRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
       } else if (catSlug === 'categories') {
         setActiveNavTab('categories');
         setSelectedCategory('all');
@@ -405,7 +491,8 @@ function HomePageContent() {
   // Memoized Category Image Map
   const categoryImageMap = useMemo(() => {
     const map: Record<string, string> = {};
-    products.forEach((p: any) => {
+    const source = recommendedSaleProducts.length > 0 ? recommendedSaleProducts : products;
+    source.forEach((p: any) => {
       if (!p.images || p.images.length === 0) return;
       const catSlug = (typeof p.category === 'object' ? p.category?.slug : p.category || '').toLowerCase().trim();
       const catId = (typeof p.category === 'object' ? p.category?._id : p.category || '').toString().trim();
@@ -417,25 +504,29 @@ function HomePageContent() {
       if (catName && !map[catName]) map[catName] = img;
     });
     return map;
-  }, [products]);
+  }, [recommendedSaleProducts, products]);
+
+  if (isThemeLoading) {
+    return <StoreLoading fullScreen text="Đang tải giao diện..." />;
+  }
 
   return (
     <div className={styles.shopeePageContainer}>
       {/* 1. SHOPEE TOPBAR & SEARCH HEADER */}
       <StoreHeader
         logoUrl={theme?.pageTitles?.logoUrl}
-        logoText={theme?.pageTitles?.logoText || 'Shopee'}
+        logoText={theme?.pageTitles?.logoText}
         cartCount={cartCount}
         searchQuery={searchQuery}
         onSearchSubmit={handleSearchSubmit}
         onClearSearch={handleClearSearch}
       />
 
+      {/* Full Width Top Banner Notice */}
+      <BannerNotice />
+
       {/* 2. MAIN CENTERED CONTAINER (MAX-WIDTH 1200PX) */}
       <main className={styles.shopeeMainContent}>
-        {/* Top Notice */}
-        <BannerNotice />
-
         {/* 3. SHOPEE SHOP PROFILE HEADER CARD */}
         <ShopProfileCard
           shopDisplayName={shopDisplayName}
@@ -452,7 +543,9 @@ function HomePageContent() {
           const visibleCats = categories.slice(0, visibleCatCount);
           const overflowCats = categories.slice(visibleCatCount);
           const activeOverflowCat = overflowCats.find((c) => c.slug === selectedCategory);
-          const isOverflowActive = Boolean(activeNavTab === 'products' && activeOverflowCat);
+          const isOverflowActive = Boolean(
+            activeOverflowCat && (selectedCategory === activeOverflowCat.slug || activeNavTab === activeOverflowCat.slug)
+          );
 
           return (
             <nav ref={navBarRef} className={styles.shopeeShopNavBar}>
@@ -461,29 +554,32 @@ function HomePageContent() {
                 className={`${styles.shopeeNavTab} ${activeNavTab === 'home' ? styles.shopeeNavTabActive : ''}`}
                 onClick={() => handleCategoryTabClick('home')}
               >
-                Home
+                Trang chủ
               </button>
               <button
                 type="button"
                 className={`${styles.shopeeNavTab} ${activeNavTab === 'products' && selectedCategory === 'all' ? styles.shopeeNavTabActive : ''}`}
                 onClick={() => handleCategoryTabClick('all')}
               >
-                All Products
+                Tất cả
               </button>
 
               {/* Directly visible category tabs */}
-              {visibleCats.map((cat) => (
-                <button
-                  key={cat._id || cat.slug}
-                  type="button"
-                  className={`${styles.shopeeNavTab} ${activeNavTab === 'products' && selectedCategory === cat.slug ? styles.shopeeNavTabActive : ''}`}
-                  onClick={() => handleCategoryTabClick(cat.slug)}
-                >
-                  {cat.name}
-                </button>
-              ))}
+              {visibleCats.map((cat) => {
+                const isActive = activeNavTab === cat.slug || selectedCategory === cat.slug;
+                return (
+                  <button
+                    key={cat._id || cat.slug}
+                    type="button"
+                    className={`${styles.shopeeNavTab} ${isActive ? styles.shopeeNavTabActive : ''}`}
+                    onClick={() => handleCategoryTabClick(cat.slug)}
+                  >
+                    {cat.name}
+                  </button>
+                );
+              })}
 
-              {/* See More (Thêm ▾) Dropdown ONLY when categories approach/exceed card box width */}
+              {/* See More (Xem thêm ▾) Dropdown ONLY when categories approach/exceed card box width */}
               {overflowCats.length > 0 && (
                 <div
                   ref={seeMoreRef}
@@ -501,20 +597,24 @@ function HomePageContent() {
                 >
                   <button
                     type="button"
-                    className={`${styles.shopeeNavTab} ${isOverflowActive ? styles.shopeeNavTabActive : ''}`}
+                    className={`${styles.shopeeNavTab} ${styles.seeMoreTabBtn} ${isOverflowActive ? styles.shopeeNavTabActive : ''}`}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                       setIsSeeMoreOpen((prev) => !prev);
                     }}
                     aria-expanded={isSeeMoreOpen}
+                    title={activeOverflowCat ? activeOverflowCat.name : 'Xem thêm'}
                   >
-                    <span>{activeOverflowCat ? activeOverflowCat.name : 'Thêm'}</span>
+                    <span className={styles.seeMoreBtnText}>
+                      {activeOverflowCat ? activeOverflowCat.name : 'Xem thêm'}
+                    </span>
                     <FiChevronDown
                       size={13}
                       style={{
                         transform: isSeeMoreOpen ? 'rotate(180deg)' : 'none',
                         transition: 'transform 0.2s ease',
+                        flexShrink: 0,
                       }}
                     />
                   </button>
@@ -524,21 +624,25 @@ function HomePageContent() {
                       className={styles.seeMoreMenu}
                       onClick={(e) => e.stopPropagation()}
                     >
-                      {overflowCats.map((cat) => (
-                        <button
-                          key={cat._id || cat.slug}
-                          type="button"
-                          className={`${styles.seeMoreMenuItem} ${selectedCategory === cat.slug && activeNavTab === 'products' ? styles.seeMoreMenuItemActive : ''}`}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            handleCategoryTabClick(cat.slug);
-                            setIsSeeMoreOpen(false);
-                          }}
-                        >
-                          {cat.name}
-                        </button>
-                      ))}
+                      {overflowCats.map((cat) => {
+                        const isCatActive = selectedCategory === cat.slug || activeNavTab === cat.slug;
+                        return (
+                          <button
+                            key={cat._id || cat.slug}
+                            type="button"
+                            className={`${styles.seeMoreMenuItem} ${isCatActive ? styles.seeMoreMenuItemActive : ''}`}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleCategoryTabClick(cat.slug);
+                              setIsSeeMoreOpen(false);
+                            }}
+                          >
+                            <span className={styles.seeMoreItemName}>{cat.name}</span>
+                            {isCatActive && <span className={styles.seeMoreItemCheck}>✓</span>}
+                          </button>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
@@ -546,6 +650,66 @@ function HomePageContent() {
             </nav>
           );
         })()}
+        <VoucherCollectionBar />
+
+        {/* GỢI Ý DÀNH CHO BẠN - CUỘN NGANG SẢN PHẨM CÓ SALE CAO NHẤT (CHỈ HIỂN THỊ Ở TAB HOME) */}
+        {activeNavTab === 'home' && (
+          <RecommendedProductScroller
+            products={recommendedSaleProducts.length > 0 ? recommendedSaleProducts : products}
+            onQuickAdd={handleQuickAdd}
+            onSeeAll={() => handleCategoryTabClick('all')}
+            title="Gợi ý dành cho bạn"
+            badgeText="Sale Khủng Nhất"
+            sortBy="discount"
+          />
+        )}
+
+        {/* BANNER PHỤ TRÊN MOBILE - HIỂN THỊ BÊN DƯỚI GỢI Ý DÀNH CHO BẠN (GIỮ NGUYÊN BỐ CỤC CŨ) */}
+        {activeNavTab === 'home' && validSubBanners.length > 0 && (
+          <section
+            className={styles.mobileSubBannersSection}
+            aria-label="Banner phụ khuyến mãi"
+          >
+            <div className={styles.mobileSubBannersList}>
+              {validSubBanners.map((sub, idx) => (
+                <div
+                  key={idx}
+                  className={styles.mobileSubBannerCard}
+                  onClick={() => {
+                    if (sub.link) {
+                      if (sub.link.startsWith('http')) {
+                        window.open(sub.link, '_blank', 'noopener,noreferrer');
+                      } else {
+                        router.push(sub.link);
+                      }
+                    } else {
+                      handleCategoryTabClick('all');
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={sub.title || `Banner phụ ${idx + 1}`}
+                >
+                  <div className={styles.mobileSubBannerImgWrap}>
+                    <img
+                      src={sub.image}
+                      alt={sub.title || `Banner phụ ${idx + 1}`}
+                      className={styles.mobileSubBannerImg}
+                      loading="lazy"
+                    />
+                    {(sub.tag || sub.title) && (
+                      <div className={styles.mobileSubBannerOverlay}>
+                        {sub.tag && <span className={styles.mobileSubBannerTag}>{sub.tag}</span>}
+                        {sub.title && <h4 className={styles.mobileSubBannerTitle}>{sub.title}</h4>}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
 
         {/* 5. TAB VIEW 1: HOME (DẠO SHOP) */}
         {activeNavTab === 'home' && (
@@ -558,7 +722,7 @@ function HomePageContent() {
             />
 
             {/* 2. VOUCHER COLLECTION BAR (NGAY DƯỚI BANNER) */}
-            <VoucherCollectionBar />
+
 
             {/* 3. SHOPEE FLASH SALE */}
             <FlashSaleSection
@@ -567,7 +731,14 @@ function HomePageContent() {
               sectionRef={flashSaleRef}
             />
 
-            {/* 4. SHOPEE CATEGORIES SHOWCASE */}
+            {/* 4. TOP 3 BEST SELLERS PODIUM SECTION */}
+            <TopBestSellersSection
+              products={topBestSellers}
+              onQuickAdd={handleQuickAdd}
+              onSeeAll={() => handleQuickFilter(2, false)}
+            />
+
+            {/* 5. SHOPEE CATEGORIES SHOWCASE */}
             <HomeCategoryShowcase
               categories={categories}
               categoryImageMap={categoryImageMap}
@@ -578,16 +749,21 @@ function HomePageContent() {
             {/* SHOPEE TRUST COMMITMENTS */}
             <TrustCommitmentBar />
 
-            {/* RECOMMENDED FOR YOU (GỢI Ý CHO BẠN - 6 COLUMNS GRID) */}
+            {/* CÓ THỂ BẠN SẼ THÍCH (6 COLUMNS GRID) */}
             <section ref={recommendedSectionRef} className={styles.shopeeRecommendedSection}>
               <div className={styles.shopeeSectionHeader}>
-                <h2 className={styles.shopeeSectionTitle}>Gợi ý dành cho bạn</h2>
+                <div className={styles.shopeeTitleGroup}>
+                  <span className={styles.shopeeTitleIconBadge}>
+                    <RiHeart3Fill />
+                  </span>
+                  <h2 className={styles.shopeeSectionTitle}>Có thể bạn sẽ thích</h2>
+                </div>
                 <button
                   type="button"
                   className={styles.shopeeSeeAllBtn}
                   onClick={() => handleCategoryTabClick('all')}
                 >
-                  <span>See All</span>
+                  <span>Xem tất cả</span>
                   <FiChevronRight size={14} />
                 </button>
               </div>
@@ -805,17 +981,6 @@ function HomePageContent() {
           </div>
         )}
       </main>
-
-      {/* 7. BOTTOM RIGHT FLOATING SHOPEE CHAT BUTTON */}
-      <button
-        type="button"
-        className={styles.shopeeFloatingChatBtn}
-        onClick={() => router.push('/chat')}
-        aria-label="Chat với Shop"
-      >
-        <FiMessageSquare size={18} />
-        <span>Chat</span>
-      </button>
 
       {/* Bottom Sheet Quick Add Modal */}
       {selectedProductForModal && (

@@ -29,14 +29,12 @@ export default function FomoLiveNotification() {
         // 1. Check if FlashSale FOMO is enabled
         const fsRes = await apiFetch('/api/flash-sale');
         const fsData = await fsRes.json();
-        if (fsData.success && fsData.data) {
-          const fomo = fsData.data.fomoSettings;
-          if (fomo && !fomo.enableLivePurchasePopup) {
-            return; // Disabled by admin
-          }
-          if (fomo?.popupIntervalSeconds) {
-            setIntervalSec(fomo.popupIntervalSeconds);
-          }
+        const fomo = fsData?.data?.fomoSettings;
+        if (!fomo || fomo.enableLivePurchasePopup === false) {
+          return; // Tắt hoàn toàn bởi quản trị viên
+        }
+        if (fomo?.popupIntervalSeconds) {
+          setIntervalSec(fomo.popupIntervalSeconds);
         }
 
         // 2. Load events

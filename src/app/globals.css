@@ -43,6 +43,8 @@
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
   --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.25);
+
+  --font-main: var(--font-jakarta), 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 /* Light Mode Fallback / Overrides */
@@ -73,9 +75,10 @@
   --admin-accent: #2563eb;
   --secondary-btn-bg: #f1f5f9;
   --secondary-btn-text: #475569;
+  --font-main: var(--font-jakarta), 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-* {
+*, *::before, *::after {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
@@ -85,10 +88,13 @@ html,
 body {
   max-width: 100vw;
   overflow-x: clip;
-  font-family: var(--font-jakarta), 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-main);
   background-color: var(--bg-main);
   color: var(--text-main);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
@@ -97,15 +103,12 @@ a {
   text-decoration: none;
 }
 
-button {
-  cursor: pointer;
-  border: none;
-  background: none;
-  font-family: inherit;
+button, input, select, textarea, optgroup {
+  font-family: var(--font-main) !important;
 }
 
-input, select, textarea {
-  font-family: inherit;
+code, kbd, samp, pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
 }
 
 /* Custom Scrollbar */

@@ -145,14 +145,14 @@ export default function ChatFloatingWidget() {
       const btnHeight = 48;
 
       const defaultX = window.innerWidth - btnWidth - (isMobile ? 16 : 24);
-      const defaultY = window.innerHeight - btnHeight - (isMobile ? 75 : 30);
+      const defaultY = window.innerHeight - btnHeight - (isMobile ? 96 : 30);
 
       setPosition((prev) => {
         if (prev === null) {
           return { x: Math.max(8, defaultX), y: Math.max(20, defaultY) };
         }
         const clampedX = Math.max(8, Math.min(prev.x, window.innerWidth - btnWidth - 8));
-        const clampedY = Math.max(20, Math.min(prev.y, window.innerHeight - btnHeight - (isMobile ? 70 : 20)));
+        const clampedY = Math.max(20, Math.min(prev.y, window.innerHeight - btnHeight - (isMobile ? 80 : 20)));
         return { x: clampedX, y: clampedY };
       });
     };
@@ -338,7 +338,7 @@ export default function ChatFloatingWidget() {
     const minX = 8;
     const maxX = window.innerWidth - btnWidth - 8;
     const minY = 10;
-    const maxY = window.innerHeight - btnHeight - (isMobile ? 70 : 20);
+    const maxY = window.innerHeight - btnHeight - (isMobile ? 80 : 20);
 
     newX = Math.max(minX, Math.min(newX, maxX));
     newY = Math.max(minY, Math.min(newY, maxY));
@@ -943,6 +943,9 @@ function parseBoldText(str: string, keyPrefix: string) {
           transform: position
             ? `translate3d(${position.x}px, ${position.y}px, 0)`
             : undefined,
+          opacity: position ? 1 : 0,
+          visibility: position ? 'visible' : 'hidden',
+          transition: isDragging ? 'none' : 'opacity 0.2s ease',
         }}
       >
         <button

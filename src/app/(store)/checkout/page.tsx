@@ -21,9 +21,9 @@ import toast from 'react-hot-toast';
 import { useCart, CartItem, getCartItemPrice, getCartItemOriginalPrice } from '@/contexts/CartContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { formatPrice } from '@/lib/utils';
-import { vietnamProvinces } from '@/lib/vietnamLocations';
 import { apiFetch } from '@/lib/api';
 import CheckoutVoucherModal, { IVoucherOption } from '@/components/store/CheckoutVoucherModal';
+import CheckoutAddressModal, { ICustomerAddressData } from '@/components/store/CheckoutAddressModal';
 import styles from './page.module.css';
 
 interface CarrierOption {
@@ -36,7 +36,7 @@ interface CarrierOption {
 
 // Helper to sanitize any previously corrupted accumulated addresses
 function cleanStreetAddress(raw: string = ''): string {
-  if (!raw) return 'Số 10 Phạm Hùng';
+  if (!raw) return '';
   const parts = raw.split(',').map((s) => s.trim()).filter(Boolean);
   if (parts.length > 0) {
     return parts[0];
@@ -53,34 +53,38 @@ export default function CheckoutPage() {
   const [activeItems, setActiveItems] = useState<CartItem[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // FOMO Reservation Timer State (Defaults to 15 mins)
-  const [reservationSeconds, setReservationSeconds] = useState(15 * 60);
+  // FOMO Reservation Timer State
+  const [isTimerEnabled, setIsTimerEnabled] = useState(false);
+  const [reservationSeconds, setReservationSeconds] = useState(0);
 
   useEffect(() => {
     async function loadCheckoutFomo() {
       try {
         const res = await apiFetch('/api/flash-sale');
         const data = await res.json();
-        if (data.success && data.data) {
-          const fomo = data.data.fomoSettings;
-          if (fomo?.enableCheckoutTimer === false) {
-            setReservationSeconds(0);
-          } else if (fomo?.checkoutTimerMinutes) {
-            setReservationSeconds(fomo.checkoutTimerMinutes * 60);
-          }
+        const fomo = data?.data?.fomoSettings;
+        if (fomo && fomo.enableCheckoutTimer === true) {
+          setIsTimerEnabled(true);
+          const mins = Number(fomo.checkoutTimerMinutes) || 15;
+          setReservationSeconds(mins * 60);
+        } else {
+          setIsTimerEnabled(false);
+          setReservationSeconds(0);
         }
-      } catch (e) {}
+      } catch (e) {
+        setIsTimerEnabled(false);
+      }
     }
     loadCheckoutFomo();
   }, []);
 
   useEffect(() => {
-    if (reservationSeconds <= 0) return;
+    if (!isTimerEnabled || reservationSeconds <= 0) return;
     const timer = setInterval(() => {
       setReservationSeconds((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
     return () => clearInterval(timer);
-  }, [reservationSeconds]);
+  }, [isTimerEnabled, reservationSeconds]);
 
   useEffect(() => {
     try {
@@ -125,17 +129,19 @@ export default function CheckoutPage() {
     }
   }, [activeItems.length]);
 
-  const [isEditingAddress, setIsEditingAddress] = useState(false);
-  const [customer, setCustomer] = useState({
+  const [customer, setCustomer] = useState<ICustomerAddressData>({
     name: '',
     phone: '',
     email: '',
     province: 'Hà Nội',
     district: 'Quận Cầu Giấy',
-    ward: 'Phường Dịch Vọng Hậu',
+    ward: '',
     streetAddress: '',
     notes: '',
   });
+
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+  const [addressModalMode, setAddressModalMode] = useState<'input' | 'confirm'>('input');
 
   // Auto-fill from local profile with sanitization
   useEffect(() => {
@@ -212,34 +218,6 @@ export default function CheckoutPage() {
   const dynamicShippingFee = 0;
   const finalTotalAmount = Math.max(0, checkoutSubtotal + dynamicShippingFee - voucherDiscountAmount);
 
-  // Address selectors logic
-  const selectedProvinceData = vietnamProvinces.find((p) => p.name === customer.province) || vietnamProvinces[0];
-  const availableDistricts = selectedProvinceData?.districts || [];
-  const selectedDistrictData = availableDistricts.find((d) => d.name === customer.district) || availableDistricts[0];
-  const availableWards = selectedDistrictData?.wards || [];
-
-  const handleProvinceChange = (provinceName: string) => {
-    const prov = vietnamProvinces.find((p) => p.name === provinceName);
-    const firstDistrict = prov?.districts?.[0]?.name || '';
-    const firstWard = prov?.districts?.[0]?.wards?.[0] || '';
-    setCustomer((prev) => ({
-      ...prev,
-      province: provinceName,
-      district: firstDistrict,
-      ward: firstWard,
-    }));
-  };
-
-  const handleDistrictChange = (districtName: string) => {
-    const dist = availableDistricts.find((d) => d.name === districtName);
-    const firstWard = dist?.wards?.[0] || '';
-    setCustomer((prev) => ({
-      ...prev,
-      district: districtName,
-      ward: firstWard,
-    }));
-  };
-
   const fullDisplayAddress = [
     customer.streetAddress,
     customer.ward,
@@ -249,19 +227,82 @@ export default function CheckoutPage() {
     .filter(Boolean)
     .join(', ');
 
-  const handleSubmitOrder = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const hasValidAddress = Boolean(
+    customer.name?.trim() &&
+    customer.phone?.trim() &&
+    customer.streetAddress?.trim()
+  );
+
+  // Triggered when user clicks "Đặt Hàng Ngay" or submits the checkout form
+  const handleOpenCheckoutModal = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+
+    if (activeItems.length === 0) {
+      toast.error('Không có sản phẩm nào để thanh toán!');
+      return;
+    }
+    if (!paymentConfig.codEnabled && !paymentConfig.bankTransferEnabled) {
+      toast.error('Cửa hàng hiện đang tạm đóng cổng thanh toán. Vui lòng liên hệ Chat với Shop!');
+      return;
+    }
+
+    if (!hasValidAddress) {
+      // 1. Chưa có địa chỉ -> hiện modal nhập thông tin địa chỉ
+      setAddressModalMode('input');
+      setIsAddressModalOpen(true);
+    } else {
+      // 2. Đã có địa chỉ -> hiển thị lại modal với thông tin kiểm tra lại địa chỉ
+      setAddressModalMode('confirm');
+      setIsAddressModalOpen(true);
+    }
+  };
+
+  // Saved address from the modal
+  const handleSaveAddressFromModal = (updated: ICustomerAddressData) => {
+    setCustomer(updated);
+    try {
+      const fullAddressStr = [
+        updated.streetAddress,
+        updated.ward,
+        updated.district,
+        updated.province,
+      ].filter(Boolean).join(', ');
+
+      localStorage.setItem(
+        'shopbig_profile',
+        JSON.stringify({
+          ...updated,
+          address: fullAddressStr,
+        })
+      );
+    } catch (e) {
+      console.error('Error saving profile to localStorage:', e);
+    }
+
+    // Sau khi lưu thông tin, tự động chuyển sang modal kiểm tra lại địa chỉ
+    setAddressModalMode('confirm');
+  };
+
+  // The actual order submission execution (called from the confirm modal)
+  const executeSubmitOrder = async () => {
+    if (submitting) return;
 
     if (!customer.name.trim()) {
       toast.error('Vui lòng nhập họ và tên nhận hàng');
+      setAddressModalMode('input');
+      setIsAddressModalOpen(true);
       return;
     }
     if (!customer.phone.trim()) {
       toast.error('Vui lòng nhập số điện thoại');
+      setAddressModalMode('input');
+      setIsAddressModalOpen(true);
       return;
     }
     if (!customer.streetAddress.trim()) {
       toast.error('Vui lòng nhập số nhà, tên đường cụ thể');
+      setAddressModalMode('input');
+      setIsAddressModalOpen(true);
       return;
     }
     if (activeItems.length === 0) {
@@ -284,7 +325,7 @@ export default function CheckoutPage() {
           address: fullDisplayAddress,
           province: customer.province,
           district: customer.district,
-          ward: customer.ward,
+          ward: customer.ward || '',
         },
         items: activeItems.map((i) => ({
           productId: i.productId,
@@ -316,6 +357,7 @@ export default function CheckoutPage() {
       const data = await res.json();
 
       if (data.success && data.data) {
+        setIsAddressModalOpen(false);
         toast.success('Đặt hàng thành công!');
 
         // Dispatch Purchase event for 100% real tracking and Server-side CAPI
@@ -340,7 +382,7 @@ export default function CheckoutPage() {
           );
         }
 
-        // Save customer info locally for future visits without accumulating duplicate strings
+        // Save customer info locally for future visits
         try {
           localStorage.setItem(
             'shopbig_profile',
@@ -381,7 +423,6 @@ export default function CheckoutPage() {
             sessionStorage.setItem('shopbig_pending_payment_items', JSON.stringify(activeItems));
           } catch (e) {}
 
-          // KHÔNG xóa sản phẩm khỏi giỏ hàng ngay để nếu khách chưa chuyển khoản và quay lại mua tiếp, sản phẩm vẫn còn trong giỏ
           router.push(`/payment?orderId=${data.data._id}&code=${data.data.orderCode}`);
         } else {
           // Thanh toán COD -> Xóa sản phẩm vừa mua khỏi giỏ hàng ngay
@@ -399,17 +440,27 @@ export default function CheckoutPage() {
     }
   };
 
-  const shopName = theme?.pageTitles?.logoText || 'ShopBig Store';
+  const handleBack = () => {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      router.back();
+    } else {
+      router.push('/cart');
+    }
+  };
+
+  const shopName = theme?.pageTitles?.logoText || 'Cửa Hàng';
 
   if (isInitialized && activeItems.length === 0) {
     return (
       <div className={styles.page}>
         <nav className={styles.topNav}>
-          <button className={styles.backBtn} onClick={() => router.back()} aria-label="Quay lại">
-            <FiChevronLeft size={22} />
-          </button>
+          <div className={styles.topNavLeft}>
+            <button className={styles.backBtn} onClick={handleBack} aria-label="Quay lại">
+              <FiChevronLeft size={22} />
+            </button>
+          </div>
           <div className={styles.navTitle}>Thanh Toán Đơn Hàng</div>
-          <div style={{ width: 32 }}></div>
+          <div className={styles.topNavRight}></div>
         </nav>
 
         <div className={styles.emptyState}>
@@ -428,16 +479,18 @@ export default function CheckoutPage() {
     <div className={styles.page}>
       {/* ===== FIXED TOP NAVIGATION ===== */}
       <nav className={styles.topNav}>
-        <button className={styles.backBtn} onClick={() => router.back()} aria-label="Quay lại">
-          <FiChevronLeft size={22} />
-        </button>
-        <div className={styles.navTitle}>Xác Nhận Đơn Hàng</div>
-        <div style={{ width: 32 }}></div>
+        <div className={styles.topNavLeft}>
+          <button className={styles.backBtn} onClick={handleBack} aria-label="Quay lại">
+            <FiChevronLeft size={22} />
+          </button>
+        </div>
+        <h1 className={styles.navTitle}>Xác Nhận Đơn Hàng</h1>
+        <div className={styles.topNavRight}></div>
       </nav>
 
-      <form className={styles.scrollArea} onSubmit={handleSubmitOrder}>
+      <form className={styles.scrollArea} onSubmit={handleOpenCheckoutModal}>
         {/* FOMO Checkout Reservation Timer Banner */}
-        {reservationSeconds > 0 && (
+        {isTimerEnabled && reservationSeconds > 0 && (
           <div className={styles.reservationBanner}>
             <FiClock className={styles.reservationIcon} />
             <div>
@@ -467,156 +520,61 @@ export default function CheckoutPage() {
               <button
                 type="button"
                 className={styles.editAddressBtn}
-                onClick={() => setIsEditingAddress(!isEditingAddress)}
+                onClick={() => {
+                  setAddressModalMode('input');
+                  setIsAddressModalOpen(true);
+                }}
               >
                 <FiEdit2 size={12} />
-                <span>{isEditingAddress ? 'Thu gọn' : 'Thay đổi'}</span>
+                <span>{hasValidAddress ? 'Thay đổi' : 'Thêm mới'}</span>
               </button>
             </div>
 
-            {!isEditingAddress ? (
-              <div className={styles.addressPreview} onClick={() => setIsEditingAddress(true)}>
+            {hasValidAddress ? (
+              <div
+                className={styles.addressPreview}
+                onClick={() => {
+                  setAddressModalMode('input');
+                  setIsAddressModalOpen(true);
+                }}
+              >
                 <div className={styles.contactRow}>
-                  <span className={styles.customerName}>{customer.name || 'Chưa nhập họ tên'}</span>
+                  <span className={styles.customerName}>{customer.name}</span>
                   <span className={styles.dotSeparator}>•</span>
-                  <span className={styles.customerPhone}>{customer.phone || 'Chưa nhập SĐT'}</span>
+                  <span className={styles.customerPhone}>{customer.phone}</span>
                   <span className={styles.defaultBadge}>Mặc định</span>
                 </div>
-                <p className={styles.fullAddressText}>
-                  {fullDisplayAddress || 'Số 10 Phạm Hùng, Phường Mai Dịch, Quận Cầu Giấy, Hà Nội'}
-                </p>
+                <p className={styles.fullAddressText}>{fullDisplayAddress}</p>
               </div>
             ) : (
-              <div className={styles.addressForm}>
-                {/* Row 1: Name & Phone */}
-                <div className={styles.gridTwo}>
-                  <div className={styles.inputGroup}>
-                    <label>Họ và tên *</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="VD: Lê Văn An"
-                      className={styles.input}
-                      value={customer.name}
-                      onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
-                    />
-                  </div>
-                  <div className={styles.inputGroup}>
-                    <label>Số điện thoại *</label>
-                    <input
-                      type="tel"
-                      required
-                      placeholder="VD: 0336625074"
-                      className={styles.input}
-                      value={customer.phone}
-                      onChange={(e) => setCustomer({ ...customer, phone: e.target.value })}
-                    />
+              <div
+                className={styles.emptyAddressCard}
+                onClick={() => {
+                  setAddressModalMode('input');
+                  setIsAddressModalOpen(true);
+                }}
+              >
+                <div className={styles.emptyAddressText}>
+                  <FiMapPin size={18} color="#ef4444" />
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--text-main, #0f172a)' }}>
+                      Chưa có địa chỉ nhận hàng
+                    </div>
+                    <div style={{ fontSize: 12, color: 'var(--text-muted, #94a3b8)' }}>
+                      Vui lòng thêm thông tin địa chỉ để nhận hàng
+                    </div>
                   </div>
                 </div>
-
-                {/* Row 2: Province / City (Full Width) */}
-                <div className={styles.inputGroup}>
-                  <label>Tỉnh / Thành phố *</label>
-                  <select
-                    className={`${styles.input} ${styles.selectInput}`}
-                    value={customer.province}
-                    onChange={(e) => handleProvinceChange(e.target.value)}
-                  >
-                    {vietnamProvinces.map((p) => (
-                      <option key={p.name} value={p.name}>
-                        {p.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Row 3: District & Ward (2 Columns) */}
-                <div className={styles.gridTwo}>
-                  <div className={styles.inputGroup}>
-                    <label>Quận / Huyện *</label>
-                    <select
-                      className={`${styles.input} ${styles.selectInput}`}
-                      value={customer.district}
-                      onChange={(e) => handleDistrictChange(e.target.value)}
-                    >
-                      {availableDistricts.map((d) => (
-                        <option key={d.name} value={d.name}>
-                          {d.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className={styles.inputGroup}>
-                    <label>Phường / Xã *</label>
-                    <select
-                      className={`${styles.input} ${styles.selectInput}`}
-                      value={customer.ward}
-                      onChange={(e) => setCustomer({ ...customer, ward: e.target.value })}
-                    >
-                      {availableWards.map((w) => (
-                        <option key={w} value={w}>
-                          {w}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                {/* Row 4: Street Address (Full Width) */}
-                <div className={styles.inputGroup}>
-                  <label>Số nhà, tên đường cụ thể *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="VD: Số 10 Phạm Hùng, Tòa nhà Keangnam"
-                    className={styles.input}
-                    value={customer.streetAddress}
-                    onChange={(e) => setCustomer({ ...customer, streetAddress: e.target.value })}
-                  />
-                </div>
-
-                {/* Row 5: Email & Note */}
-                <div className={styles.gridTwo}>
-                  <div className={styles.inputGroup}>
-                    <label>Email (Nhận hóa đơn điện tử)</label>
-                    <input
-                      type="email"
-                      placeholder="vd: khachhang@gmail.com"
-                      className={styles.input}
-                      value={customer.email}
-                      onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
-                    />
-                    <span style={{ fontSize: '0.6875rem', color: 'var(--text-muted, #94a3b8)', marginTop: 2 }}>
-                      Nhận thông báo xác nhận và tiến trình đơn hàng
-                    </span>
-                  </div>
-                  <div className={styles.inputGroup}>
-                    <label>Ghi chú (Tùy chọn)</label>
-                    <input
-                      type="text"
-                      placeholder="VD: Gọi trước khi giao"
-                      className={styles.input}
-                      value={customer.notes}
-                      onChange={(e) => setCustomer({ ...customer, notes: e.target.value })}
-                    />
-                  </div>
-                </div>
-
                 <button
                   type="button"
-                  className={styles.confirmAddressBtn}
-                  onClick={() => {
-                    if (!customer.name || !customer.phone || !customer.streetAddress) {
-                      toast.error('Vui lòng điền đầy đủ họ tên, SĐT và địa chỉ');
-                      return;
-                    }
-                    setIsEditingAddress(false);
-                    toast.success('Đã cập nhật địa chỉ giao hàng');
+                  className={styles.addAddressBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setAddressModalMode('input');
+                    setIsAddressModalOpen(true);
                   }}
                 >
-                  <FiCheck size={14} />
-                  <span>Xác Nhận Địa Chỉ Này</span>
+                  + Thêm địa chỉ
                 </button>
               </div>
             )}
@@ -812,7 +770,7 @@ export default function CheckoutPage() {
             type="button"
             className={styles.orderSubmitBtn}
             disabled={submitting}
-            onClick={handleSubmitOrder}
+            onClick={handleOpenCheckoutModal}
           >
             {submitting ? 'Đang Xử Lý...' : 'Đặt Hàng Ngay'}
           </button>
@@ -827,6 +785,25 @@ export default function CheckoutPage() {
         customerPhone={customer.phone}
         selectedVoucher={selectedVoucher}
         onSelectVoucher={(v) => setSelectedVoucher(v)}
+      />
+
+      {/* ===== ADDRESS INPUT & CONFIRMATION MODAL ===== */}
+      <CheckoutAddressModal
+        isOpen={isAddressModalOpen}
+        mode={addressModalMode}
+        onClose={() => setIsAddressModalOpen(false)}
+        customer={customer}
+        onSaveAddress={handleSaveAddressFromModal}
+        onConfirmOrder={executeSubmitOrder}
+        onSwitchToEdit={() => setAddressModalMode('input')}
+        submitting={submitting}
+        orderSummary={{
+          totalAmount: finalTotalAmount,
+          paymentMethod,
+          subtotal: checkoutSubtotal,
+          voucherDiscount: voucherDiscountAmount,
+          itemCount: activeItems.reduce((acc, i) => acc + i.quantity, 0),
+        }}
       />
     </div>
   );

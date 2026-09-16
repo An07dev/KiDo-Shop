@@ -24,12 +24,17 @@ import toast from 'react-hot-toast';
 import { useTheme } from '@/contexts/ThemeContext';
 import { formatPrice, formatDate } from '@/lib/utils';
 import { apiFetch } from '@/lib/api';
+import { vietnamProvinces } from '@/lib/vietnamLocations';
 import styles from './page.module.css';
 
 interface CustomerProfile {
   name: string;
   phone: string;
   email: string;
+  province?: string;
+  district?: string;
+  ward?: string;
+  streetAddress?: string;
   address: string;
 }
 
@@ -40,7 +45,10 @@ export default function ProfilePage() {
     name: 'Khách hàng',
     phone: '0988888888',
     email: 'khachhang@shopbig.vn',
-    address: 'Số 10 Phạm Hùng, Cầu Giấy, Hà Nội',
+    province: 'Hà Nội',
+    district: 'Quận Cầu Giấy',
+    streetAddress: 'Số 10 Phạm Hùng',
+    address: 'Số 10 Phạm Hùng, Quận Cầu Giấy, Hà Nội',
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -48,25 +56,47 @@ export default function ProfilePage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(false);
 
+  const [wardsList, setWardsList] = useState<string[]>([]);
+  const [loadingWards, setLoadingWards] = useState(false);
+
   // 1. Load profile from localStorage or fallback API (no token required)
   useEffect(() => {
     try {
       const saved = localStorage.getItem('shopbig_profile');
       if (saved) {
         const parsed = JSON.parse(saved);
-        setProfile(parsed);
-        setEditForm(parsed);
+        const prov = parsed.province || 'Hà Nội';
+        const dist = parsed.district || 'Quận Cầu Giấy';
+        const ward = parsed.ward || '';
+        const street = parsed.streetAddress || (parsed.address ? parsed.address.split(',')[0].trim() : 'Số 10 Phạm Hùng');
+        const fullAddr = [street, ward, dist, prov].filter(Boolean).join(', ');
+        const loaded: CustomerProfile = {
+          name: parsed.name || 'Khách hàng',
+          phone: parsed.phone || '0988888888',
+          email: parsed.email || 'khachhang@shopbig.vn',
+          province: prov,
+          district: dist,
+          ward: ward,
+          streetAddress: street,
+          address: parsed.address || fullAddr,
+        };
+        setProfile(loaded);
+        setEditForm(loaded);
       } else {
         // Fetch from /api/auth/me (no token required)
         apiFetch('/api/auth/me')
           .then((r) => r.json())
           .then((data) => {
             if (data.success && data.data) {
-              const p = {
+              const p: CustomerProfile = {
                 name: data.data.name || 'Khách hàng',
                 phone: data.data.phone || '0988888888',
                 email: data.data.email || 'khachhang@shopbig.vn',
-                address: data.data.address || 'Số 10 Phạm Hùng, Cầu Giấy, Hà Nội',
+                province: data.data.province || 'Hà Nội',
+                district: data.data.district || 'Quận Cầu Giấy',
+                ward: data.data.ward || '',
+                streetAddress: data.data.streetAddress || 'Số 10 Phạm Hùng',
+                address: data.data.address || 'Số 10 Phạm Hùng, Quận Cầu Giấy, Hà Nội',
               };
               setProfile(p);
               setEditForm(p);
@@ -79,33 +109,76 @@ export default function ProfilePage() {
     }
   }, []);
 
-  // 2. Fetch orders without requiring token
+  // Fetch dynamic wards whenever editForm district or province changes
   useEffect(() => {
-    async function loadRecentOrders() {
-      try {
-        setLoadingOrders(true);
-        const url = profile.phone ? `/api/orders?phone=${encodeURIComponent(profile.phone)}&limit=5` : '/api/orders?limit=5';
-        const res = await apiFetch(url);
-        const data = await res.json();
-        if (data.success && Array.isArray(data.data)) {
-          setOrders(data.data);
-        }
-      } catch (err) {
-        console.error('Error loading orders:', err);
-      } finally {
-        setLoadingOrders(false);
-      }
+    if (!editForm.district) {
+      setWardsList([]);
+      return;
     }
 
-    loadRecentOrders();
-  }, [profile.phone]);
+    let isMounted = true;
+    setLoadingWards(true);
+
+    fetch(
+      `/api/locations/wards?district=${encodeURIComponent(editForm.district)}&province=${encodeURIComponent(editForm.province || '')}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (!isMounted) return;
+        if (data.success && Array.isArray(data.wards)) {
+          setWardsList(data.wards);
+          if (data.wards.length > 0 && (!editForm.ward || !data.wards.includes(editForm.ward))) {
+            setEditForm((prev) => ({ ...prev, ward: data.wards[0] }));
+          }
+        }
+      })
+      .catch((e) => console.error(e))
+      .finally(() => {
+        if (isMounted) setLoadingWards(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [editForm.province, editForm.district]);
+
+  // Cascading location data
+  const selectedProvData =
+    vietnamProvinces.find((p) => p.name === editForm.province) || vietnamProvinces[0];
+  const availableDistricts = selectedProvData?.districts || [];
+
+  const handleProvinceChange = (provinceName: string) => {
+    const prov = vietnamProvinces.find((p) => p.name === provinceName);
+    const firstDistrict = prov?.districts?.[0]?.name || '';
+    setEditForm((prev) => ({
+      ...prev,
+      province: provinceName,
+      district: firstDistrict,
+      ward: '',
+    }));
+  };
+
+  const handleDistrictChange = (districtName: string) => {
+    setEditForm((prev) => ({
+      ...prev,
+      district: districtName,
+      ward: '',
+    }));
+  };
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
-    setProfile(editForm);
-    localStorage.setItem('shopbig_profile', JSON.stringify(editForm));
+    const cleanPhone = editForm.phone.replace(/[\s.-]/g, '');
+    const fullAddr = [editForm.streetAddress, editForm.ward, editForm.district, editForm.province].filter(Boolean).join(', ');
+    const updated: CustomerProfile = {
+      ...editForm,
+      phone: cleanPhone,
+      address: fullAddr || editForm.address,
+    };
+    setProfile(updated);
+    localStorage.setItem('shopbig_profile', JSON.stringify(updated));
     setIsEditing(false);
-    toast.success('Đã cập nhật thông tin cá nhân!');
+    toast.success('Đã cập nhật thông tin & địa chỉ nhận hàng!');
   };
 
   const avatarInitials = profile.name
@@ -158,6 +231,12 @@ export default function ProfilePage() {
               <FiMail size={12} />
               <span>{profile.email}</span>
             </div>
+            <div className={styles.userMeta}>
+              <FiMapPin size={12} />
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 220 }}>
+                {profile.address || 'Chưa cập nhật địa chỉ'}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -165,13 +244,137 @@ export default function ProfilePage() {
         {isEditing && (
           <form className={styles.menuCard} onSubmit={handleSaveProfile} style={{ gap: 12 }}>
             <h3 style={{ fontSize: 13, fontWeight: 700, margin: '0 0 4px', color: '#f8fafc' }}>
-              Chỉnh Sửa Thông Tin
+              Chỉnh Sửa Thông Tin & Địa Chỉ Giao Hàng
             </h3>
+
+            {/* Row 1: Name & Phone */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <label style={{ fontSize: 11, color: '#94a3b8' }}>Họ và tên *</label>
+                <input
+                  type="text"
+                  required
+                  className={styles.input}
+                  style={{
+                    background: '#090a0f',
+                    border: '1px solid #232838',
+                    color: '#fff',
+                    padding: '8px 12px',
+                    borderRadius: 6,
+                    fontSize: 12,
+                  }}
+                  value={editForm.name}
+                  onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <label style={{ fontSize: 11, color: '#94a3b8' }}>Số điện thoại *</label>
+                <input
+                  type="tel"
+                  required
+                  className={styles.input}
+                  style={{
+                    background: '#090a0f',
+                    border: '1px solid #232838',
+                    color: '#fff',
+                    padding: '8px 12px',
+                    borderRadius: 6,
+                    fontSize: 12,
+                  }}
+                  value={editForm.phone}
+                  onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+                />
+              </div>
+            </div>
+
+            {/* Row 2: Province, District & Ward */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 10 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <label style={{ fontSize: 11, color: '#94a3b8' }}>Tỉnh / Thành phố *</label>
+                <select
+                  style={{
+                    background: '#090a0f',
+                    border: '1px solid #232838',
+                    color: '#fff',
+                    padding: '8px 12px',
+                    borderRadius: 6,
+                    fontSize: 12,
+                    cursor: 'pointer',
+                  }}
+                  value={editForm.province}
+                  onChange={(e) => handleProvinceChange(e.target.value)}
+                >
+                  {vietnamProvinces.map((p) => (
+                    <option key={p.name} value={p.name} style={{ background: '#1e293b' }}>
+                      {p.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <label style={{ fontSize: 11, color: '#94a3b8' }}>Quận / Huyện *</label>
+                <select
+                  style={{
+                    background: '#090a0f',
+                    border: '1px solid #232838',
+                    color: '#fff',
+                    padding: '8px 12px',
+                    borderRadius: 6,
+                    fontSize: 12,
+                    cursor: 'pointer',
+                  }}
+                  value={editForm.district}
+                  onChange={(e) => handleDistrictChange(e.target.value)}
+                >
+                  {availableDistricts.map((d) => (
+                    <option key={d.name} value={d.name} style={{ background: '#1e293b' }}>
+                      {d.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <label style={{ fontSize: 11, color: '#94a3b8' }}>Phường / Xã *</label>
+                <select
+                  style={{
+                    background: '#090a0f',
+                    border: '1px solid #232838',
+                    color: '#fff',
+                    padding: '8px 12px',
+                    borderRadius: 6,
+                    fontSize: 12,
+                    cursor: 'pointer',
+                  }}
+                  value={editForm.ward || ''}
+                  disabled={loadingWards}
+                  onChange={(e) => setEditForm({ ...editForm, ward: e.target.value })}
+                >
+                  {loadingWards ? (
+                    <option value="" style={{ background: '#1e293b' }}>Đang tải...</option>
+                  ) : wardsList.length > 0 ? (
+                    wardsList.map((w) => (
+                      <option key={w} value={w} style={{ background: '#1e293b' }}>
+                        {w}
+                      </option>
+                    ))
+                  ) : (
+                    <option value={editForm.ward || ''} style={{ background: '#1e293b' }}>
+                      {editForm.ward || 'Chọn phường / xã'}
+                    </option>
+                  )}
+                </select>
+              </div>
+            </div>
+
+            {/* Row 3: Street Address */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              <label style={{ fontSize: 11, color: '#94a3b8' }}>Họ và tên</label>
+              <label style={{ fontSize: 11, color: '#94a3b8' }}>Số nhà, ngõ/ngách, tên đường cụ thể *</label>
               <input
                 type="text"
                 required
+                placeholder="VD: Số 10 Phạm Hùng, Keangnam Landmark"
                 className={styles.input}
                 style={{
                   background: '#090a0f',
@@ -181,32 +384,17 @@ export default function ProfilePage() {
                   borderRadius: 6,
                   fontSize: 12,
                 }}
-                value={editForm.name}
-                onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                value={editForm.streetAddress || ''}
+                onChange={(e) => setEditForm({ ...editForm, streetAddress: e.target.value })}
               />
             </div>
+
+            {/* Row 4: Email */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              <label style={{ fontSize: 11, color: '#94a3b8' }}>Số điện thoại</label>
-              <input
-                type="tel"
-                required
-                className={styles.input}
-                style={{
-                  background: '#090a0f',
-                  border: '1px solid #232838',
-                  color: '#fff',
-                  padding: '8px 12px',
-                  borderRadius: 6,
-                  fontSize: 12,
-                }}
-                value={editForm.phone}
-                onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-              />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              <label style={{ fontSize: 11, color: '#94a3b8' }}>Email</label>
+              <label style={{ fontSize: 11, color: '#94a3b8' }}>Email (Tùy chọn)</label>
               <input
                 type="email"
+                placeholder="VD: khachhang@gmail.com"
                 className={styles.input}
                 style={{
                   background: '#090a0f',
@@ -220,23 +408,7 @@ export default function ProfilePage() {
                 onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
               />
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              <label style={{ fontSize: 11, color: '#94a3b8' }}>Địa chỉ giao hàng</label>
-              <input
-                type="text"
-                className={styles.input}
-                style={{
-                  background: '#090a0f',
-                  border: '1px solid #232838',
-                  color: '#fff',
-                  padding: '8px 12px',
-                  borderRadius: 6,
-                  fontSize: 12,
-                }}
-                value={editForm.address}
-                onChange={(e) => setEditForm({ ...editForm, address: e.target.value })}
-              />
-            </div>
+
             <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
               <button
                 type="submit"

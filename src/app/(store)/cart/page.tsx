@@ -14,7 +14,6 @@ import {
   FiShield,
   FiCheckCircle,
   FiArrowRight,
-  FiHome,
   FiTag,
 } from 'react-icons/fi';
 import toast from 'react-hot-toast';
@@ -105,7 +104,15 @@ export default function CartPage() {
     toast.success('Đã xóa các sản phẩm đã chọn');
   };
 
-  const shopName = theme?.pageTitles?.logoText || 'ShopBig Store';
+  const handleBack = () => {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      router.back();
+    } else {
+      router.push('/');
+    }
+  };
+
+  const shopName = theme?.pageTitles?.logoText || 'Cửa Hàng';
 
   return (
     <div className={styles.page}>
@@ -115,23 +122,25 @@ export default function CartPage() {
       <div className={styles.mobileView}>
         {/* Fixed Top Navigation */}
         <nav className={styles.topNav}>
-          <button
-            className={styles.navBtn}
-            onClick={() => router.back()}
-            aria-label="Quay lại"
-          >
-            <FiChevronLeft size={22} />
-          </button>
+          <div className={styles.topNavLeft}>
+            <button
+              className={styles.navBtn}
+              onClick={handleBack}
+              aria-label="Quay lại"
+            >
+              <FiChevronLeft size={22} />
+            </button>
+          </div>
 
           <div className={styles.navTitle}>Giỏ hàng ({cartCount})</div>
 
-          {items.length > 0 ? (
-            <button className={styles.clearBtn} onClick={() => setIsClearModalOpen(true)}>
-              Xóa hết
-            </button>
-          ) : (
-            <div style={{ width: 32 }} />
-          )}
+          <div className={styles.topNavRight}>
+            {items.length > 0 && (
+              <button className={styles.clearBtn} onClick={() => setIsClearModalOpen(true)}>
+                Xóa hết
+              </button>
+            )}
+          </div>
         </nav>
 
         {/* Empty State */}
@@ -327,20 +336,42 @@ export default function CartPage() {
           2. PC & TABLET VIEW (>= 1024px) - LUXURY 2-COLUMN SHOPPING CART DASHBOARD
           ========================================================================= */}
       <div className={styles.pcView}>
-        {/* Top Breadcrumb / Header */}
-        <div className={styles.pcHeader}>
-          <div className={styles.pcBreadcrumb}>
-            <Link href="/" className={styles.pcBreadcrumbLink}>
-              <FiHome size={14} /> Trang Chủ
-            </Link>
-            <span className={styles.pcBreadcrumbDivider}>/</span>
-            <span className={styles.pcBreadcrumbActive}>Giỏ Hàng ({cartCount})</span>
+        {/* Top PC Nav - Symmetrical Header */}
+        <nav className={styles.pcTopNav}>
+          <div className={styles.topNavLeft}>
+            <button
+              className={styles.navBtn}
+              onClick={handleBack}
+              aria-label="Quay lại"
+              title="Quay lại"
+            >
+              <FiChevronLeft size={22} />
+            </button>
           </div>
 
-          <Link href="/" className={styles.pcContinueShoppingLink}>
-            <FiChevronLeft size={16} /> Tiếp tục mua sắm
-          </Link>
-        </div>
+          <h1 className={styles.pcNavTitle}>
+            Giỏ Hàng {cartCount > 0 && <span className={styles.pcCartCount}>({cartCount})</span>}
+          </h1>
+
+          <div className={styles.topNavRight}>
+            {items.length > 0 ? (
+              <button
+                type="button"
+                className={styles.pcClearBtn}
+                onClick={() => setIsClearModalOpen(true)}
+                title="Xóa tất cả sản phẩm trong giỏ"
+              >
+                <FiTrash2 size={15} />
+                <span>Xóa hết</span>
+              </button>
+            ) : (
+              <Link href="/" className={styles.pcContinueShoppingLink}>
+                <span>Mua sắm ngay</span>
+                <FiArrowRight size={14} />
+              </Link>
+            )}
+          </div>
+        </nav>
 
         {items.length === 0 ? (
           /* PC Empty State */

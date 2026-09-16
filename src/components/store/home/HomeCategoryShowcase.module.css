@@ -1,0 +1,282 @@
+/* ======================================================== */
+/* HOME CATEGORY SHOWCASE (GỌN GÀNG, CHUẨN THEME, SHOPEE)    */
+/* ======================================================== */
+
+.homeCategorySection {
+  width: 100%;
+  background: var(--bg-card, #ffffff);
+  border-radius: var(--radius-md, 10px);
+  padding: 16px 20px 18px;
+  border: 1px solid var(--border-color, #e2e8f0);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.homeCategoryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color, #f1f5f9);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.homeCategoryTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.iconBadge {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md, 8px);
+  background: color-mix(in srgb, var(--primary, #ee4d2d) 10%, var(--bg-card, #ffffff));
+  color: var(--primary, #ee4d2d);
+  border: 1px solid color-mix(in srgb, var(--primary, #ee4d2d) 20%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.homeCategoryTitle {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-main, #0f172a);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin: 0;
+}
+
+.countBadge {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--primary, #ee4d2d);
+  background: color-mix(in srgb, var(--primary, #ee4d2d) 10%, var(--bg-card, #ffffff));
+  border: 1px solid color-mix(in srgb, var(--primary, #ee4d2d) 20%, transparent);
+  padding: 1px 7px;
+  border-radius: 999px;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.homeCategorySeeAll {
+  background: transparent;
+  border: none;
+  color: var(--primary, #ee4d2d);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.homeCategorySeeAll:hover {
+  background: color-mix(in srgb, var(--primary, #ee4d2d) 8%, transparent);
+}
+
+.navControls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.navBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border-color, #cbd5e1);
+  color: var(--text-main, #334155);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.navBtn:hover {
+  background: color-mix(in srgb, var(--primary, #ee4d2d) 10%, var(--bg-card, #ffffff));
+  border-color: var(--primary, #ee4d2d);
+  color: var(--primary, #ee4d2d);
+  transform: scale(1.06);
+}
+
+/* Horizontal Track (Gọn gàng, không bị giãn to vô lý) */
+.homeCategoryTrack {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 4px 2px 8px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  width: 100%;
+}
+
+.homeCategoryTrack::-webkit-scrollbar {
+  display: none;
+}
+
+/* Category Card (Gọn gàng ~106px) */
+.homeCategoryCard {
+  flex-shrink: 0;
+  width: 106px;
+  min-width: 106px;
+  background: var(--bg-card, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--primary, #ee4d2d) 15%, var(--border-color, #e2e8f0));
+  border-radius: var(--radius-md, 8px);
+  padding: 12px 6px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.homeCategoryCard:hover {
+  border-color: var(--primary, #ee4d2d);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--primary, #ee4d2d) 12%, transparent);
+}
+
+.homeCategoryCard:hover .homeCategoryImg {
+  transform: scale(1.08);
+}
+
+/* Category Image Wrap */
+.homeCategoryImgWrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  background: color-mix(in srgb, var(--primary, #ee4d2d) 6%, var(--bg-card-hover, #f8fafc));
+  border: 1px solid var(--border-color, #e2e8f0);
+}
+
+.homeCategoryImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+
+.homeCategoryFallbackIcon {
+  font-size: 22px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.homeCategoryName {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main, #0f172a);
+  text-align: center;
+  line-height: 1.25;
+  min-height: 28px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+  width: 100%;
+}
+
+.homeCategoryCount {
+  font-size: 10.5px;
+  color: var(--text-muted, #64748b);
+  font-weight: 500;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 767px) {
+  .navControls {
+    display: none;
+  }
+}
+
+@media (max-width: 599px) {
+  .homeCategorySection {
+    padding: 12px 10px 14px;
+    border-radius: var(--radius-md, 8px);
+  }
+
+  .homeCategoryHeader {
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    gap: 6px;
+  }
+
+  .iconBadge {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+
+  .homeCategoryTitle {
+    font-size: 13.5px;
+  }
+
+  .countBadge {
+    font-size: 10.5px;
+    padding: 1px 5px;
+  }
+
+  .homeCategorySeeAll {
+    font-size: 11.5px;
+    padding: 2px 4px;
+  }
+
+  .homeCategoryTrack {
+    gap: 8px;
+    padding: 2px 0 6px;
+  }
+
+  .homeCategoryCard {
+    width: 82px;
+    min-width: 82px;
+    padding: 8px 4px 6px;
+    gap: 4px;
+  }
+
+  .homeCategoryImgWrap {
+    width: 42px;
+    height: 42px;
+  }
+
+  .homeCategoryFallbackIcon {
+    font-size: 17px;
+  }
+
+  .homeCategoryName {
+    font-size: 11px;
+    min-height: 26px;
+  }
+
+  .homeCategoryCount {
+    font-size: 9.5px;
+  }
+}

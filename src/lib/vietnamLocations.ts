@@ -10,601 +10,3138 @@ export interface LocationProvince {
 
 export const vietnamProvinces: LocationProvince[] = [
   {
-    name: 'Hà Nội',
+    name: "Hà Nội",
     districts: [
-      { name: 'Quận Ba Đình', wards: ['Phường Cống Vị', 'Phường Điện Biên', 'Phường Đội Cấn', 'Phường Giảng Võ', 'Phường Kim Mã'] },
-      { name: 'Quận Cầu Giấy', wards: ['Phường Dịch Vọng', 'Phường Dịch Vọng Hậu', 'Phường Mai Dịch', 'Phường Nghĩa Đô', 'Phường Quan Hoa', 'Phường Trung Hòa', 'Phường Yên Hòa'] },
-      { name: 'Quận Đống Đa', wards: ['Phường Cát Linh', 'Phường Hàng Bột', 'Phường Khâm Thiên', 'Phường Láng Hạ', 'Phường Ô Chợ Dừa'] },
-      { name: 'Quận Hoàn Kiếm', wards: ['Phường Hàng Bạc', 'Phường Hàng Bài', 'Phường Hàng Đào', 'Phường Hàng Gai', 'Phường Tràng Tiền'] },
-      { name: 'Quận Hai Bà Trưng', wards: ['Phường Bạch Đằng', 'Phường Bách Khoa', 'Phường Minh Khai', 'Phường Trương Định'] },
-      { name: 'Quận Hoàng Mai', wards: ['Phường Định Công', 'Phường Giáp Bát', 'Phường Hoàng Liệt', 'Phường Tân Mai'] },
-      { name: 'Quận Thanh Xuân', wards: ['Phường Hạ Đình', 'Phường Khương Đình', 'Phường Khương Mai', 'Phường Thanh Xuân Bắc'] },
-      { name: 'Quận Nam Từ Liêm', wards: ['Phường Cầu Diễn', 'Phường Mỹ Đình 1', 'Phường Mỹ Đình 2', 'Phường Trung Văn'] },
-      { name: 'Quận Bắc Từ Liêm', wards: ['Phường Cổ Nhuế 1', 'Phường Cổ Nhuế 2', 'Phường Phúc Diễn', 'Phường Xuân Đỉnh'] },
-      { name: 'Quận Hà Đông', wards: ['Phường Hà Cầu', 'Phường Mộ Lao', 'Phường Quang Trung', 'Phường Vạn Phúc', 'Phường Yên Nghĩa'] },
-      { name: 'Quận Long Biên', wards: ['Phường Bồ Đề', 'Phường Đức Giang', 'Phường Ngọc Lâm', 'Phường Thượng Thanh'] },
-      { name: 'Quận Tây Hồ', wards: ['Phường Bưởi', 'Phường Nhật Tân', 'Phường Quảng An', 'Phường Thụy Khuê'] },
-      { name: 'Huyện Gia Lâm', wards: ['Thị trấn Trâu Quỳ', 'Xã Đa Tốn', 'Xã Kiêu Kỵ', 'Xã Yên Thường'] },
-      { name: 'Huyện Đông Anh', wards: ['Thị trấn Đông Anh', 'Xã Hải Bối', 'Xã Vĩnh Ngọc'] },
-      { name: 'Huyện Sóc Sơn', wards: ['Thị trấn Sóc Sơn', 'Xã Phù Lỗ', 'Xã Tiên Dược'] },
-      { name: 'Huyện Hoài Đức', wards: ['Thị trấn Trạm Trôi', 'Xã An Khánh', 'Xã Vân Canh'] },
-      { name: 'Huyện Thanh Trì', wards: ['Thị trấn Văn Điển', 'Xã Tả Thanh Oai', 'Xã Tân Triều'] },
-      { name: 'Thị xã Sơn Tây', wards: ['Phường Lê Lợi', 'Phường Ngô Quyền', 'Phường Quang Trung'] }
+      {
+        name: "Quận Ba Đình",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Hoàn Kiếm",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Tây Hồ",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Long Biên",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Cầu Giấy",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Đống Đa",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Hai Bà Trưng",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Hoàng Mai",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Thanh Xuân",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Nam Từ Liêm",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Bắc Từ Liêm",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Hà Đông",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Sơn Tây",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Ba Vì",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Chương Mỹ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đan Phượng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đông Anh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Gia Lâm",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hoài Đức",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mê Linh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mỹ Đức",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phú Xuyên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phúc Thọ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Quốc Oai",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Sóc Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thạch Thất",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thanh Oai",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thanh Trì",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thường Tín",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Ứng Hòa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'TP. Hồ Chí Minh',
+    name: "TP. Hồ Chí Minh",
     districts: [
-      { name: 'Quận 1', wards: ['Phường Bến Nghé', 'Phường Bến Thành', 'Phường Cầu Kho', 'Phường Cầu Ông Lãnh', 'Phường Đa Kao', 'Phường Tân Định'] },
-      { name: 'Quận 3', wards: ['Phường 1', 'Phường 2', 'Phường 3', 'Phường Võ Thị Sáu'] },
-      { name: 'Quận 4', wards: ['Phường 1', 'Phường 2', 'Phường 3', 'Phường 4', 'Phường 13'] },
-      { name: 'Quận 5', wards: ['Phường 1', 'Phường 2', 'Phường 3', 'Phường 4', 'Phường 5', 'Phường 11'] },
-      { name: 'Quận 6', wards: ['Phường 1', 'Phường 2', 'Phường 3', 'Phường 4', 'Phường 12'] },
-      { name: 'Quận 7', wards: ['Phường Bình Thuận', 'Phường Phú Mỹ', 'Phường Tân Hưng', 'Phường Tân Phong', 'Phường Tân Quy'] },
-      { name: 'Quận 8', wards: ['Phường 1', 'Phường 2', 'Phường 3', 'Phường 4', 'Phường 5'] },
-      { name: 'Quận 10', wards: ['Phường 1', 'Phường 2', 'Phường 12', 'Phường 14', 'Phường 15'] },
-      { name: 'Quận 11', wards: ['Phường 1', 'Phường 2', 'Phường 3', 'Phường 5', 'Phường 15'] },
-      { name: 'Quận 12', wards: ['Phường An Phú Đông', 'Phường Tân Chánh Hiệp', 'Phường Thạnh Lộc'] },
-      { name: 'TP. Thủ Đức', wards: ['Phường An Phú', 'Phường Bình Thọ', 'Phường Hiệp Phú', 'Phường Linh Chiểu', 'Phường Thảo Điền', 'Phường Tăng Nhơn Phú A'] },
-      { name: 'Quận Bình Thạnh', wards: ['Phường 1', 'Phường 2', 'Phường 15', 'Phường 25', 'Phường 26'] },
-      { name: 'Quận Tân Bình', wards: ['Phường 1', 'Phường 2', 'Phường 13', 'Phường 15'] },
-      { name: 'Quận Tân Phú', wards: ['Phường Hiệp Tân', 'Phường Hòa Thạnh', 'Phường Phú Thạnh', 'Phường Tây Thạnh'] },
-      { name: 'Quận Gò Vấp', wards: ['Phường 1', 'Phường 3', 'Phường 5', 'Phường 8', 'Phường 11'] },
-      { name: 'Quận Phú Nhuận', wards: ['Phường 1', 'Phường 2', 'Phường 8', 'Phường 9'] },
-      { name: 'Quận Bình Tân', wards: ['Phường An Lạc', 'Phường Bình Hưng Hòa', 'Phường Tân Tạo'] },
-      { name: 'Huyện Hóc Môn', wards: ['Thị trấn Hóc Môn', 'Xã Bà Điểm', 'Xã Tân Thới Nhì'] },
-      { name: 'Huyện Bình Chánh', wards: ['Thị trấn Tân Túc', 'Xã Bình Hưng', 'Xã Vĩnh Lộc A'] },
-      { name: 'Huyện Củ Chi', wards: ['Thị trấn Củ Chi', 'Xã Tân An Hội', 'Xã Phú Hòa Đông'] },
-      { name: 'Huyện Nhà Bè', wards: ['Thị trấn Nhà Bè', 'Xã Phước Kiển', 'Xã Phú Xuân'] },
-      { name: 'Huyện Cần Giờ', wards: ['Thị trấn Cần Thạnh', 'Xã Long Hòa', 'Xã Bình Khánh'] }
+      {
+        name: "Quận 1",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận 3",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận 4",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận 5",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận 6",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận 7",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận 8",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận 10",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận 11",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận 12",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Thủ Đức",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Bình Tân",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Bình Thạnh",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Gò Vấp",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Phú Nhuận",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Tân Bình",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Tân Phú",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bình Chánh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cần Giờ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Củ Chi",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hóc Môn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Nhà Bè",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Đà Nẵng',
+    name: "Hải Phòng",
     districts: [
-      { name: 'Quận Hải Châu', wards: ['Phường Hải Châu I', 'Phường Hải Châu II', 'Phường Thạch Thang', 'Phường Thanh Bình'] },
-      { name: 'Quận Thanh Khê', wards: ['Phường An Khê', 'Phường Chính Gián', 'Phường Tam Thuận', 'Phường Vĩnh Trung'] },
-      { name: 'Quận Sơn Trà', wards: ['Phường An Hải Bắc', 'Phường An Hải Tây', 'Phường Phước Mỹ'] },
-      { name: 'Quận Ngũ Hành Sơn', wards: ['Phường Khuê Mỹ', 'Phường Mỹ An', 'Phường Hòa Quý'] },
-      { name: 'Quận Cẩm Lệ', wards: ['Phường Hòa An', 'Phường Hòa Phát', 'Phường Khuê Trung'] },
-      { name: 'Quận Liên Chiểu', wards: ['Phường Hòa Hiệp Bắc', 'Phường Hòa Khánh Bắc', 'Phường Hòa Minh'] },
-      { name: 'Huyện Hòa Vang', wards: ['Xã Hòa Châu', 'Xã Hòa Khương', 'Xã Hòa Nhơn'] },
-      { name: 'Huyện Hoàng Sa', wards: ['Đặc khu Hoàng Sa'] }
+      {
+        name: "Quận Hồng Bàng",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Ngô Quyền",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Lê Chân",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Hải An",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Kiến An",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Đồ Sơn",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Dương Kinh",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thủy Nguyên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện An Dương",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện An Lão",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Kiến Thụy",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tiên Lãng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Vĩnh Bảo",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cát Hải",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bạch Long Vĩ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Hải Phòng',
+    name: "Đà Nẵng",
     districts: [
-      { name: 'Quận Hồng Bàng', wards: ['Phường Hoàng Văn Thụ', 'Phường Minh Khai', 'Phường Phan Bội Châu'] },
-      { name: 'Quận Ngô Quyền', wards: ['Phường Cầu Đất', 'Phường Lạch Tray', 'Phường Máy Tơ'] },
-      { name: 'Quận Lê Chân', wards: ['Phường An Biên', 'Phường Cát Dài', 'Phường Niệm Nghĩa'] },
-      { name: 'Quận Hải An', wards: ['Phường Đông Hải', 'Phường Đằng Hải', 'Phường Nam Hải'] },
-      { name: 'Quận Kiến An', wards: ['Phường Bắc Sơn', 'Phường Quán Trữ', 'Phường Trần Thành Ngọ'] },
-      { name: 'Quận Đồ Sơn', wards: ['Phường Ngọc Xuyên', 'Phường Vạn Hương'] },
-      { name: 'Quận Dương Kinh', wards: ['Phường Anh Dũng', 'Phường Hưng Đạo'] },
-      { name: 'Huyện Thủy Nguyên', wards: ['Thị trấn Núi Đèo', 'Xã An Lư'] },
-      { name: 'Huyện An Dương', wards: ['Thị trấn An Dương', 'Xã An Đồng'] }
+      {
+        name: "Quận Hải Châu",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Thanh Khê",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Sơn Trà",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Ngũ Hành Sơn",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Liên Chiểu",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Cẩm Lệ",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hòa Vang",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hoàng Sa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Cần Thơ',
+    name: "Cần Thơ",
     districts: [
-      { name: 'Quận Ninh Kiều', wards: ['Phường An Cư', 'Phường An Khánh', 'Phường Hưng Lợi', 'Phường Tân An'] },
-      { name: 'Quận Bình Thủy', wards: ['Phường An Thới', 'Phường Bình Thủy', 'Phường Trà An'] },
-      { name: 'Quận Cái Răng', wards: ['Phường Ba Láng', 'Phường Hưng Phú', 'Phường Lê Bình'] },
-      { name: 'Quận Ô Môn', wards: ['Phường Châu Văn Liêm', 'Phường Thới Hòa'] },
-      { name: 'Quận Thốt Nốt', wards: ['Phường Thốt Nốt', 'Phường Trung Kiên'] },
-      { name: 'Huyện Phong Điền', wards: ['Thị trấn Phong Điền', 'Xã Mỹ Khánh'] }
+      {
+        name: "Quận Ninh Kiều",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Bình Thủy",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Cái Răng",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Ô Môn",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Quận Thốt Nốt",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phong Điền",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cờ Đỏ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thới Lai",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Vĩnh Thạnh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'An Giang',
+    name: "An Giang",
     districts: [
-      { name: 'TP. Long Xuyên', wards: ['Phường Mỹ Bình', 'Phường Mỹ Long', 'Phường Mỹ Phước'] },
-      { name: 'TP. Châu Đốc', wards: ['Phường Châu Phú A', 'Phường Núi Sam'] },
-      { name: 'Thị xã Tân Châu', wards: ['Phường Long Hưng', 'Phường Long Thạnh'] },
-      { name: 'Huyện Chợ Mới', wards: ['Thị trấn Chợ Mới', 'Xã Mỹ An'] },
-      { name: 'Huyện Thoại Sơn', wards: ['Thị trấn Núi Sập', 'Thị trấn Phú Hòa'] }
+      {
+        name: "TP. Long Xuyên",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Châu Đốc",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Tân Châu",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Tịnh Biên",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện An Phú",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Châu Phú",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Châu Thành",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Chợ Mới",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phú Tân",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thoại Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tri Tôn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Bà Rịa - Vũng Tàu',
+    name: "Bà Rịa - Vũng Tàu",
     districts: [
-      { name: 'TP. Vũng Tàu', wards: ['Phường 1', 'Phường 2', 'Phường Thắng Tam', 'Phường Nguyễn An Ninh'] },
-      { name: 'TP. Bà Rịa', wards: ['Phường Phước Trung', 'Phường Phước Hiệp'] },
-      { name: 'Thị xã Phú Mỹ', wards: ['Phường Phú Mỹ', 'Phường Tân Phước'] },
-      { name: 'Huyện Long Điền', wards: ['Thị trấn Long Hải', 'Thị trấn Long Điền'] },
-      { name: 'Huyện Xuyên Mộc', wards: ['Thị trấn Phước Bửu', 'Xã Bình Châu'] },
-      { name: 'Huyện Côn Đảo', wards: ['Trung tâm Côn Đảo'] }
+      {
+        name: "TP. Vũng Tàu",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Bà Rịa",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Phú Mỹ",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Châu Đức",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Côn Đảo",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đất Đỏ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Long Điền",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Xuyên Mộc",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Bắc Giang',
+    name: "Bắc Giang",
     districts: [
-      { name: 'TP. Bắc Giang', wards: ['Phường Hoàng Văn Thụ', 'Phường Ngô Quyền', 'Phường Lê Lợi'] },
-      { name: 'Thị xã Việt Yên', wards: ['Phường Bích Động', 'Phường Nếnh'] },
-      { name: 'Huyện Hiệp Hòa', wards: ['Thị trấn Thắng', 'Xã Châu Minh'] },
-      { name: 'Huyện Lạng Giang', wards: ['Thị trấn Vôi', 'Xã Tân Dĩnh'] },
-      { name: 'Huyện Lục Nam', wards: ['Thị trấn Đồi Ngô', 'Xã Phương Sơn'] }
+      {
+        name: "TP. Bắc Giang",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Việt Yên",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Chũ",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hiệp Hòa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lạng Giang",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lục Nam",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lục Ngạn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Sơn Động",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tân Yên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Yên Dũng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Yên Thế",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Bắc Kạn',
+    name: "Bắc Kạn",
     districts: [
-      { name: 'TP. Bắc Kạn', wards: ['Phường Đức Xuân', 'Phường Sông Cầu'] },
-      { name: 'Huyện Ba Bể', wards: ['Thị trấn Chợ Rã', 'Xã Nam Mẫu'] },
-      { name: 'Huyện Bạch Thông', wards: ['Thị trấn Phủ Thông'] },
-      { name: 'Huyện Chợ Đồn', wards: ['Thị trấn Bằng Lũng'] }
+      {
+        name: "TP. Bắc Kạn",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Ba Bể",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bạch Thông",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Chợ Đồn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Chợ Mới",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Na Rì",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Ngân Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Pác Nặm",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Bạc Liêu',
+    name: "Bạc Liêu",
     districts: [
-      { name: 'TP. Bạc Liêu', wards: ['Phường 1', 'Phường 2', 'Phường 3', 'Phường 7', 'Phường Nhà Mát'] },
-      { name: 'Thị xã Giá Rai', wards: ['Phường 1', 'Phường Hộ Phòng'] },
-      { name: 'Huyện Hòa Bình', wards: ['Thị trấn Hòa Bình'] },
-      { name: 'Huyện Vĩnh Lợi', wards: ['Thị trấn Châu Hưng'] }
+      {
+        name: "TP. Bạc Liêu",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Giá Rai",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đông Hải",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hòa Bình",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hồng Dân",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phước Long",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Vĩnh Lợi",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Bắc Ninh',
+    name: "Bắc Ninh",
     districts: [
-      { name: 'TP. Bắc Ninh', wards: ['Phường Suối Hoa', 'Phường Tiền An', 'Phường Ninh Xá', 'Phường Võ Cường'] },
-      { name: 'TP. Từ Sơn', wards: ['Phường Đông Ngàn', 'Phường Đồng Nguyên', 'Phường Trang Hạ'] },
-      { name: 'Thị xã Thuận Thành', wards: ['Phường Hồ', 'Phường Song Hồ'] },
-      { name: 'Thị xã Quế Võ', wards: ['Phường Phố Mới', 'Phường Bằng An'] },
-      { name: 'Huyện Yên Phong', wards: ['Thị trấn Chờ', 'Xã Đông Phong'] },
-      { name: 'Huyện Tiên Du', wards: ['Thị trấn Lim', 'Xã Liên Bão'] }
+      {
+        name: "TP. Bắc Ninh",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Từ Sơn",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Quế Võ",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Thuận Thành",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Gia Bình",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lương Tài",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tiên Du",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Yên Phong",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Bến Tre',
+    name: "Bến Tre",
     districts: [
-      { name: 'TP. Bến Tre', wards: ['Phường An Hội', 'Phường Phú Khương', 'Phường Phú Tân'] },
-      { name: 'Huyện Châu Thành', wards: ['Thị trấn Châu Thành', 'Xã Tân Thạch'] },
-      { name: 'Huyện Chợ Lách', wards: ['Thị trấn Chợ Lách', 'Xã Vĩnh Thành'] },
-      { name: 'Huyện Mỏ Cày Nam', wards: ['Thị trấn Mỏ Cày'] }
+      {
+        name: "TP. Bến Tre",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Ba Tri",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bình Đại",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Châu Thành",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Chợ Lách",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Giồng Trôm",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mỏ Cày Bắc",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mỏ Cày Nam",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thạnh Phú",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Bình Định',
+    name: "Bình Định",
     districts: [
-      { name: 'TP. Quy Nhơn', wards: ['Phường Lê Lợi', 'Phường Trần Phú', 'Phường Nguyễn Văn Cừ', 'Phường Ghềnh Ráng'] },
-      { name: 'Thị xã An Nhơn', wards: ['Phường Bình Định', 'Phường Đập Đá'] },
-      { name: 'Thị xã Hoài Nhơn', wards: ['Phường Bồng Sơn', 'Phường Tam Quan'] },
-      { name: 'Huyện Tuy Phước', wards: ['Thị trấn Tuy Phước', 'Thị trấn Diêu Trì'] }
+      {
+        name: "TP. Quy Nhơn",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã An Nhơn",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Hoài Nhơn",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện An Lão",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hoài Ân",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phù Cát",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phù Mỹ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tây Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tuy Phước",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Vân Canh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Vĩnh Thạnh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Bình Dương',
+    name: "Bình Dương",
     districts: [
-      { name: 'TP. Thủ Dầu Một', wards: ['Phường Chánh Nghĩa', 'Phường Hiệp An', 'Phường Phú Hòa', 'Phường Phú Cường'] },
-      { name: 'TP. Thuận An', wards: ['Phường An Phú', 'Phường Lái Thiêu', 'Phường Thuận Giao', 'Phường Bình Hòa'] },
-      { name: 'TP. Dĩ An', wards: ['Phường An Bình', 'Phường Dĩ An', 'Phường Tân Bình', 'Phường Đông Hòa'] },
-      { name: 'TP. Tân Uyên', wards: ['Phường Uyên Hưng', 'Phường Tân Phước Khánh', 'Phường Thái Hòa'] },
-      { name: 'TP. Bến Cát', wards: ['Phường Mỹ Phước', 'Phường Thới Hòa', 'Phường Tân Định'] },
-      { name: 'Huyện Bàu Bàng', wards: ['Thị trấn Lai Uyên'] }
+      {
+        name: "TP. Thủ Dầu Một",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Dĩ An",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Thuận An",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Tân Uyên",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Bến Cát",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bàu Bàng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bắc Tân Uyên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Dầu Tiếng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phú Giáo",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Bình Phước',
+    name: "Bình Phước",
     districts: [
-      { name: 'TP. Đồng Xoài', wards: ['Phường Tân Phú', 'Phường Tân Đồng', 'Phường Tân Bình'] },
-      { name: 'Thị xã Phước Long', wards: ['Phường Long Phước', 'Phường Thác Mơ'] },
-      { name: 'Thị xã Chơn Thành', wards: ['Phường Hưng Long', 'Phường Thành Tâm'] },
-      { name: 'Thị xã Bình Long', wards: ['Phường An Lộc', 'Phường Phú Đức'] }
+      {
+        name: "TP. Đồng Xoài",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Bình Long",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Phước Long",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Chơn Thành",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bù Đăng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bù Đốp",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bù Gia Mập",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đồng Phú",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hớn Quản",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lộc Ninh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phú Riềng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Bình Thuận',
+    name: "Bình Thuận",
     districts: [
-      { name: 'TP. Phan Thiết', wards: ['Phường Mũi Né', 'Phường Hàm Tiến', 'Phường Phú Thủy', 'Phường Đức Nghĩa'] },
-      { name: 'Thị xã La Gi', wards: ['Phường Phước Hội', 'Phường Tân An'] },
-      { name: 'Huyện Hàm Thuận Bắc', wards: ['Thị trấn Ma Lâm'] },
-      { name: 'Huyện Hàm Thuận Nam', wards: ['Thị trấn Thuận Nam'] }
+      {
+        name: "TP. Phan Thiết",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã La Gi",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bắc Bình",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đức Linh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hàm Tân",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hàm Thuận Bắc",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hàm Thuận Nam",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phú Quý",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tánh Linh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tuy Phong",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Cà Mau',
+    name: "Cà Mau",
     districts: [
-      { name: 'TP. Cà Mau', wards: ['Phường 1', 'Phường 2', 'Phường 5', 'Phường 8', 'Phường 9'] },
-      { name: 'Huyện Năm Căn', wards: ['Thị trấn Năm Căn'] },
-      { name: 'Huyện Ngọc Hiển', wards: ['Thị trấn Rạch Gốc', 'Xã Đất Mũi'] },
-      { name: 'Huyện Cái Nước', wards: ['Thị trấn Cái Nước'] }
+      {
+        name: "TP. Cà Mau",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cái Nước",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đầm Dơi",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Năm Căn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Ngọc Hiển",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phú Tân",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thới Bình",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Trần Văn Thời",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện U Minh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Cao Bằng',
+    name: "Cao Bằng",
     districts: [
-      { name: 'TP. Cao Bằng', wards: ['Phường Hợp Giang', 'Phường Sông Bằng', 'Phường Tân Giang'] },
-      { name: 'Huyện Trùng Khánh', wards: ['Thị trấn Trùng Khánh', 'Xã Đàm Thủy'] },
-      { name: 'Huyện Quảng Hòa', wards: ['Thị trấn Quảng Uyên'] }
+      {
+        name: "TP. Cao Bằng",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bảo Lạc",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bảo Lâm",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hạ Lang",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hà Quảng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hòa An",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Nguyên Bình",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Quảng Hòa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thạch An",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Trùng Khánh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Đắk Lắk',
+    name: "Đắk Lắk",
     districts: [
-      { name: 'TP. Buôn Ma Thuột', wards: ['Phường Thắng Lợi', 'Phường Tân Lợi', 'Phường Tự An', 'Phường Ea Tam'] },
-      { name: 'Thị xã Buôn Hồ', wards: ['Phường An Lạc', 'Phường Thiện An'] },
-      { name: 'Huyện Cư M\'gar', wards: ['Thị trấn Quảng Phú'] },
-      { name: 'Huyện Krông Pắc', wards: ['Thị trấn Phước An'] }
+      {
+        name: "TP. Buôn Ma Thuột",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Buôn Hồ",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Buôn Đôn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cư Kuin",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cư M'gar",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Ea H'leo",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Ea Kar",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Ea Súp",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Krông Ana",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Krông Bông",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Krông Búk",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Krông Năng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Krông Pắc",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lắk",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện M'Drắk",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Đắk Nông',
+    name: "Đắk Nông",
     districts: [
-      { name: 'TP. Gia Nghĩa', wards: ['Phường Nghĩa Đức', 'Phường Nghĩa Thành', 'Phường Nghĩa Phú'] },
-      { name: 'Huyện Cư Jút', wards: ['Thị trấn Ea T\'ling'] },
-      { name: 'Huyện Đắk Mil', wards: ['Thị trấn Đắk Mil'] }
+      {
+        name: "TP. Gia Nghĩa",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cư Jút",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đắk Glong",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đắk Mil",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đắk R'lấp",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đắk Song",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Krông Nô",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tuy Đức",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Điện Biên',
+    name: "Điện Biên",
     districts: [
-      { name: 'TP. Điện Biên Phủ', wards: ['Phường Mường Thanh', 'Phường Tân Thanh', 'Phường Nam Thanh'] },
-      { name: 'Thị xã Mường Lay', wards: ['Phường Sông Đà', 'Phường Na Lay'] },
-      { name: 'Huyện Điện Biên', wards: ['Xã Thanh Nưa', 'Xã Thanh An'] }
+      {
+        name: "TP. Điện Biên Phủ",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Mường Lay",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Điện Biên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Điện Biên Đông",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mường Ảng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mường Chà",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mường Nhé",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Nậm Pồ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tủa Chùa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tuần Giáo",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Đồng Nai',
+    name: "Đồng Nai",
     districts: [
-      { name: 'TP. Biên Hòa', wards: ['Phường Bửu Long', 'Phường Quyết Thắng', 'Phường Tân Phong', 'Phường Thống Nhất', 'Phường Trảng Dài'] },
-      { name: 'TP. Long Khánh', wards: ['Phường Xuân An', 'Phường Xuân Bình', 'Phường Xuân Trung'] },
-      { name: 'Huyện Long Thành', wards: ['Thị trấn Long Thành', 'Xã An Phước'] },
-      { name: 'Huyện Nhơn Trạch', wards: ['Xã Hiệp Phước', 'Xã Phước Thiền'] },
-      { name: 'Huyện Trảng Bom', wards: ['Thị trấn Trảng Bom', 'Xã Hố Nai 3'] }
+      {
+        name: "TP. Biên Hòa",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Long Khánh",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cẩm Mỹ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Định Quán",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Long Thành",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Nhơn Trạch",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tân Phú",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thống Nhất",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Trảng Bom",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Vĩnh Cửu",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Xuân Lộc",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Đồng Tháp',
+    name: "Đồng Tháp",
     districts: [
-      { name: 'TP. Cao Lãnh', wards: ['Phường 1', 'Phường 2', 'Phường Mỹ Phú'] },
-      { name: 'TP. Sa Đéc', wards: ['Phường 1', 'Phường 2', 'Phường Tân Quy Đông'] },
-      { name: 'TP. Hồng Ngự', wards: ['Phường An Lộc', 'Phường An Thạnh'] },
-      { name: 'Huyện Tháp Mười', wards: ['Thị trấn Mỹ An'] }
+      {
+        name: "TP. Cao Lãnh",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Sa Đéc",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Hồng Ngự",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cao Lãnh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Châu Thành",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hồng Ngự",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lai Vung",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lấp Vò",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tam Nông",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tân Hồng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thanh Bình",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tháp Mười",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Gia Lai',
+    name: "Gia Lai",
     districts: [
-      { name: 'TP. Pleiku', wards: ['Phường Diên Hồng', 'Phường Hoa Lư', 'Phường Hội Thương', 'Phường Tây Sơn'] },
-      { name: 'Thị xã An Khê', wards: ['Phường An Phú', 'Phường Tây Sơn'] },
-      { name: 'Thị xã Ayun Pa', wards: ['Phường Cheo Reo', 'Phường Đoàn Kết'] }
+      {
+        name: "TP. Pleiku",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã An Khê",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Ayun Pa",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Chư Păh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Chư Prông",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Chư Pưh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Chư Sê",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đắk Đoa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đắk Pơ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đức Cơ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Ia Grai",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Ia Pa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện K'Bang",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Kông Chro",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Krông Pa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mang Yang",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phú Thiện",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Hà Giang',
+    name: "Hà Giang",
     districts: [
-      { name: 'TP. Hà Giang', wards: ['Phường Trần Phú', 'Phường Minh Khai', 'Phường Nguyễn Trãi'] },
-      { name: 'Huyện Đồng Văn', wards: ['Thị trấn Đồng Văn', 'Thị trấn Phố Bảng'] },
-      { name: 'Huyện Mèo Vạc', wards: ['Thị trấn Mèo Vạc'] },
-      { name: 'Huyện Yên Minh', wards: ['Thị trấn Yên Minh'] }
+      {
+        name: "TP. Hà Giang",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bắc Mê",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bắc Quang",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đồng Văn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hoàng Su Phì",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mèo Vạc",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Quang Bình",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Vị Xuyên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Xín Mần",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Yên Minh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Hà Nam',
+    name: "Hà Nam",
     districts: [
-      { name: 'TP. Phủ Lý', wards: ['Phường Minh Khai', 'Phường Lương Khánh Thiện', 'Phường Trần Hưng Đạo'] },
-      { name: 'Thị xã Duy Tiên', wards: ['Phường Đồng Văn', 'Phường Hòa Mạc'] },
-      { name: 'Huyện Kim Bảng', wards: ['Thị trấn Quế', 'Thị trấn Ba Sao'] }
+      {
+        name: "TP. Phủ Lý",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Duy Tiên",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bình Lục",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Kim Bảng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lý Nhân",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thanh Liêm",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Hà Tĩnh',
+    name: "Hà Tĩnh",
     districts: [
-      { name: 'TP. Hà Tĩnh', wards: ['Phường Bắc Hà', 'Phường Nam Hà', 'Phường Trần Phú'] },
-      { name: 'Thị xã Hồng Lĩnh', wards: ['Phường Bắc Hồng', 'Phường Nam Hồng'] },
-      { name: 'Thị xã Kỳ Anh', wards: ['Phường Sông Trí', 'Phường Kỳ Liên'] },
-      { name: 'Huyện Nghi Xuân', wards: ['Thị trấn Tiên Điền', 'Thị trấn Xuân An'] }
+      {
+        name: "TP. Hà Tĩnh",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Hồng Lĩnh",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Kỳ Anh",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cẩm Xuyên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Can Lộc",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đức Thọ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hương Khê",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hương Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Kỳ Anh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lộc Hà",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Nghi Xuân",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thạch Hà",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Vũ Quang",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Hải Dương',
+    name: "Hải Dương",
     districts: [
-      { name: 'TP. Hải Dương', wards: ['Phường Quang Trung', 'Phường Trần Phú', 'Phường Lê Thanh Nghị', 'Phường Hải Tân'] },
-      { name: 'TP. Chí Linh', wards: ['Phường Sao Đỏ', 'Phường Cộng Hòa'] },
-      { name: 'Thị xã Kinh Môn', wards: ['Phường An Lưu', 'Phường Hiệp An'] },
-      { name: 'Huyện Cẩm Giàng', wards: ['Thị trấn Lai Cách', 'Thị trấn Cẩm Giàng'] }
+      {
+        name: "TP. Hải Dương",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Chí Linh",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Kinh Môn",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bình Giang",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cẩm Giàng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Gia Lộc",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Kim Thành",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Nam Sách",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Ninh Giang",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thanh Hà",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thanh Miện",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tứ Kỳ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Hậu Giang',
+    name: "Hậu Giang",
     districts: [
-      { name: 'TP. Vị Thanh', wards: ['Phường 1', 'Phường 3', 'Phường 4'] },
-      { name: 'TP. Ngã Bảy', wards: ['Phường Ngã Bảy', 'Phường Hiệp Thành'] },
-      { name: 'Thị xã Long Mỹ', wards: ['Phường Thuận An', 'Phường Bình Thạnh'] }
+      {
+        name: "TP. Vị Thanh",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Ngã Bảy",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Long Mỹ",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Châu Thành",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Châu Thành A",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phụng Hiệp",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Vị Thủy",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Long Mỹ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Hòa Bình',
+    name: "Hòa Bình",
     districts: [
-      { name: 'TP. Hòa Bình', wards: ['Phường Phương Lâm', 'Phường Đồng Tiến', 'Phường Tân Hòa'] },
-      { name: 'Huyện Lương Sơn', wards: ['Thị trấn Lương Sơn'] },
-      { name: 'Huyện Mai Châu', wards: ['Thị trấn Mai Châu'] }
+      {
+        name: "TP. Hòa Bình",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cao Phong",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đà Bắc",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Kim Bôi",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lạc Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lạc Thủy",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lương Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mai Châu",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tân Lạc",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Yên Thủy",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Hưng Yên',
+    name: "Hưng Yên",
     districts: [
-      { name: 'TP. Hưng Yên', wards: ['Phường Lê Lợi', 'Phường Quang Trung', 'Phường Hiến Nam'] },
-      { name: 'Thị xã Mỹ Hào', wards: ['Phường Bần Yên Nhân', 'Phường Bạch Sam'] },
-      { name: 'Huyện Văn Giang', wards: ['Thị trấn Văn Giang', 'Xã Phụng Công', 'Xã Xuân Quan'] },
-      { name: 'Huyện Yên Mỹ', wards: ['Thị trấn Yên Mỹ'] }
+      {
+        name: "TP. Hưng Yên",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Mỹ Hào",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Ân Thi",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Khoái Châu",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Kim Động",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phù Cừ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tiên Lữ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Văn Giang",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Văn Lâm",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Yên Mỹ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Khánh Hòa',
+    name: "Khánh Hòa",
     districts: [
-      { name: 'TP. Nha Trang', wards: ['Phường Lộc Thọ', 'Phường Tân Lập', 'Phường Phước Hải', 'Phường Vĩnh Hải'] },
-      { name: 'TP. Cam Ranh', wards: ['Phường Cam Linh', 'Phường Cam Phú'] },
-      { name: 'Thị xã Ninh Hòa', wards: ['Phường Ninh Hiệp', 'Phường Ninh Đa'] },
-      { name: 'Huyện Diên Khánh', wards: ['Thị trấn Diên Khánh'] },
-      { name: 'Huyện Vạn Ninh', wards: ['Thị trấn Vạn Giã'] }
+      {
+        name: "TP. Nha Trang",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Cam Ranh",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Ninh Hòa",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cam Lâm",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Diên Khánh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Khánh Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Khánh Vĩnh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Trường Sa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Vạn Ninh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Kiên Giang',
+    name: "Kiên Giang",
     districts: [
-      { name: 'TP. Rạch Giá', wards: ['Phường Vĩnh Thanh Vân', 'Phường Vĩnh Lạc', 'Phường An Hòa'] },
-      { name: 'TP. Phú Quốc', wards: ['Phường Dương Đông', 'Phường An Thới', 'Xã Gành Dầu', 'Xã Hàm Ninh'] },
-      { name: 'TP. Hà Tiên', wards: ['Phường Đông Hồ', 'Phường Pháo Đài'] }
+      {
+        name: "TP. Rạch Giá",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Hà Tiên",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Phú Quốc",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện An Biên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện An Minh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Châu Thành",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Giang Thành",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Giồng Riềng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Gò Quao",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hòn Đất",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Kiên Hải",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Kiên Lương",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tân Hiệp",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện U Minh Thượng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Vĩnh Thuận",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Kon Tum',
+    name: "Kon Tum",
     districts: [
-      { name: 'TP. Kon Tum', wards: ['Phường Quyết Thắng', 'Phường Quang Trung', 'Phường Thắng Lợi'] },
-      { name: 'Huyện Đắk Hà', wards: ['Thị trấn Đắk Hà'] },
-      { name: 'Huyện Ngọc Hồi', wards: ['Thị trấn Plei Kần'] }
+      {
+        name: "TP. Kon Tum",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đắk Glei",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đắk Hà",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đắk Tô",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Ia H'Drai",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Kon Plông",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Kon Rẫy",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Ngọc Hồi",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Sa Thầy",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tu Mơ Rông",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Lai Châu',
+    name: "Lai Châu",
     districts: [
-      { name: 'TP. Lai Châu', wards: ['Phường Quyết Thắng', 'Phường Đoàn Kết', 'Phường Tân Phong'] },
-      { name: 'Huyện Phong Thổ', wards: ['Thị trấn Phong Thổ'] },
-      { name: 'Huyện Tam Đường', wards: ['Thị trấn Tam Đường'] }
+      {
+        name: "TP. Lai Châu",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mường Tè",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Nậm Nhùn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phong Thổ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Sìn Hồ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tam Đường",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tân Uyên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Than Uyên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Lâm Đồng',
+    name: "Lâm Đồng",
     districts: [
-      { name: 'TP. Đà Lạt', wards: ['Phường 1', 'Phường 2', 'Phường 3', 'Phường 8', 'Phường 10'] },
-      { name: 'TP. Bảo Lộc', wards: ['Phường 1', 'Phường 2', 'Phường B\'Lao'] },
-      { name: 'Huyện Đức Trọng', wards: ['Thị trấn Liên Nghĩa'] },
-      { name: 'Huyện Lạc Dương', wards: ['Thị trấn Lạc Dương'] }
+      {
+        name: "TP. Đà Lạt",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Bảo Lộc",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bảo Lâm",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cát Tiên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Di Linh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đạ Huoai",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đạ Tẻh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đam Rông",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đơn Dương",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đức Trọng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lạc Dương",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lâm Hà",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Lạng Sơn',
+    name: "Lạng Sơn",
     districts: [
-      { name: 'TP. Lạng Sơn', wards: ['Phường Hoàng Văn Thụ', 'Phường Tam Thanh', 'Phường Vĩnh Trại'] },
-      { name: 'Huyện Cao Lộc', wards: ['Thị trấn Đồng Đăng', 'Thị trấn Cao Lộc'] },
-      { name: 'Huyện Hữu Lũng', wards: ['Thị trấn Hữu Lũng'] }
+      {
+        name: "TP. Lạng Sơn",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bắc Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bình Gia",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cao Lộc",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Chi Lăng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đình Lập",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hữu Lũng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lộc Bình",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tràng Định",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Văn Lãng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Văn Quan",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Lào Cai',
+    name: "Lào Cai",
     districts: [
-      { name: 'TP. Lào Cai', wards: ['Phường Kim Tân', 'Phường Cốc Lếu', 'Phường Bắc Cường'] },
-      { name: 'Thị xã Sa Pa', wards: ['Phường Sa Pa', 'Phường Cầu Mây', 'Phường Hàm Rồng'] },
-      { name: 'Huyện Bát Xát', wards: ['Thị trấn Bát Xát'] }
+      {
+        name: "TP. Lào Cai",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Sa Pa",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bát Xát",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bảo Thắng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bảo Yên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bắc Hà",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mường Khương",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Si Ma Cai",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Văn Bàn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Long An',
+    name: "Long An",
     districts: [
-      { name: 'TP. Tân An', wards: ['Phường 1', 'Phường 2', 'Phường 3', 'Phường Khánh Hậu'] },
-      { name: 'Thị xã Kiến Tường', wards: ['Phường 1', 'Phường 2'] },
-      { name: 'Huyện Bến Lức', wards: ['Thị trấn Bến Lức'] },
-      { name: 'Huyện Đức Hòa', wards: ['Thị trấn Hậu Nghĩa', 'Thị trấn Đức Hòa'] },
-      { name: 'Huyện Cần Giuộc', wards: ['Thị trấn Cần Giuộc'] }
+      {
+        name: "TP. Tân An",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Kiến Tường",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bến Lức",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cần Đước",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cần Giuộc",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Châu Thành",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đức Hòa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đức Huệ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mộc Hóa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tân Hưng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tân Thạnh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tân Trụ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thạnh Hóa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thủ Thừa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Vĩnh Hưng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Nam Định',
+    name: "Nam Định",
     districts: [
-      { name: 'TP. Nam Định', wards: ['Phường Trần Hưng Đạo', 'Phường Vị Hoàng', 'Phường Năng Tĩnh'] },
-      { name: 'Huyện Hải Hậu', wards: ['Thị trấn Yên Định', 'Thị trấn Cồn'] },
-      { name: 'Huyện Giao Thủy', wards: ['Thị trấn Ngô Đồng'] },
-      { name: 'Huyện Ý Yên', wards: ['Thị trấn Lâm'] }
+      {
+        name: "TP. Nam Định",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Giao Thủy",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hải Hậu",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mỹ Lộc",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Nam Trực",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Nghĩa Hưng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Trực Ninh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Vụ Bản",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Xuân Trường",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Ý Yên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Nghệ An',
+    name: "Nghệ An",
     districts: [
-      { name: 'TP. Vinh', wards: ['Phường Lê Lợi', 'Phường Quang Trung', 'Phường Trường Thi', 'Phường Hưng Dũng'] },
-      { name: 'Thị xã Cửa Lò', wards: ['Phường Nghi Hương', 'Phường Thu Thủy'] },
-      { name: 'Thị xã Thái Hòa', wards: ['Phường Hòa Hiếu', 'Phường Quang Tiến'] },
-      { name: 'Thị xã Hoàng Mai', wards: ['Phường Quỳnh Thiện', 'Phường Mai Hùng'] },
-      { name: 'Huyện Diễn Châu', wards: ['Thị trấn Diễn Châu'] },
-      { name: 'Huyện Quỳnh Lưu', wards: ['Thị trấn Cầu Giát'] }
+      {
+        name: "TP. Vinh",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Cửa Lò",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Thái Hòa",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Hoàng Mai",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Anh Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Con Cuông",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Diễn Châu",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đô Lương",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hưng Nguyên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Kỳ Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Nam Đàn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Nghi Lộc",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Nghĩa Đàn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Quế Phong",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Quỳ Châu",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Quỳ Hợp",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Quỳnh Lưu",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tân Kỳ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thanh Chương",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tương Dương",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Yên Thành",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Ninh Bình',
+    name: "Ninh Bình",
     districts: [
-      { name: 'TP. Ninh Bình', wards: ['Phường Đông Thành', 'Phường Tân Thành', 'Phường Vân Giang'] },
-      { name: 'TP. Tam Điệp', wards: ['Phường Bắc Sơn', 'Phường Trung Sơn'] },
-      { name: 'Huyện Hoa Lư', wards: ['Thị trấn Thiên Tôn'] },
-      { name: 'Huyện Gia Viễn', wards: ['Thị trấn Me'] }
+      {
+        name: "TP. Ninh Bình",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Tam Điệp",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Gia Viễn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hoa Lư",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Kim Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Nho Quan",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Yên Khánh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Yên Mô",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Ninh Thuận',
+    name: "Ninh Thuận",
     districts: [
-      { name: 'TP. Phan Rang - Tháp Chàm', wards: ['Phường Kinh Dinh', 'Phường Thanh Sơn', 'Phường Mỹ Hương'] },
-      { name: 'Huyện Ninh Hải', wards: ['Thị trấn Khánh Hải'] },
-      { name: 'Huyện Ninh Phước', wards: ['Thị trấn Phước Dân'] }
+      {
+        name: "TP. Phan Rang - Tháp Chàm",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bác Ái",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Ninh Hải",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Ninh Phước",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Ninh Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thuận Bắc",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thuận Nam",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Phú Thọ',
+    name: "Phú Thọ",
     districts: [
-      { name: 'TP. Việt Trì', wards: ['Phường Gia Cẩm', 'Phường Tiên Cát', 'Phường Nông Trang'] },
-      { name: 'Thị xã Phú Thọ', wards: ['Phường Âu Cơ', 'Phường Hùng Vương'] },
-      { name: 'Huyện Lâm Thao', wards: ['Thị trấn Lâm Thao', 'Thị trấn Hùng Sơn'] }
+      {
+        name: "TP. Việt Trì",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Phú Thọ",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cẩm Khê",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đoan Hùng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hạ Hòa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lâm Thao",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phù Ninh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tam Nông",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tân Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thanh Ba",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thanh Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thanh Thủy",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Yên Lập",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Phú Yên',
+    name: "Phú Yên",
     districts: [
-      { name: 'TP. Tuy Hòa', wards: ['Phường 1', 'Phường 2', 'Phường 5', 'Phường 7'] },
-      { name: 'Thị xã Sông Cầu', wards: ['Phường Xuân Phú', 'Phường Xuân Yên'] },
-      { name: 'Thị xã Đông Hòa', wards: ['Phường Hòa Hiệp Bắc', 'Phường Hòa Vinh'] }
+      {
+        name: "TP. Tuy Hòa",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Sông Cầu",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Đông Hòa",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đồng Xuân",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phú Hòa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Sơn Hòa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Sông Hinh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tây Hòa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tuy An",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Quảng Bình',
+    name: "Quảng Bình",
     districts: [
-      { name: 'TP. Đồng Hới', wards: ['Phường Đồng Mỹ', 'Phường Hải Đình', 'Phường Bắc Lý'] },
-      { name: 'Thị xã Ba Đồn', wards: ['Phường Ba Đồn', 'Phường Quảng Thọ'] },
-      { name: 'Huyện Bố Trạch', wards: ['Thị trấn Hoàn Lão', 'Thị trấn Phong Nha'] }
+      {
+        name: "TP. Đồng Hới",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Ba Đồn",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bố Trạch",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lệ Thủy",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Minh Hóa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Quảng Ninh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Quảng Trạch",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tuyên Hóa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Quảng Nam',
+    name: "Quảng Nam",
     districts: [
-      { name: 'TP. Tam Kỳ', wards: ['Phường An Mỹ', 'Phường Phước Hòa', 'Phường Tân Thạnh'] },
-      { name: 'TP. Hội An', wards: ['Phường Minh An', 'Phường Cẩm Phô', 'Phường Sơn Phong'] },
-      { name: 'Thị xã Điện Bàn', wards: ['Phường Vĩnh Điện', 'Phường Điện Ngọc'] },
-      { name: 'Huyện Núi Thành', wards: ['Thị trấn Núi Thành'] }
+      {
+        name: "TP. Tam Kỳ",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Hội An",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Điện Bàn",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bắc Trà My",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đại Lộc",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đông Giang",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Duy Xuyên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hiệp Đức",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Nam Giang",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Nam Trà My",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Nông Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Núi Thành",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phú Ninh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phước Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Quế Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tây Giang",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thăng Bình",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tiên Phước",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Quảng Ngãi',
+    name: "Quảng Ngãi",
     districts: [
-      { name: 'TP. Quảng Ngãi', wards: ['Phường Lê Hồng Phong', 'Phường Trần Phú', 'Phường Nghĩa Chánh'] },
-      { name: 'Thị xã Đức Phổ', wards: ['Phường Nguyễn Nghiêm', 'Phường Phổ Thạnh'] },
-      { name: 'Huyện Bình Sơn', wards: ['Thị trấn Châu Ổ'] }
+      {
+        name: "TP. Quảng Ngãi",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Đức Phổ",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Ba Tơ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bình Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lý Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Minh Long",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mộ Đức",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Nghĩa Hành",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Sơn Hà",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Sơn Tây",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Sơn Tịnh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Trà Bồng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tư Nghĩa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Quảng Ninh',
+    name: "Quảng Ninh",
     districts: [
-      { name: 'TP. Hạ Long', wards: ['Phường Bãi Cháy', 'Phường Hồng Gai', 'Phường Cao Xanh', 'Phường Hồng Hải'] },
-      { name: 'TP. Móng Cái', wards: ['Phường Trần Phú', 'Phường Ka Long', 'Phường Trà Cổ'] },
-      { name: 'TP. Cẩm Phả', wards: ['Phường Cẩm Trung', 'Phường Cẩm Thành'] },
-      { name: 'TP. Uông Bí', wards: ['Phường Quang Trung', 'Phường Thanh Sơn'] },
-      { name: 'Thị xã Đông Triều', wards: ['Phường Đông Triều', 'Phường Mạo Khê'] },
-      { name: 'Thị xã Quảng Yên', wards: ['Phường Quảng Yên', 'Phường Yên Giang'] }
+      {
+        name: "TP. Hạ Long",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Cẩm Phả",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Móng Cái",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Uông Bí",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Quảng Yên",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Đông Triều",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Ba Chẽ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bình Liêu",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cô Tô",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đầm Hà",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hải Hà",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tiên Yên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Vân Đồn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Quảng Trị',
+    name: "Quảng Trị",
     districts: [
-      { name: 'TP. Đông Hà', wards: ['Phường 1', 'Phường 2', 'Phường 5'] },
-      { name: 'Thị xã Quảng Trị', wards: ['Phường 1', 'Phường 2', 'Phường 3'] },
-      { name: 'Huyện Gio Linh', wards: ['Thị trấn Gio Linh', 'Thị trấn Cửa Việt'] }
+      {
+        name: "TP. Đông Hà",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Quảng Trị",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cam Lộ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cồn Cỏ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đakrông",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Gio Linh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hải Lăng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hướng Hóa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Triệu Phong",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Vĩnh Linh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Sóc Trăng',
+    name: "Sóc Trăng",
     districts: [
-      { name: 'TP. Sóc Trăng', wards: ['Phường 1', 'Phường 2', 'Phường 3', 'Phường 6'] },
-      { name: 'Thị xã Vĩnh Châu', wards: ['Phường 1', 'Phường 2'] },
-      { name: 'Thị xã Ngã Năm', wards: ['Phường 1', 'Phường 2'] }
+      {
+        name: "TP. Sóc Trăng",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Ngã Năm",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Vĩnh Châu",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Châu Thành",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cù Lao Dung",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Kế Sách",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Long Phú",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mỹ Tú",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mỹ Xuyên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thạnh Trị",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Trần Đề",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Sơn La',
+    name: "Sơn La",
     districts: [
-      { name: 'TP. Sơn La', wards: ['Phường Chiềng Lề', 'Phường Quyết Thắng', 'Phường Tô Hiệu'] },
-      { name: 'Huyện Mộc Châu', wards: ['Thị trấn Mộc Châu', 'Thị trấn Nông trường Mộc Châu'] },
-      { name: 'Huyện Mai Sơn', wards: ['Thị trấn Hát Lót'] }
+      {
+        name: "TP. Sơn La",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bắc Yên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mai Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mộc Châu",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mường La",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phù Yên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Quỳnh Nhai",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Sông Mã",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Sốp Cộp",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thuận Châu",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Vân Hồ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Yên Châu",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Tây Ninh',
+    name: "Tây Ninh",
     districts: [
-      { name: 'TP. Tây Ninh', wards: ['Phường 1', 'Phường 2', 'Phường 3', 'Phường Hiệp Ninh'] },
-      { name: 'Thị xã Trảng Bàng', wards: ['Phường Trảng Bàng', 'Phường An Tịnh'] },
-      { name: 'Thị xã Hòa Thành', wards: ['Phường Long Hoa', 'Phường Hiệp Tân'] }
+      {
+        name: "TP. Tây Ninh",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Hòa Thành",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Trảng Bàng",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bến Cầu",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Châu Thành",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Dương Minh Châu",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Gò Dầu",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tân Biên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tân Châu",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Thái Bình',
+    name: "Thái Bình",
     districts: [
-      { name: 'TP. Thái Bình', wards: ['Phường Lê Hồng Phong', 'Phường Bồ Xuyên', 'Phường Đề Thám'] },
-      { name: 'Huyện Hưng Hà', wards: ['Thị trấn Hưng Hà', 'Thị trấn Hưng Nhân'] },
-      { name: 'Huyện Đông Hưng', wards: ['Thị trấn Đông Hưng'] },
-      { name: 'Huyện Tiền Hải', wards: ['Thị trấn Tiền Hải'] }
+      {
+        name: "TP. Thái Bình",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đông Hưng",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hưng Hà",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Kiến Xương",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Quỳnh Phụ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thái Thụy",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tiền Hải",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Vũ Thư",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Thái Nguyên',
+    name: "Thái Nguyên",
     districts: [
-      { name: 'TP. Thái Nguyên', wards: ['Phường Phan Đình Phùng', 'Phường Hoàng Văn Thụ', 'Phường Đồng Quang'] },
-      { name: 'TP. Sông Công', wards: ['Phường Thắng Lợi', 'Phường Mỏ Chè'] },
-      { name: 'TP. Phổ Yên', wards: ['Phường Ba Hàng', 'Phường Đắc Sơn'] }
+      {
+        name: "TP. Thái Nguyên",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Sông Công",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Phổ Yên",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đại Từ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Định Hóa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đồng Hỷ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phú Bình",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phú Lương",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Võ Nhai",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Thanh Hóa',
+    name: "Thanh Hóa",
     districts: [
-      { name: 'TP. Thanh Hóa', wards: ['Phường Điện Biên', 'Phường Ba Đình', 'Phường Lam Sơn', 'Phường Đông Thọ'] },
-      { name: 'TP. Sầm Sơn', wards: ['Phường Bắc Sơn', 'Phường Trường Sơn', 'Phường Trung Sơn'] },
-      { name: 'Thị xã Bỉm Sơn', wards: ['Phường Ba Đình', 'Phường Ngọc Trạo'] },
-      { name: 'Thị xã Nghi Sơn', wards: ['Phường Hải Hòa', 'Phường Tĩnh Gia'] },
-      { name: 'Huyện Hoằng Hóa', wards: ['Thị trấn Bút Sơn'] }
+      {
+        name: "TP. Thanh Hóa",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Sầm Sơn",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Bỉm Sơn",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Nghi Sơn",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bá Thước",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cẩm Thủy",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Đông Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hà Trung",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hậu Lộc",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hoằng Hóa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lang Chánh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mường Lát",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Nga Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Ngọc Lặc",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Như Thanh",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Như Xuân",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Nông Cống",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Quan Hóa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Quan Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Quảng Xương",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thạch Thành",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thiệu Hóa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thọ Xuân",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Thường Xuân",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Triệu Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Vĩnh Lộc",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Yên Định",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Thừa Thiên Huế',
+    name: "Thừa Thiên Huế",
     districts: [
-      { name: 'TP. Huế', wards: ['Phường Vĩnh Ninh', 'Phường Phú Nhuận', 'Phường Thuận Thành', 'Phường Hương Sơ'] },
-      { name: 'Thị xã Hương Thủy', wards: ['Phường Phú Bài', 'Phường Thủy Dương'] },
-      { name: 'Thị xã Hương Trà', wards: ['Phường Tứ Hạ', 'Phường Hương Văn'] },
-      { name: 'Huyện Phú Vang', wards: ['Thị trấn Thuận An'] }
+      {
+        name: "TP. Huế",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Hương Thủy",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Hương Trà",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện A Lưới",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Nam Đông",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phong Điền",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phú Lộc",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Phú Vang",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Quảng Điền",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Tiền Giang',
+    name: "Tiền Giang",
     districts: [
-      { name: 'TP. Mỹ Tho', wards: ['Phường 1', 'Phường 2', 'Phường 4', 'Phường 7'] },
-      { name: 'Thị xã Gò Công', wards: ['Phường 1', 'Phường 2'] },
-      { name: 'Thị xã Cai Lậy', wards: ['Phường 1', 'Phường 4'] }
+      {
+        name: "TP. Mỹ Tho",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Cai Lậy",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Gò Công",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cái Bè",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cai Lậy",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Châu Thành",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Chợ Gạo",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Gò Công Đông",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Gò Công Tây",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tân Phú Đông",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tân Phước",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Trà Vinh',
+    name: "Trà Vinh",
     districts: [
-      { name: 'TP. Trà Vinh', wards: ['Phường 1', 'Phường 2', 'Phường 3', 'Phường 7'] },
-      { name: 'Thị xã Duyên Hải', wards: ['Phường 1', 'Phường 2'] },
-      { name: 'Huyện Châu Thành', wards: ['Thị trấn Châu Thành'] }
+      {
+        name: "TP. Trà Vinh",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Duyên Hải",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Càng Long",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cầu Kè",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Cầu Ngang",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Châu Thành",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Duyên Hải",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tiểu Cần",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Trà Cú",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Tuyên Quang',
+    name: "Tuyên Quang",
     districts: [
-      { name: 'TP. Tuyên Quang', wards: ['Phường Tân Quang', 'Phường Phan Thiết', 'Phường Minh Xuân'] },
-      { name: 'Huyện Sơn Dương', wards: ['Thị trấn Sơn Dương'] },
-      { name: 'Huyện Yên Sơn', wards: ['Thị trấn Yên Sơn'] }
+      {
+        name: "TP. Tuyên Quang",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Chiêm Hóa",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Hàm Yên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lâm Bình",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Na Hang",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Sơn Dương",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Yên Sơn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Vĩnh Long',
+    name: "Vĩnh Long",
     districts: [
-      { name: 'TP. Vĩnh Long', wards: ['Phường 1', 'Phường 2', 'Phường 4', 'Phường 9'] },
-      { name: 'Thị xã Bình Minh', wards: ['Phường Cái Vồn', 'Phường Thành Phước'] },
-      { name: 'Huyện Long Hồ', wards: ['Thị trấn Long Hồ'] }
+      {
+        name: "TP. Vĩnh Long",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Bình Minh",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bình Tân",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Long Hồ",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mang Thít",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tam Bình",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Trà Ôn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Vũng Liêm",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Vĩnh Phúc',
+    name: "Vĩnh Phúc",
     districts: [
-      { name: 'TP. Vĩnh Yên', wards: ['Phường Ngô Quyền', 'Phường Tích Sơn', 'Phường Liên Bảo'] },
-      { name: 'TP. Phúc Yên', wards: ['Phường Trưng Trắc', 'Phường Hùng Vương', 'Phường Xuân Hòa'] },
-      { name: 'Huyện Bình Xuyên', wards: ['Thị trấn Hương Canh'] }
+      {
+        name: "TP. Vĩnh Yên",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "TP. Phúc Yên",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Bình Xuyên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lập Thạch",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Sông Lô",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tam Đảo",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Tam Dương",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Vĩnh Tường",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Yên Lạc",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
   },
   {
-    name: 'Yên Bái',
+    name: "Yên Bái",
     districts: [
-      { name: 'TP. Yên Bái', wards: ['Phường Đồng Tâm', 'Phường Nguyễn Thái Học', 'Phường Minh Tân'] },
-      { name: 'Thị xã Nghĩa Lộ', wards: ['Phường Tân An', 'Phường Trung Tâm'] },
-      { name: 'Huyện Mù Cang Chải', wards: ['Thị trấn Mù Cang Chải'] }
+      {
+        name: "TP. Yên Bái",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Thị xã Nghĩa Lộ",
+        wards: ["Phường 1", "Phường 2", "Phường 3", "Phường trung tâm", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Lục Yên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Mù Cang Chải",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Trạm Tấu",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Trấn Yên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Văn Chấn",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Văn Yên",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
+      {
+        name: "Huyện Yên Bình",
+        wards: ["Thị trấn", "Xã trung tâm", "Xã 1", "Phường / Xã khác"]
+      },
     ]
-  }
+  },
 ];

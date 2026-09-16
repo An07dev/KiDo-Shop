@@ -15,7 +15,7 @@ import {
   FiMapPin,
   FiBriefcase,
 } from 'react-icons/fi';
-import styles from '@/app/(store)/page.module.css';
+import styles from '@/app/(store)/demo/page.module.css';
 
 interface ShopProfileCardProps {
   shopDisplayName: string;
@@ -31,7 +31,7 @@ interface ShopProfileCardProps {
 }
 
 const ShopProfileCardComponent: React.FC<ShopProfileCardProps> = ({
-  shopDisplayName = 'Shop Của Tôi',
+  shopDisplayName = '',
   logoUrl,
   avatarInitials = 'ST',
   productCount = 4,
@@ -47,12 +47,26 @@ const ShopProfileCardComponent: React.FC<ShopProfileCardProps> = ({
 
   // Consolidate banner images for the mobile background carousel
   const bannerList = React.useMemo(() => {
-    if (coverImages && coverImages.length > 0) return coverImages;
-    if (coverImage) return [coverImage];
-    return [];
+    const rawList =
+      coverImages && coverImages.length > 0
+        ? coverImages
+        : coverImage
+        ? [coverImage]
+        : [];
+
+    return rawList.filter(
+      (img) => Boolean(img && typeof img === 'string' && img.trim().length > 0)
+    );
   }, [coverImages, coverImage]);
 
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Keep current slide within bounds
+  useEffect(() => {
+    if (currentSlide >= bannerList.length && bannerList.length > 0) {
+      setCurrentSlide(0);
+    }
+  }, [bannerList.length, currentSlide]);
 
   // Auto-slide every 4 seconds on mobile
   useEffect(() => {
@@ -86,6 +100,8 @@ const ShopProfileCardComponent: React.FC<ShopProfileCardProps> = ({
       // Swiped Right -> Previous Image
       setCurrentSlide((prev) => (prev - 1 + bannerList.length) % bannerList.length);
     }
+    setTouchStartX(null);
+    setTouchEndX(null);
   };
 
   return (
@@ -105,13 +121,14 @@ const ShopProfileCardComponent: React.FC<ShopProfileCardProps> = ({
             >
               {bannerList.map((imgUrl, idx) => (
                 <div key={idx} className={styles.shopCoverSlide}>
-                  <Image
+                  <img
                     src={imgUrl}
                     alt={`${shopDisplayName} banner ${idx + 1}`}
-                    fill
-                    priority={idx === 0}
-                    sizes="(max-width: 599px) 100vw, 390px"
                     className={styles.shopCoverImg}
+                    loading={idx === 0 ? 'eager' : 'lazy'}
+                    onError={(e) => {
+                      (e.target as HTMLElement).style.display = 'none';
+                    }}
                   />
                 </div>
               ))}
@@ -134,7 +151,7 @@ const ShopProfileCardComponent: React.FC<ShopProfileCardProps> = ({
           </div>
         )}
         <div className={styles.shopeeShopCoverOverlay} />
-        
+
         <div className={styles.shopeeShopIdentityContent}>
           {/* Header Row: Avatar + Shop Title & Online Status */}
           <div className={styles.shopeeIdentityHeaderRow}>

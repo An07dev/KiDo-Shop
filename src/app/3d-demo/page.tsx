@@ -67,7 +67,7 @@ export default function ThreeDDemoPage() {
         minHeight: "100vh",
         background: "#050811",
         color: "#ffffff",
-        fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+        fontFamily: "var(--font-jakarta), 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
         padding: "36px 20px 80px",
       }}
     >
@@ -84,7 +84,7 @@ export default function ThreeDDemoPage() {
           }}
         >
           <Link
-            href="/landing"
+            href="/"
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -100,7 +100,7 @@ export default function ThreeDDemoPage() {
               transition: "all 0.2s ease",
             }}
           >
-            <ArrowLeft size={16} /> Quay lại Landing Page
+            <ArrowLeft size={16} /> Quay lại Cửa Hàng
           </Link>
 
           <div
@@ -261,7 +261,7 @@ export default function ThreeDDemoPage() {
             </span>
           </div>
           <Link
-            href="/landing"
+            href="/"
             style={{
               color: "#a5b4fc",
               fontSize: "13px",
@@ -269,7 +269,7 @@ export default function ThreeDDemoPage() {
               textDecoration: "none",
             }}
           >
-            Xem Landing Page ↗
+            Xem Cửa Hàng ↗
           </Link>
         </div>
       </div>

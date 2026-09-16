@@ -13,6 +13,7 @@
   position: relative;
   box-sizing: border-box;
   overflow-x: hidden;
+  font-family: inherit;
 }
 
 /* Header */
@@ -132,7 +133,7 @@
 
 .bigScore {
   font-size: 38px;
-  font-weight: 900;
+  font-weight: 800;
   color: #fbbf24;
   line-height: 1;
   display: flex;

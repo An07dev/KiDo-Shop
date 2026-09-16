@@ -33,6 +33,7 @@ import {
   StoredAdminUser,
 } from '@/lib/auth-client';
 import { apiFetch } from '@/lib/api';
+import AdminPWAInstallButton from '@/components/pwa/AdminPWAInstallButton';
 import styles from './layout.module.css';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -126,16 +127,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               {theme.pageTitles?.logoUrl ? (
                 <img
                   src={theme.pageTitles.logoUrl}
-                  alt={theme.pageTitles?.logoText || 'ShopBig'}
+                  alt={theme.pageTitles?.logoText || 'Logo'}
                   className={styles.sidebarLogoImg}
                 />
               ) : (
-                <span className={styles.sidebarFallbackIcon}>SB</span>
+                <span className={styles.sidebarFallbackIcon}>
+                  {theme.pageTitles?.logoText ? theme.pageTitles.logoText.substring(0, 2).toUpperCase() : 'AD'}
+                </span>
               )}
             </div>
             <div className={styles.sidebarLogoTexts}>
               <h2 className={styles.sidebarBrandTitle}>
-                {theme.pageTitles?.logoText || 'ShopBig'}
+                {theme.pageTitles?.logoText || 'Cửa Hàng'}
               </h2>
               <span className={styles.sidebarAdminSubtitle}>Hệ Thống Quản Trị</span>
             </div>
@@ -206,7 +209,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <FiMenu />
             </button>
             <div className={styles.headerBreadcrumbs}>
-              <span className={styles.breadcrumbStore}>{theme.pageTitles?.logoText || 'ShopBig'}</span>
+              <span className={styles.breadcrumbStore}>{theme.pageTitles?.logoText || 'Cửa Hàng'}</span>
               <span className={styles.breadcrumbSep}>/</span>
               <span className={styles.breadcrumbActive}>
                 {currentMenuItem?.name || 'Dashboard'}
@@ -215,6 +218,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
 
           <div className={styles.headerRight}>
+            <AdminPWAInstallButton />
             <Link
               href="/"
               target="_blank"
